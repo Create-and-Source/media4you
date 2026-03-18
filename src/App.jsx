@@ -792,6 +792,46 @@ async function callClaude(prompt) {
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 function Badge({ type, children, onClick }) { return <span className={`badge badge-${type}`} style={onClick?{cursor:'pointer'}:{}} onClick={onClick}>{children}</span>; }
 
+// ─── INLINE EDIT ─────────────────────────────────────────────────────────────
+function InlineEdit({ value, onSave, style }) {
+  const [editing, setEditing] = useState(false);
+  const [val, setVal] = useState(value);
+  useEffect(()=>setVal(value),[value]);
+  if (editing) {
+    return <input className="inline-edit" value={val} onChange={e=>setVal(e.target.value)}
+      onBlur={()=>{onSave(val);setEditing(false);}}
+      onKeyDown={e=>{if(e.key==="Enter"){onSave(val);setEditing(false);}if(e.key==="Escape"){setVal(value);setEditing(false);}}}
+      autoFocus style={style}/>;
+  }
+  return <span style={{cursor:'pointer',borderBottom:'1px dashed transparent',...style}} onClick={()=>setEditing(true)}
+    onMouseEnter={e=>e.currentTarget.style.borderBottomColor='var(--accent)'}
+    onMouseLeave={e=>e.currentTarget.style.borderBottomColor='transparent'}
+    title="Click to edit">{value||"—"}</span>;
+}
+
+// ─── STATUS DROPDOWN ─────────────────────────────────────────────────────────
+function StatusBadge({ status, options, onChange, colorMap }) {
+  const [open, setOpen] = useState(false);
+  const colors = colorMap || {Planned:"gray",Scripting:"gray",Editing:"blue",Review:"amber",Approved:"green",Scheduled:"purple",Published:"green","In Progress":"blue","Needs Revision":"red",Assigned:"gray",Submitted:"blue",Completed:"green",Running:"green",Paused:"amber",Confirmed:"green",Pending:"amber"};
+  if (!onChange || !options) return <Badge type={colors[status]||"gray"}>{status}</Badge>;
+  return (
+    <div style={{position:'relative',display:'inline-block'}}>
+      <Badge type={colors[status]||"gray"} onClick={()=>setOpen(!open)}>{status}</Badge>
+      {open && (
+        <div className="status-dropdown">
+          {options.map(opt=>(
+            <div key={opt} className="status-option" style={{display:'flex',alignItems:'center',gap:6}}
+              onClick={()=>{onChange(opt);setOpen(false);}}>
+              <div style={{width:6,height:6,borderRadius:'50%',background:`var(--${colors[opt]||"text3"})`}}/>
+              {opt}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── COMMENTS SYSTEM ─────────────────────────────────────────────────────────
 function CommentThread({ itemId, showToast }) {
   const [comments, setComments] = useState([]);
@@ -2233,7 +2273,7 @@ function AdminSettings({ showToast, darkMode, setDarkMode }) {
 }
 
 // ─── ADMIN CLIENTS ────────────────────────────────────────────────────────
-function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAutoSelect }) {
+function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAutoSelect, onUpdateClient }) {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedClient, setSelectedClient] = useState(autoSelect||null);
@@ -2283,8 +2323,8 @@ function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAuto
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <div className="row-avatar" style={{background:`${c.color}20`,color:c.color,width:48,height:48,fontSize:20}}>{c.name[0]}</div>
             <div style={{flex:1}}>
-              <div style={{fontFamily:"var(--fd)",fontSize:20,fontWeight:800}}>{c.name}</div>
-              <div style={{fontSize:12,color:"var(--text2)",marginTop:2}}>{c.industry} · {c.brandKit?.ig||"No IG"}</div>
+              <div style={{fontFamily:"var(--fd)",fontSize:20,fontWeight:800}}><InlineEdit value={c.name} onSave={v=>{if(onUpdateClient)onUpdateClient(c.id,{name:v});showToast("✓","Updated",v);}}/></div>
+              <div style={{fontSize:12,color:"var(--text2)",marginTop:2}}><InlineEdit value={c.industry} onSave={v=>{if(onUpdateClient)onUpdateClient(c.id,{industry:v});}}/> · {c.brandKit?.ig||"No IG"}</div>
             </div>
           </div>
           <div style={{display:"flex",gap:8,marginTop:14,flexWrap:"wrap"}}>
@@ -4505,7 +4545,7 @@ export default function App() {
       if(view==="shoots")    return <ShootCalendar shoots={INIT_SHOOTS} showToast={showToast}/>;
       if(view==="coaching")  return <CoachingTracker sessions={INIT_COACHING} showToast={showToast}/>;
       if(view==="team")      return <TeamWorkload scripts={scripts} videos={videos}/>;
-      if(view==="clients")   return <AdminClients clients={clients} showToast={showToast} onOpenIdeas={(c)=>openPanel("ideas",c)} autoSelect={autoSelectClient} onClearAutoSelect={()=>setAutoSelectClient(null)}/>;
+      if(view==="clients")   return <AdminClients clients={clients} showToast={showToast} onOpenIdeas={(c)=>openPanel("ideas",c)} autoSelect={autoSelectClient} onClearAutoSelect={()=>setAutoSelectClient(null)} onUpdateClient={(id,updates)=>setClients(p=>p.map(c=>c.id===id?{...c,...updates}:c))}/>;
       if(view==="revenue")   return <AdminRevenue clients={clients} expenses={expenses}/>;
       if(view==="expenses")  return <AdminExpenses expenses={expenses} setExpenses={setExpenses} showToast={showToast}/>;
       if(view==="ads")       return <AdminAds showToast={showToast}/>;
