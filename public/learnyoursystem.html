@@ -112,7 +112,40 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
 .footer-cta { display:inline-block; padding:16px 40px; font:700 16px var(--fd); border-radius:100px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:white; text-decoration:none; box-shadow:0 8px 30px rgba(252,198,18,0.3); transition:all 0.2s; }
 .footer-cta:hover { transform:translateY(-2px); box-shadow:0 12px 40px rgba(252,198,18,0.4); }
 
+/* UI Mockups */
+.mockup { background:rgba(255,255,255,0.6); border:1px solid rgba(255,255,255,0.65); border-radius:18px; padding:24px; backdrop-filter:blur(20px); box-shadow:0 4px 24px rgba(0,0,0,0.04); margin-bottom:20px; }
+.mockup-header { font:600 13px var(--fd); color:var(--text); margin-bottom:16px; text-transform:uppercase; letter-spacing:1px; }
+.mockup-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:16px; }
+.mockup-stat { background:rgba(255,255,255,0.85); border:1px solid rgba(0,0,0,0.06); border-radius:14px; padding:16px; }
+.mockup-stat-label { font:500 9px var(--fd); text-transform:uppercase; letter-spacing:1px; color:var(--text3); margin-bottom:4px; }
+.mockup-stat-val { font:600 26px var(--fd); color:var(--text); }
+.mockup-stat-sub { font:400 10px var(--fb); color:var(--text2); margin-top:4px; }
+.mockup-kanban { display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; }
+.mockup-col { min-width:150px; flex:1; }
+.mockup-col-head { background:rgba(255,255,255,0.7); border:1px solid rgba(0,0,0,0.06); border-radius:10px 10px 0 0; padding:8px 12px; font:600 10px var(--fd); text-transform:uppercase; letter-spacing:0.5px; color:var(--text2); display:flex; justify-content:space-between; }
+.mockup-col-body { background:rgba(255,255,255,0.4); border:1px solid rgba(0,0,0,0.04); border-radius:0 0 10px 10px; padding:6px; min-height:100px; display:flex; flex-direction:column; gap:6px; }
+.mockup-card { background:rgba(255,255,255,0.9); border:1px solid rgba(0,0,0,0.06); border-radius:8px; padding:10px 12px; font:400 11px var(--fb); color:var(--text); }
+.mockup-card-title { font:500 12px var(--fd); color:var(--text); margin-bottom:2px; }
+.mockup-card-sub { font:400 10px var(--fb); color:var(--text3); }
+.mockup-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid rgba(0,0,0,0.06); }
+.mockup-row:last-child { border-bottom:none; }
+.mockup-avatar { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font:600 12px var(--fd); flex-shrink:0; }
+.mockup-badge { display:inline-block; padding:2px 8px; border-radius:20px; font:500 10px var(--fd); }
+.mockup-sidebar { width:200px; background:#111; border-radius:14px; padding:16px; flex-shrink:0; }
+.mockup-sidebar-item { padding:8px 12px; border-radius:6px; font:400 12px var(--fb); color:#aaa; margin-bottom:2px; cursor:default; }
+.mockup-sidebar-item.active { background:rgba(252,198,18,0.15); color:var(--accent); }
+.mockup-browser { border:1px solid rgba(0,0,0,0.1); border-radius:14px; overflow:hidden; background:var(--bg); }
+.mockup-browser-bar { background:rgba(0,0,0,0.04); padding:8px 16px; display:flex; align-items:center; gap:8px; border-bottom:1px solid rgba(0,0,0,0.06); }
+.mockup-browser-dot { width:8px; height:8px; border-radius:50%; }
+.mockup-browser-url { flex:1; background:rgba(0,0,0,0.04); border-radius:4px; padding:4px 10px; font:400 10px monospace; color:var(--text3); }
+.mockup-browser-body { display:flex; min-height:300px; }
+.mockup-browser-content { flex:1; padding:20px; overflow:hidden; }
+.section-two-col { display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:center; }
+.section-two-col.reverse { direction:rtl; }
+.section-two-col.reverse > * { direction:ltr; }
+
 @media(max-width:768px) {
+  .section-two-col,.section-two-col.reverse { grid-template-columns:1fr; }
   .hero h1 { font-size:36px; }
   .nav-links { display:none; }
   .feature-grid { grid-template-columns:1fr; }
@@ -324,6 +357,215 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
       <div class="feature-detail">
         <strong>Type @</strong> in any message or comment to open the tag picker. Tag team members, clients, projects, shoots, or campaigns.<br><br>
         <strong>Messages</strong> show rich preview cards for tagged items (script content, client info, shoot details). Comments are on pipeline items, videos, shoots, and calendar posts.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ADMIN SECTION -->
+<section class="section" id="admin-section">
+  <div class="section-label reveal">Admin / Owner</div>
+  <div class="section-title reveal">Your Command Center</div>
+  <div class="section-sub reveal">Full control of the agency. Here's what the dashboard looks like:</div>
+
+  <div class="mockup-browser reveal">
+    <div class="mockup-browser-bar">
+      <div class="mockup-browser-dot" style="background:#FF5F57"></div>
+      <div class="mockup-browser-dot" style="background:#FFBD2E"></div>
+      <div class="mockup-browser-dot" style="background:#28CA41"></div>
+      <div class="mockup-browser-url">media4you.vercel.app/#admin/dashboard</div>
+    </div>
+    <div class="mockup-browser-body">
+      <div class="mockup-sidebar">
+        <div style="font:700 12px var(--fd);color:white;margin-bottom:16px">MEDIA<span style="color:var(--accent)">4</span>YOU</div>
+        <div class="mockup-sidebar-item active">◆ Dashboard</div>
+        <div class="mockup-sidebar-item">◎ Pipeline</div>
+        <div class="mockup-sidebar-item">▦ Library</div>
+        <div class="mockup-sidebar-item">◫ Scheduler</div>
+        <div class="mockup-sidebar-item">▶ Shoots</div>
+        <div class="mockup-sidebar-item">◉ Calls</div>
+        <div class="mockup-sidebar-item">◈ Team</div>
+        <div class="mockup-sidebar-item">▣ Clients</div>
+        <div class="mockup-sidebar-item">$ Revenue</div>
+        <div class="mockup-sidebar-item">◐ Ads</div>
+      </div>
+      <div class="mockup-browser-content">
+        <div style="background:linear-gradient(135deg,rgba(255,255,255,0.75),rgba(252,198,18,0.08));border-left:3px solid var(--accent);border-radius:14px;padding:20px;margin-bottom:16px">
+          <div style="font:600 18px var(--fd);color:var(--text)">Good morning, team</div>
+          <div style="font:400 12px var(--fb);color:var(--text2)">Wednesday, March 18, 2026</div>
+          <div style="font:600 20px var(--fd);color:var(--accent);margin-top:8px">$16,000 MRR</div>
+        </div>
+        <div class="mockup-stats">
+          <div class="mockup-stat"><div class="mockup-stat-label">Active Clients</div><div class="mockup-stat-val">5</div></div>
+          <div class="mockup-stat"><div class="mockup-stat-label">Revenue</div><div class="mockup-stat-val">$16K</div></div>
+          <div class="mockup-stat"><div class="mockup-stat-label">Videos MTD</div><div class="mockup-stat-val">23</div></div>
+          <div class="mockup-stat"><div class="mockup-stat-label">Scheduled</div><div class="mockup-stat-val">14</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-two-col reveal" style="margin-top:40px">
+    <div>
+      <div style="font:700 22px var(--fd);color:var(--text);margin-bottom:12px">Pipeline — Drag & Drop</div>
+      <div style="font:400 14px var(--fb);color:var(--text2);line-height:1.7;margin-bottom:16px">Every piece of content across all clients in one Kanban board. Drag cards between columns to change status. Click any card for details, comments, and status changes.</div>
+      <a href="/#admin/pipeline" class="try-btn">Open Pipeline →</a>
+    </div>
+    <div class="mockup" style="margin:0">
+      <div class="mockup-kanban">
+        <div class="mockup-col"><div class="mockup-col-head">Scripting <span style="background:rgba(252,198,18,0.1);padding:1px 6px;border-radius:8px;font-size:9px">3</span></div><div class="mockup-col-body"><div class="mockup-card"><div class="mockup-card-title">Day in the Life</div><div class="mockup-card-sub">Frost Barbershop</div></div><div class="mockup-card"><div class="mockup-card-title">Workout Highlight</div><div class="mockup-card-sub">Cactus CrossFit</div></div></div></div>
+        <div class="mockup-col"><div class="mockup-col-head">Editing <span style="background:rgba(59,125,216,0.1);padding:1px 6px;border-radius:8px;font-size:9px">2</span></div><div class="mockup-col-body"><div class="mockup-card"><div class="mockup-card-title">Listing Tour</div><div class="mockup-card-sub">Desert Sun Realty</div></div></div></div>
+        <div class="mockup-col"><div class="mockup-col-head">Review <span style="background:rgba(212,150,11,0.1);padding:1px 6px;border-radius:8px;font-size:9px">2</span></div><div class="mockup-col-body"><div class="mockup-card"><div class="mockup-card-title">Testimonial Reel</div><div class="mockup-card-sub">Sky Harbor Dental</div></div></div></div>
+        <div class="mockup-col"><div class="mockup-col-head">Published <span style="background:rgba(34,197,94,0.1);padding:1px 6px;border-radius:8px;font-size:9px">4</span></div><div class="mockup-col-body"><div class="mockup-card" style="border-left:3px solid #16A34A"><div class="mockup-card-title">Spring Lineup</div><div class="mockup-card-sub">Frost Barbershop</div></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SALES SECTION -->
+<section class="section" id="sales-section">
+  <div class="section-label reveal">Sales Rep</div>
+  <div class="section-title reveal">Close Deals, Find Leads</div>
+  <div class="section-sub reveal">Everything a sales rep needs to bring in new business.</div>
+
+  <div class="section-two-col reverse reveal" style="margin-bottom:40px">
+    <div>
+      <div style="font:700 22px var(--fd);color:var(--text);margin-bottom:12px">Lead Finder</div>
+      <div style="font:400 14px var(--fb);color:var(--text2);line-height:1.7;margin-bottom:16px">Scan Arizona businesses to discover those with weak or no social media. Each prospect gets a score showing how badly they need your services. One-click add to pipeline.</div>
+      <a href="/#sales/finder" class="try-btn">Open Lead Finder →</a>
+    </div>
+    <div class="mockup" style="margin:0">
+      <div class="mockup-header">Lead Finder Results</div>
+      <div class="mockup-row">
+        <div style="width:40px;height:40px;border-radius:50%;border:3px solid #D94F5C;display:flex;align-items:center;justify-content:center;font:700 14px var(--fd);color:#D94F5C;flex-shrink:0">92</div>
+        <div style="flex:1"><div style="font:600 13px var(--fd)">Prestige Auto Spa</div><div style="font:400 11px var(--fb);color:var(--text3)">Auto Detailing · Scottsdale</div><div style="margin-top:4px"><span class="mockup-badge" style="background:rgba(217,79,92,0.1);color:#D94F5C">No Instagram</span></div></div>
+        <span class="mockup-badge" style="background:rgba(217,79,92,0.1);color:#D94F5C;font-weight:700">Hot</span>
+      </div>
+      <div class="mockup-row">
+        <div style="width:40px;height:40px;border-radius:50%;border:3px solid #D4960B;display:flex;align-items:center;justify-content:center;font:700 14px var(--fd);color:#D4960B;flex-shrink:0">78</div>
+        <div style="flex:1"><div style="font:600 13px var(--fd)">Roots Kitchen & Bar</div><div style="font:400 11px var(--fb);color:var(--text3)">Restaurant · Tempe</div><div style="margin-top:4px"><span class="mockup-badge" style="background:rgba(212,150,11,0.1);color:#D4960B">Last: 3 weeks ago</span></div></div>
+        <span class="mockup-badge" style="background:rgba(212,150,11,0.1);color:#D4960B;font-weight:700">Warm</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-two-col reveal">
+    <div>
+      <div style="font:700 22px var(--fd);color:var(--text);margin-bottom:12px">Communication Hub</div>
+      <div style="font:400 14px var(--fb);color:var(--text2);line-height:1.7;margin-bottom:16px">Calls, texts, and emails all in one place. No more switching between apps. Full conversation history, AI email writer, and call outcomes tracked.</div>
+      <a href="/#sales/calls" class="try-btn">Open Comms →</a>
+    </div>
+    <div class="mockup" style="margin:0">
+      <div style="display:flex;gap:4;border-bottom:1px solid rgba(0,0,0,0.06);margin-bottom:12px;padding-bottom:8px">
+        <span style="font:600 12px var(--fd);color:var(--accent);border-bottom:2px solid var(--accent);padding-bottom:6px;margin-right:16px">Calls</span>
+        <span style="font:400 12px var(--fd);color:var(--text3);margin-right:16px">Texts</span>
+        <span style="font:400 12px var(--fd);color:var(--text3)">Emails</span>
+      </div>
+      <div class="mockup-row">
+        <div style="background:var(--accent);border-radius:8px;padding:6px 10px;text-align:center;flex-shrink:0"><div style="font:700 12px var(--fd);color:white">2:00</div><div style="font:400 8px var(--fd);color:rgba(255,255,255,0.7)">PM</div></div>
+        <div style="flex:1"><div style="font:600 12px var(--fd)">Chandler Law Group</div><div style="font:400 10px var(--fb);color:var(--text3)">Demo · Carlos</div></div>
+        <span class="mockup-badge" style="background:rgba(34,197,94,0.1);color:#16A34A">Confirmed</span>
+      </div>
+      <div class="mockup-row">
+        <div style="background:rgba(252,198,18,0.1);border:1px solid rgba(252,198,18,0.3);border-radius:8px;padding:6px 10px;text-align:center;flex-shrink:0"><div style="font:700 12px var(--fd);color:var(--accent)">4:30</div><div style="font:400 8px var(--fd);color:var(--accent);opacity:0.7">PM</div></div>
+        <div style="flex:1"><div style="font:600 12px var(--fd)">Scottsdale Med Spa</div><div style="font:400 10px var(--fb);color:var(--text3)">Discovery · Carlos</div></div>
+        <span class="mockup-badge" style="background:rgba(34,197,94,0.1);color:#16A34A">Confirmed</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRODUCTION SECTION -->
+<section class="section" id="production-section">
+  <div class="section-label reveal">Script Writer & Video Editor</div>
+  <div class="section-title reveal">Create Content</div>
+  <div class="section-sub reveal">Professional tools for scripting and editing.</div>
+
+  <div class="section-two-col reverse reveal">
+    <div>
+      <div style="font:700 22px var(--fd);color:var(--text);margin-bottom:12px">Script Editor + AI</div>
+      <div style="font:400 14px var(--fb);color:var(--text2);line-height:1.7;margin-bottom:16px">Full-page editor with AI draft generation. Scripts include HOOK, SETUP, BODY, CTA sections plus detailed shoot notes with camera specs, lighting, and music direction.</div>
+      <a href="/#scriptwriter/dashboard" class="try-btn">Open Scripts →</a>
+    </div>
+    <div class="mockup" style="margin:0">
+      <div style="font:700 14px var(--fd);margin-bottom:4px">Mesa Auto Detailing</div>
+      <div style="font:400 11px var(--fb);color:var(--text3);margin-bottom:12px">Before/After Reveal · Due Mar 18</div>
+      <div style="display:flex;gap:6;margin-bottom:12px">
+        <span style="padding:4px 10px;border-radius:4px;border:1px solid rgba(0,0,0,0.08);font:400 11px var(--fb);color:var(--text2)">Hook</span>
+        <span style="padding:4px 10px;border-radius:4px;border:1px solid rgba(0,0,0,0.08);font:400 11px var(--fb);color:var(--text2)">Setup</span>
+        <span style="padding:4px 10px;border-radius:4px;border:1px solid rgba(0,0,0,0.08);font:400 11px var(--fb);color:var(--text2)">Body</span>
+        <span style="padding:4px 10px;border-radius:4px;border:1px solid rgba(0,0,0,0.08);font:400 11px var(--fb);color:var(--text2)">CTA</span>
+        <span style="padding:4px 10px;border-radius:4px;background:rgba(252,198,18,0.08);border:1px solid rgba(252,198,18,0.2);font:500 11px var(--fb);color:var(--accent)">AI Draft</span>
+      </div>
+      <div style="background:rgba(255,255,255,0.85);border:1px solid rgba(0,0,0,0.06);border-radius:8px;padding:14px;font:400 12px var(--fb);color:var(--text);line-height:1.7">
+        <strong>HOOK (0–3 sec)</strong><br>
+        Your car is about to look brand new — watch this transformation.<br><br>
+        <strong>SETUP (3–10 sec)</strong><br>
+        This Tesla Model S came in covered in swirl marks and a year of Arizona sun damage...<br><br>
+        <span style="color:var(--text3)">+ BODY, CTA, and Shoot Notes below...</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-two-col reveal" style="margin-top:40px">
+    <div>
+      <div style="font:700 22px var(--fd);color:var(--text);margin-bottom:12px">Video Editor Suite</div>
+      <div style="font:400 14px var(--fb);color:var(--text2);line-height:1.7;margin-bottom:16px">Production queue with file specs (4K, codec, FPS), edit checklist, session timer, and editor notes. Start editing to track your time automatically.</div>
+      <a href="/#editor/dashboard" class="try-btn">Open Editor →</a>
+    </div>
+    <div class="mockup" style="margin:0">
+      <div class="mockup-header">File Specifications</div>
+      <div class="mockup-stats" style="grid-template-columns:repeat(3,1fr)">
+        <div class="mockup-stat" style="padding:10px"><div class="mockup-stat-label">Resolution</div><div style="font:500 13px var(--fb);color:var(--text)">4K 3840x2160</div></div>
+        <div class="mockup-stat" style="padding:10px"><div class="mockup-stat-label">Frame Rate</div><div style="font:500 13px var(--fb);color:var(--text)">60fps</div></div>
+        <div class="mockup-stat" style="padding:10px"><div class="mockup-stat-label">File Size</div><div style="font:500 13px var(--fb);color:var(--text)">2.8 GB</div></div>
+      </div>
+      <div style="font:600 10px var(--fd);text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);margin:12px 0 8px">Edit Checklist</div>
+      <div style="font:400 12px var(--fb);color:var(--text);line-height:2">
+        <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" checked style="accent-color:var(--accent)"> Color grade / correction</label>
+        <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" checked style="accent-color:var(--accent)"> Audio levels & music sync</label>
+        <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" style="accent-color:var(--accent)"> Text overlays & lower thirds</label>
+        <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" style="accent-color:var(--accent)"> Export 1080p vertical (9:16)</label>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CLIENT SECTION -->
+<section class="section" id="client-section">
+  <div class="section-label reveal">Client Portal</div>
+  <div class="section-title reveal">Your Content, Your Way</div>
+  <div class="section-sub reveal">Clients see their content, approve videos, and track performance.</div>
+
+  <div class="section-two-col reveal">
+    <div>
+      <div style="font:700 22px var(--fd);color:var(--text);margin-bottom:12px">Content Approval</div>
+      <div style="font:400 14px var(--fb);color:var(--text2);line-height:1.7;margin-bottom:16px">Clients review full scripts, then Approve (with confetti!) or Request Changes with notes. Every decision is logged in the approval history.</div>
+      <a href="/#client/dashboard" class="try-btn">Open Client Portal →</a>
+    </div>
+    <div class="mockup" style="margin:0">
+      <div style="background:rgba(212,150,11,0.06);border:1px solid rgba(212,150,11,0.2);border-radius:12px;padding:14px;margin-bottom:12px">
+        <div style="font:700 10px var(--fd);text-transform:uppercase;letter-spacing:0.8px;color:#D4960B;margin-bottom:8px">Awaiting Your Approval</div>
+        <div style="background:white;border-radius:8px;padding:12px;border:1px solid rgba(212,150,11,0.12)">
+          <div style="font:600 13px var(--fd);margin-bottom:2px">Listing @ 4821 Cactus Rd</div>
+          <div style="font:400 10px var(--fb);color:var(--text3);margin-bottom:8px">Reel · Listing Tour</div>
+          <div style="display:flex;gap:6px">
+            <span style="flex:1;padding:8px;text-align:center;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:6px;font:600 11px var(--fd);color:#16A34A;cursor:pointer">Approve</span>
+            <span style="padding:8px 12px;border:1px solid rgba(0,0,0,0.1);border-radius:6px;font:400 11px var(--fb);color:var(--text2);cursor:pointer">Request Changes</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="height:80px;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;position:relative">▶<span style="position:absolute;top:6px;right:6px;background:rgba(34,197,94,0.8);color:white;font:500 8px var(--fd);padding:1px 6px;border-radius:4px">Published</span></div>
+        <div style="height:80px;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;position:relative">▶<span style="position:absolute;top:6px;right:6px;background:rgba(34,197,94,0.8);color:white;font:500 8px var(--fd);padding:1px 6px;border-radius:4px">Approved</span></div>
       </div>
     </div>
   </div>
