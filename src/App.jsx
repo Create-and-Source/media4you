@@ -3096,88 +3096,141 @@ function ScriptCompleted({ scripts }) {
 }
 
 // ─── EDITOR VIEWS ─────────────────────────────────────────────────────────────
-function EditorProduction({ videos, igPosts, onAdvance, onSchedule, onOpenCaption, showToast, onNav }) {
+function EditorProduction({ videos, onAdvance, showToast }) {
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [showScheduleSheet, setShowScheduleSheet] = useState(false);
-  const [schedForm, setSchedForm] = useState({client:"Desert Sun Realty",date:"2025-03-25",time:"09:00",caption:""});
+  const [editNotes, setEditNotes] = useState({});
+  const [activeTimer, setActiveTimer] = useState(null);
+  const [timerSeconds, setTimerSeconds] = useState(0);
+
+  // Edit timer
+  useEffect(()=>{
+    if(activeTimer!==null){const i=setInterval(()=>setTimerSeconds(s=>s+1),1000);return()=>clearInterval(i);}
+  },[activeTimer]);
+  const formatTime=(s)=>`${Math.floor(s/3600).toString().padStart(2,"0")}:${Math.floor((s%3600)/60).toString().padStart(2,"0")}:${(s%60).toString().padStart(2,"0")}`;
+
+  const rawCount = videos.filter(v=>v.status==="Raw Footage").length;
+  const editingCount = videos.filter(v=>v.status==="Editing").length;
+  const reviewCount = videos.filter(v=>v.status==="Review").length;
+  const doneCount = videos.filter(v=>v.status==="Approved"||v.status==="Scheduled"||v.status==="Published").length;
+
+  const editSpecs = {
+    "Patient Transformation #4":{resolution:"4K 3840x2160",fps:"30fps",codec:"H.264",duration:"0:47",fileSize:"842 MB",colorProfile:"Rec. 709"},
+    "Listing @ 4821 Cactus Rd":{resolution:"4K 3840x2160",fps:"24fps",codec:"H.265",duration:"1:12",fileSize:"1.2 GB",colorProfile:"S-Log3"},
+    "Black Tesla Model S Detail":{resolution:"4K 3840x2160",fps:"60fps",codec:"H.264",duration:"2:34",fileSize:"2.8 GB",colorProfile:"Rec. 709"},
+    "Saturday Vibes — March":{resolution:"1080p 1920x1080",fps:"30fps",codec:"H.264",duration:"0:52",fileSize:"380 MB",colorProfile:"Standard"},
+    "Open Workout 25.2 Recap":{resolution:"4K 3840x2160",fps:"60fps",codec:"H.265",duration:"1:28",fileSize:"1.6 GB",colorProfile:"HLG"},
+  };
+
+  const glass = {
+    background:'rgba(255,255,255,0.6)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',
+    border:'1px solid rgba(255,255,255,0.65)',borderRadius:18,
+    boxShadow:'0 4px 24px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)',
+  };
+
   return (
     <div>
-      <div className="stats-grid">
-        <div className="stat-card"><div className="stat-label">In Queue</div><div className="stat-value">{videos.length}</div><div className="stat-sub">2 due this week</div></div>
-        <div className="stat-card"><div className="stat-label">In Review</div><div className="stat-value">{videos.filter(v=>v.status==="Review").length}</div><div className="stat-sub">Awaiting approval</div></div>
-        <div className="stat-card"><div className="stat-label">Published MTD</div><div className="stat-value">11</div><div className="stat-sub">4 clients</div></div>
-        <div className="stat-card"><div className="stat-label">IG Scheduled</div><div className="stat-value">{igPosts.filter(p=>p.status==="Scheduled").length}</div><div className="stat-sub">Next: Mar 20</div></div>
-      </div>
-      <div className="card" style={{background:"linear-gradient(135deg,rgba(255,92,0,0.08),rgba(253,128,64,0.06))",borderColor:"rgba(255,92,0,0.3)"}}>
-        <div style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700,color:"var(--accent)",marginBottom:10,textTransform:"uppercase",letterSpacing:"1px"}}>✨ AI Tools</div>
-        <div className="ai-btn" onClick={onOpenCaption}>
-          <div className="ai-btn-icon">📝</div>
-          <div><div className="ai-btn-text">Caption Writer</div><div className="ai-btn-sub">Generate Instagram captions + hashtags</div></div>
+      {/* Active Edit Timer */}
+      {activeTimer!==null && (
+        <div style={{...glass,padding:'16px 22px',marginBottom:16,background:'linear-gradient(135deg,rgba(45,154,106,0.08),rgba(45,154,106,0.04))',borderLeft:'3px solid var(--green)',display:'flex',alignItems:'center',gap:14}}>
+          <div style={{width:10,height:10,borderRadius:'50%',background:'var(--green)',animation:'dashPulseGlow 2s infinite'}}/>
+          <div style={{flex:1}}>
+            <div style={{font:'600 13px var(--fd)',color:'var(--text)'}}>Editing: {videos[activeTimer]?.title}</div>
+            <div style={{font:'400 11px var(--fb)',color:'var(--text2)'}}>{videos[activeTimer]?.client}</div>
+          </div>
+          <div style={{font:'600 20px monospace',color:'var(--green)',letterSpacing:1}}>{formatTime(timerSeconds)}</div>
+          <button className="btn" style={{padding:'6px 14px',fontSize:11}} onClick={()=>{showToast("◉","Session saved",formatTime(timerSeconds)+" logged");setActiveTimer(null);setTimerSeconds(0);}}>Stop</button>
         </div>
+      )}
+
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(140px, 1fr))',gap:12,marginBottom:20}}>
+        {[{label:"Raw Footage",val:rawCount,color:"var(--text3)"},{label:"Editing",val:editingCount,color:"var(--blue)"},{label:"In Review",val:reviewCount,color:"var(--amber)"},{label:"Completed",val:doneCount,color:"var(--green)"}].map((s,i)=>(
+          <div key={s.label} className="dash-card-hover" style={{...glass,padding:'16px 14px',animation:`dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) ${i*60}ms backwards`}}>
+            <div style={{font:'500 9px var(--fd)',textTransform:'uppercase',letterSpacing:1,color:'var(--text3)',marginBottom:4}}>{s.label}</div>
+            <div style={{font:'600 26px var(--fd)',color:s.color}}>{s.val}</div>
+          </div>
+        ))}
       </div>
-      <div className="card">
-        <div className="card-title">Production Queue</div>
-        {videos.map(v=>(
+
+      {/* Production Queue */}
+      <div style={{...glass,overflow:'hidden',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) 250ms backwards'}}>
+        <div style={{padding:'18px 22px',borderBottom:'1px solid rgba(0,0,0,0.04)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <span style={{font:'600 15px var(--fd)',color:'var(--text)'}}>Production Queue</span>
+          <span style={{font:'400 11px var(--fb)',color:'var(--text3)'}}>{videos.length} videos</span>
+        </div>
+        {videos.map((v,idx)=>{
+          const specs = editSpecs[v.title]||{resolution:"1080p",fps:"30fps",codec:"H.264",duration:"—",fileSize:"—",colorProfile:"Standard"};
+          return (
           <div key={v.id}>
-            <div className="video-item" style={{cursor:"pointer"}} onClick={()=>setSelectedVideo(selectedVideo===v.id?null:v.id)}>
-              <div className="video-thumb">{v.thumb}</div>
-              <div className="video-info"><div className="video-title">{v.title}</div><div className="video-meta">{v.client} · {v.due}</div></div>
-              <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
-                <Badge type={VID_STATUS_COLOR[v.status]||"gray"}>{v.status}</Badge>
+            <div className="dash-card-hover" style={{
+              margin:'6px 10px',padding:'16px 18px',borderRadius:14,
+              background:v.status==="Editing"?'rgba(59,125,216,0.04)':'rgba(255,255,255,0.4)',
+              border:v.status==="Editing"?'1px solid rgba(59,125,216,0.15)':'1px solid rgba(0,0,0,0.02)',
+              cursor:'pointer',
+            }} onClick={()=>setSelectedVideo(selectedVideo===v.id?null:v.id)}>
+              <div style={{display:'flex',alignItems:'center',gap:14}}>
+                <div style={{width:52,height:38,borderRadius:8,background:'var(--surface3)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:18,flexShrink:0,border:'1px solid var(--border)'}}>
+                  {v.thumb}
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{font:'500 14px var(--fd)',color:'var(--text)'}}>{v.title}</div>
+                  <div style={{font:'400 11px var(--fb)',color:'var(--text2)',marginTop:2}}>{v.client} · Due {v.due}</div>
+                </div>
+                <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4,flexShrink:0}}>
+                  <Badge type={VID_STATUS_COLOR[v.status]||"gray"}>{v.status}</Badge>
+                  <span style={{font:'400 10px monospace',color:'var(--text3)'}}>{specs.resolution.split(" ")[0]}</span>
+                </div>
               </div>
             </div>
+
             {selectedVideo===v.id && (
-              <div style={{padding:"10px 0 14px 55px",borderBottom:"1px solid var(--border)"}}>
-                <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:6}}>Video Details</div>
-                <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Client</div><div className="row-sub">{v.client}</div></div></div>
-                <div className="row-item"><div className="row-main"><div className="row-title">Status</div><div className="row-sub">{v.status}</div></div><Badge type={VID_STATUS_COLOR[v.status]||"gray"}>{v.status}</Badge></div>
-                <div className="row-item"><div className="row-main"><div className="row-title">Due Date</div><div className="row-sub">{v.due}</div></div></div>
-                <div style={{display:"flex",gap:8,marginTop:10}}>
-                  {v.status!=="Approved"&&v.status!=="Scheduled"&&<button className="btn primary" style={{flex:1}} onClick={()=>{onAdvance(v.id);showToast("🎬","Updated",`→ ${STATUS_FLOW[v.status]}`);setSelectedVideo(null);}}>
-                    {v.status==="Raw Footage"?"Start Edit":v.status==="Editing"?"Send to Review":"Approve"}
-                  </button>}
-                  {v.status==="Approved"&&<button className="btn primary" style={{flex:1}} onClick={()=>{onSchedule(v.id);showToast("📸","Scheduled on IG","");setSelectedVideo(null);}}>Schedule on IG</button>}
-                  <button className="btn" style={{flex:1}} onClick={()=>showToast("📝","Notes","Add notes feature coming soon")}>Add Notes</button>
+              <div style={{margin:'0 10px 6px',padding:'16px 18px',background:'var(--surface2)',borderRadius:'0 0 14px 14px',border:'1px solid var(--border)',borderTop:'none'}}>
+                {/* File Specs */}
+                <div style={{font:'600 10px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text3)',marginBottom:8}}>File Specifications</div>
+                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8,marginBottom:14}}>
+                  {[{l:"Resolution",v:specs.resolution},{l:"Frame Rate",v:specs.fps},{l:"Codec",v:specs.codec},{l:"Duration",v:specs.duration},{l:"File Size",v:specs.fileSize},{l:"Color",v:specs.colorProfile}].map(s=>(
+                    <div key={s.l} style={{padding:'8px 10px',background:'rgba(255,255,255,0.6)',borderRadius:8,border:'1px solid var(--border)'}}>
+                      <div style={{font:'400 9px var(--fd)',color:'var(--text3)',textTransform:'uppercase',letterSpacing:0.5,marginBottom:2}}>{s.l}</div>
+                      <div style={{font:'500 12px var(--fb)',color:'var(--text)'}}>{s.v}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Edit Checklist */}
+                <div style={{font:'600 10px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text3)',marginBottom:8}}>Edit Checklist</div>
+                <div style={{marginBottom:14}}>
+                  {["Color grade / correction","Audio levels & music sync","Text overlays & lower thirds","Transitions & pacing","Thumbnail frame selected","Export 1080p vertical (9:16)"].map((task,i)=>(
+                    <label key={i} style={{display:'flex',alignItems:'center',gap:8,padding:'5px 0',font:'400 12px var(--fb)',color:'var(--text)',cursor:'pointer'}}>
+                      <input type="checkbox" style={{accentColor:'var(--accent)',width:16,height:16}}/>
+                      {task}
+                    </label>
+                  ))}
+                </div>
+
+                {/* Editor Notes */}
+                <div style={{font:'600 10px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text3)',marginBottom:6}}>Editor Notes</div>
+                <textarea className="form-textarea" style={{minHeight:60,marginBottom:12}} placeholder="Add edit notes, timestamps, revision details..." value={editNotes[v.id]||""} onChange={e=>setEditNotes(p=>({...p,[v.id]:e.target.value}))}/>
+
+                {/* Actions */}
+                <div style={{display:'flex',gap:8}}>
+                  {v.status==="Raw Footage" && (
+                    <button className="btn primary" style={{flex:1}} onClick={()=>{onAdvance(v.id);setActiveTimer(idx);setTimerSeconds(0);showToast("▶","Editing started",v.title);setSelectedVideo(null);}}>Start Editing</button>
+                  )}
+                  {v.status==="Editing" && (
+                    <button className="btn primary" style={{flex:1}} onClick={()=>{onAdvance(v.id);showToast("◉","Sent to review",v.title);setSelectedVideo(null);if(activeTimer===idx){setActiveTimer(null);setTimerSeconds(0);}}}>Send to Review</button>
+                  )}
+                  {v.status==="Review" && (
+                    <button className="btn success" style={{flex:1}} onClick={()=>{onAdvance(v.id);showToast("✓","Approved",v.title);setSelectedVideo(null);fireConfetti();}}>Mark Approved</button>
+                  )}
+                  {v.status==="Approved" && (
+                    <button className="btn" style={{flex:1,opacity:0.6}} disabled>Ready for scheduling</button>
+                  )}
+                  <button className="btn" onClick={()=>showToast("◉","Re-export","Queuing 1080p re-export...")}>Re-export</button>
                 </div>
               </div>
             )}
           </div>
-        ))}
+        );})}
       </div>
-      <div className="ig-panel">
-        <div className="ig-header"><span style={{fontSize:20}}>📸</span><div><div className="ig-title">Instagram Queue</div><div className="ig-sub">Publish via Meta API</div></div></div>
-        {igPosts.map(p=><div className="ig-post" key={p.id}><div className="ig-post-thumb">{p.thumb}</div><div style={{flex:1}}><div className="ig-post-title">{p.client}</div><div className="ig-post-date">{p.date}</div></div><Badge type={p.status==="Scheduled"?"green":"amber"}>{p.status}</Badge></div>)}
-        <button className="btn primary full" style={{marginTop:8}} onClick={()=>setShowScheduleSheet(true)}>+ Schedule Post</button>
-      </div>
-      {showScheduleSheet && (
-        <div className="overlay" onClick={()=>setShowScheduleSheet(false)}>
-          <div className="sheet" onClick={e=>e.stopPropagation()}>
-            <div className="sheet-handle"/>
-            <div className="sheet-title">Schedule Post</div>
-            <div className="sheet-sub">Schedule a new Instagram post</div>
-            <div className="form-group"><label className="form-label">Client</label>
-              <select className="form-select" value={schedForm.client} onChange={e=>setSchedForm(p=>({...p,client:e.target.value}))}>
-                {INIT_CLIENTS.map(c=><option key={c.id}>{c.name}</option>)}
-              </select>
-            </div>
-            <div className="form-group"><label className="form-label">Date</label>
-              <input className="form-input" type="date" value={schedForm.date} onChange={e=>setSchedForm(p=>({...p,date:e.target.value}))}/>
-            </div>
-            <div className="form-group"><label className="form-label">Time</label>
-              <select className="form-select" value={schedForm.time} onChange={e=>setSchedForm(p=>({...p,time:e.target.value}))}>
-                {["08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00"].map(t=><option key={t} value={t}>{t}</option>)}
-              </select>
-            </div>
-            <div className="form-group"><label className="form-label">Caption</label>
-              <textarea className="form-textarea" placeholder="Write your caption..." value={schedForm.caption} onChange={e=>setSchedForm(p=>({...p,caption:e.target.value}))}/>
-            </div>
-            <div className="form-actions">
-              <button className="btn" onClick={()=>setShowScheduleSheet(false)}>Cancel</button>
-              <button className="btn primary" onClick={()=>{setShowScheduleSheet(false);showToast("📸","Post Scheduled",`${schedForm.client} — ${schedForm.date} at ${schedForm.time}`);}}>Schedule</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -4086,7 +4139,7 @@ export default function App() {
       if(view==="completed") return <ScriptCompleted scripts={scripts}/>;
     }
     if(role==="editor"){
-      if(view==="dashboard") return <EditorProduction videos={videos} igPosts={igPosts} onAdvance={advanceVideo} onSchedule={scheduleVideo} onOpenCaption={()=>openPanel("caption")} showToast={showToast}/>;
+      if(view==="dashboard") return <EditorProduction videos={videos} onAdvance={advanceVideo} showToast={showToast}/>;
       if(view==="upload")    return <EditorUpload showToast={showToast}/>;
       if(view==="completed") return <EditorCompleted videos={videos}/>;
     }
@@ -4097,7 +4150,7 @@ export default function App() {
       if(view==="invoices")  return <ClientInvoices showToast={showToast}/>;
       if(view==="team")      return <ClientTeam showToast={showToast} onOpenMessages={()=>openPanel("messages")}/>;
     }
-    return <div className="empty"><div className="empty-icon">🚧</div><div className="empty-title">Coming soon</div></div>;
+    return <div className="empty"><div className="empty-icon">◇</div><div className="empty-title">No content here yet</div></div>;
   };
 
   const [sidebarMobileOpen, setSidebarMobileOpen] = useState(false);
