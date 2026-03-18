@@ -32,6 +32,22 @@ const styles = `
     --sidebar: 240px;
   }
 
+  .dark {
+    --bg: #0F0F0F;
+    --bg2: #1A1A1A;
+    --surface: rgba(30,30,30,0.85);
+    --surface2: rgba(40,40,40,0.65);
+    --surface3: rgba(50,50,50,0.45);
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #E8E8E8;
+    --text2: #A0A0B0;
+    --text3: #666678;
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    --shadow-sm: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  .dark body::before { opacity:0.4; }
+
   html, body {
     background: var(--bg);
     color: var(--text);
@@ -496,12 +512,24 @@ const VIDEO_DATA = [
 ];
 
 const INIT_CLIENTS = [
-  {id:1,name:"Frost Barbershop",    industry:"barbershop",    plan:"Growth",  status:"active",     stage:"Production", nextPost:"Mar 19",color:"#3B82F6",videos:4, mrr:1200},
-  {id:2,name:"Desert Sun Realty",   industry:"real estate",   plan:"Pro",     status:"active",     stage:"Publishing", nextPost:"Mar 20",color:"#A855F7",videos:8, mrr:2400},
-  {id:3,name:"Cactus CrossFit",     industry:"gym/fitness",   plan:"Starter", status:"active",     stage:"Scripting",  nextPost:"Mar 22",color:"#22C55E",videos:2, mrr:600 },
-  {id:4,name:"Mesa Auto Detailing", industry:"auto detailing",plan:"Growth",  status:"review",     stage:"Editing",    nextPost:"Mar 18",color:"#FFB800",videos:6, mrr:1200},
-  {id:5,name:"Sky Harbor Dental",   industry:"dental",        plan:"Pro",     status:"active",     stage:"Approved",   nextPost:"Mar 21",color:"#FF5C00",videos:10,mrr:2400},
-  {id:6,name:"Tempe Taqueria",      industry:"restaurant",    plan:"Starter", status:"onboarding", stage:"Onboarding", nextPost:"—",     color:"#9999A8",videos:0, mrr:600 },
+  {id:1,name:"Frost Barbershop",    industry:"barbershop",    plan:"Growth",  status:"active",     stage:"Production", nextPost:"Mar 19",color:"#3B82F6",videos:4, mrr:1200,
+    brandKit:{colors:["#1A1A2E","#E0E0E0","#C4A35A"],tone:"Masculine, confident, clean",hashtags:["#FrostBarbershop","#AZBarber","#ScottsdaleBarber","#FreshCut"],audience:"Men 18-45, Scottsdale area",ig:"@frostbarbershop"},
+    metrics:{followers:2840,gained:312,avgViews:4200,avgLikes:280,engRate:6.7,topPost:"Spring Lineup Styles"}},
+  {id:2,name:"Desert Sun Realty",   industry:"real estate",   plan:"Pro",     status:"active",     stage:"Publishing", nextPost:"Mar 20",color:"#A855F7",videos:8, mrr:2400,
+    brandKit:{colors:["#2D1B69","#F5F0EB","#D4A574"],tone:"Professional, aspirational, local expert",hashtags:["#DesertSunRealty","#ScottsdaleHomes","#AZRealEstate","#PhoenixRealtor"],audience:"Home buyers/sellers 28-55",ig:"@desertsunrealty"},
+    metrics:{followers:5120,gained:842,avgViews:8400,avgLikes:520,engRate:6.2,topPost:"Listing @ 4821 Cactus Rd"}},
+  {id:3,name:"Cactus CrossFit",     industry:"gym/fitness",   plan:"Starter", status:"active",     stage:"Scripting",  nextPost:"Mar 22",color:"#22C55E",videos:2, mrr:600,
+    brandKit:{colors:["#1B4332","#F0F0F0","#FF6B35"],tone:"Energetic, motivating, community-driven",hashtags:["#CactusCrossFit","#AZFitness","#CrossFitAZ","#DesertStrong"],audience:"Fitness enthusiasts 22-40",ig:"@cactuscrossfit"},
+    metrics:{followers:1650,gained:180,avgViews:3100,avgLikes:210,engRate:6.8,topPost:"Member Transformation Story"}},
+  {id:4,name:"Mesa Auto Detailing", industry:"auto detailing",plan:"Growth",  status:"review",     stage:"Editing",    nextPost:"Mar 18",color:"#FFB800",videos:6, mrr:1200,
+    brandKit:{colors:["#0D0D0D","#FFB800","#FFFFFF"],tone:"Satisfying, premium, before/after focused",hashtags:["#MesaAutoDetail","#AZDetailing","#CeramicCoating","#CarCare"],audience:"Car enthusiasts, luxury vehicle owners 25-50",ig:"@mesaautodetail"},
+    metrics:{followers:3200,gained:410,avgViews:6800,avgLikes:450,engRate:6.6,topPost:"Black Tesla Model S Detail"}},
+  {id:5,name:"Sky Harbor Dental",   industry:"dental",        plan:"Pro",     status:"active",     stage:"Approved",   nextPost:"Mar 21",color:"#FF5C00",videos:10,mrr:2400,
+    brandKit:{colors:["#0077B6","#FFFFFF","#90E0EF"],tone:"Friendly, reassuring, results-driven",hashtags:["#SkyHarborDental","#AZDentist","#SmileTransformation","#PhoenixDentist"],audience:"Adults 25-60 needing dental care",ig:"@skyharbordental"},
+    metrics:{followers:1890,gained:220,avgViews:3500,avgLikes:190,engRate:5.4,topPost:"Teeth Whitening Before/After"}},
+  {id:6,name:"Tempe Taqueria",      industry:"restaurant",    plan:"Starter", status:"onboarding", stage:"Onboarding", nextPost:"—",     color:"#9999A8",videos:0, mrr:600,
+    brandKit:{colors:["#D62828","#FFF8E7","#F77F00"],tone:"Fun, authentic, mouth-watering, local flavor",hashtags:["#TempeTaqueria","#AZFood","#TacoTuesday","#PhoenixEats"],audience:"Foodies 18-40, Tempe/Phoenix area",ig:"@tempetaqueria"},
+    metrics:{followers:0,gained:0,avgViews:0,avgLikes:0,engRate:0,topPost:"—"}},
 ];
 
 const INIT_LEADS = {
@@ -1492,17 +1520,22 @@ function AdminDashboard({ clients, onNav, onOpenIdeas, onOpenCalendar, onOpenCli
             </ResponsiveContainer>
           </div>
 
-          {/* AI Tools */}
+          {/* Content Performance */}
           <div style={{...glass,padding:'20px 22px',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) 560ms backwards'}}>
-            <div style={{font:'600 15px var(--fd)',color:'var(--text)',marginBottom:14}}>AI Tools</div>
-            <div onClick={onOpenCalendar} className="ai-btn" style={{marginBottom:8}}>
-              <div className="ai-btn-icon">📅</div>
-              <div><div className="ai-btn-text">Content Calendar</div><div className="ai-btn-sub">Generate posting schedule</div></div>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+              <div style={{font:'600 15px var(--fd)',color:'var(--text)'}}>Content Performance</div>
+              <div style={{padding:'3px 10px',borderRadius:100,background:'rgba(45,154,106,0.1)',font:'500 10px var(--fd)',color:'var(--green)'}}>This month</div>
             </div>
-            <div onClick={()=>onOpenIdeas(clients[0])} className="ai-btn" style={{marginBottom:0}}>
-              <div className="ai-btn-icon">💡</div>
-              <div><div className="ai-btn-text">Video Ideas</div><div className="ai-btn-sub">AI ideas for {clients[0]?.name||"clients"}</div></div>
-            </div>
+            {clients.filter(c=>c.metrics&&c.metrics.followers>0).slice(0,3).map(c=>(
+              <div key={c.id} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 0',borderBottom:'1px solid var(--border)'}}>
+                <div style={{width:28,height:28,borderRadius:8,background:`${c.color}15`,display:'flex',alignItems:'center',justifyContent:'center',color:c.color,font:'600 11px var(--fd)'}}>{c.name[0]}</div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{font:'500 12px var(--fb)',color:'var(--text)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{c.name}</div>
+                </div>
+                <div style={{font:'500 11px var(--fd)',color:'var(--green)'}}>+{c.metrics.gained}</div>
+                <div style={{font:'400 10px var(--fb)',color:'var(--text3)'}}>{c.metrics.engRate}%</div>
+              </div>
+            ))}
           </div>
 
           {/* Quick Actions */}
@@ -1574,7 +1607,7 @@ function AdminRevenue({ clients }) {
   );
 }
 
-function AdminSettings({ showToast }) {
+function AdminSettings({ showToast, darkMode, setDarkMode }) {
   const [integrations, setIntegrations] = useState([
     {name:"Zoom",connected:true,icon:"🎥"},{name:"Stripe Billing",connected:false,icon:"💳"},{name:"Twilio SMS",connected:false,icon:"💬"}
   ]);
@@ -1632,6 +1665,19 @@ function AdminSettings({ showToast }) {
             <Badge type={i.connected?"green":"gray"}>{i.connected?"Connected":"Not connected"}</Badge>
           </div>
         ))}
+      </div>
+      <div className="card">
+        <div className="card-title">Appearance</div>
+        <div className="row-item" style={{cursor:"pointer"}} onClick={()=>{setDarkMode(!darkMode);showToast(darkMode?"☀️":"🌙",darkMode?"Light mode":"Dark mode","Theme updated");}}>
+          <div style={{fontSize:20,width:28,textAlign:"center",flexShrink:0}}>{darkMode?"🌙":"☀️"}</div>
+          <div className="row-main">
+            <div className="row-title">Dark Mode</div>
+            <div className="row-sub">{darkMode?"Currently dark — tap to switch to light":"Currently light — tap to switch to dark"}</div>
+          </div>
+          <div style={{width:44,height:24,borderRadius:12,background:darkMode?"var(--accent)":"var(--border2)",padding:2,cursor:"pointer",transition:"background 0.2s"}}>
+            <div style={{width:20,height:20,borderRadius:10,background:"white",boxShadow:"0 1px 4px rgba(0,0,0,0.2)",transform:darkMode?"translateX(20px)":"translateX(0)",transition:"transform 0.2s"}}/>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -2247,7 +2293,7 @@ function SalesLeadsList({ leads, showToast }) {
 }
 
 // ─── SCRIPT VIEWS ─────────────────────────────────────────────────────────────
-function ScriptQueue({ scripts, onSelect }) {
+function ScriptQueue({ scripts, onSelect, onOpenIdeas, onOpenCalendar, clients }) {
   const [clientFilter, setClientFilter] = useState("all");
   const clientNames = [...new Set(scripts.map(s=>s.client))];
   const filtered = clientFilter==="all" ? scripts : scripts.filter(s=>s.client===clientFilter);
@@ -2257,6 +2303,17 @@ function ScriptQueue({ scripts, onSelect }) {
         <div className="stat-card"><div className="stat-label">In Queue</div><div className="stat-value">{scripts.length}</div><div className="stat-sub">2 due this week</div></div>
         <div className="stat-card"><div className="stat-label">Urgent</div><div className="stat-value">{scripts.filter(s=>s.priority==="high").length}</div><div className="stat-sub">High priority</div></div>
       </div>
+      {onOpenIdeas && clients && (
+        <div className="card" style={{background:"linear-gradient(135deg,rgba(255,92,0,0.08),rgba(253,128,64,0.06))",borderColor:"rgba(255,92,0,0.3)",marginBottom:12}}>
+          <div style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700,color:"var(--accent)",marginBottom:10,textTransform:"uppercase",letterSpacing:"1px"}}>✨ AI Tools</div>
+          <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+            {clients.filter(c=>c.status==="active").map(c=>(
+              <button key={c.id} className="action-btn accent" onClick={()=>onOpenIdeas(c)} style={{fontSize:11}}>💡 {c.name}</button>
+            ))}
+          </div>
+          {onOpenCalendar && <div className="ai-btn" style={{marginTop:10}} onClick={onOpenCalendar}><div className="ai-btn-icon">📅</div><div><div className="ai-btn-text">Content Calendar</div><div className="ai-btn-sub">Generate posting schedule</div></div></div>}
+        </div>
+      )}
       <div className="form-group" style={{marginBottom:10}}>
         <select className="form-select" value={clientFilter} onChange={e=>setClientFilter(e.target.value)}>
           <option value="all">All Clients</option>
@@ -2442,6 +2499,96 @@ function EditorCompleted({ videos }) {
 }
 
 // ─── CLIENT VIEWS ─────────────────────────────────────────────────────────────
+// ─── TEAM WORKLOAD ───────────────────────────────────────────────────────────
+function TeamWorkload({ scripts, videos }) {
+  const team = [
+    {name:"Maya R.",role:"Script Writer",color:"#A855F7",emoji:"✍️"},
+    {name:"Jordan T.",role:"Video Editor",color:"#22C55E",emoji:"🎬"},
+    {name:"Carlos V.",role:"Account Manager",color:"#3B82F6",emoji:"📋"},
+    {name:"Alex M.",role:"Admin / Strategy",color:"#FF5C00",emoji:"⬛"},
+  ];
+
+  const getWorkload = (member) => {
+    if (member.role === "Script Writer") {
+      const active = scripts.filter(s => s.status !== "Published" && s.status !== "Approved" && s.status !== "Scheduled");
+      const overdue = active.filter(s => s.due && s.due < "Mar 18");
+      return { total: active.length, overdue: overdue.length, items: active };
+    }
+    if (member.role === "Video Editor") {
+      const active = videos.filter(v => v.status !== "Published" && v.status !== "Scheduled");
+      const overdue = active.filter(v => v.due && v.due < "Mar 18");
+      return { total: active.length, overdue: overdue.length, items: active };
+    }
+    return { total: Math.floor(Math.random() * 3) + 2, overdue: 0, items: [] };
+  };
+
+  const glass = {
+    background:'rgba(255,255,255,0.6)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',
+    border:'1px solid rgba(255,255,255,0.65)',borderRadius:18,
+    boxShadow:'0 4px 24px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)',
+  };
+
+  return (
+    <div>
+      <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
+        <h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Team Workload</h1>
+        <p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Who's working on what right now</p>
+      </div>
+
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(280px, 1fr))',gap:16}}>
+        {team.map((m, idx) => {
+          const wl = getWorkload(m);
+          const load = wl.total >= 5 ? "heavy" : wl.total >= 3 ? "moderate" : "light";
+          const loadColor = load === "heavy" ? "var(--red)" : load === "moderate" ? "var(--amber)" : "var(--green)";
+          return (
+            <div key={m.name} className="dash-card-hover" style={{...glass,padding:'22px',cursor:'default',animation:`dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) ${idx*80}ms backwards`}}>
+              <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:16}}>
+                <div style={{width:44,height:44,borderRadius:12,background:`${m.color}15`,display:'flex',alignItems:'center',justifyContent:'center',font:'600 16px var(--fd)',color:m.color}}>{m.name[0]}</div>
+                <div style={{flex:1}}>
+                  <div style={{font:'600 14px var(--fd)',color:'var(--text)'}}>{m.name}</div>
+                  <div style={{font:'400 11px var(--fb)',color:'var(--text3)'}}>{m.role}</div>
+                </div>
+                <div style={{padding:'4px 10px',borderRadius:100,font:'600 10px var(--fd)',textTransform:'uppercase',letterSpacing:0.5,background:`${loadColor}15`,color:loadColor,border:`1px solid ${loadColor}30`}}>{load}</div>
+              </div>
+              <div style={{display:'flex',gap:12,marginBottom:14}}>
+                <div style={{flex:1,background:'rgba(255,255,255,0.5)',borderRadius:10,padding:'10px 12px',textAlign:'center'}}>
+                  <div style={{font:'600 22px var(--fd)',color:'var(--text)'}}>{wl.total}</div>
+                  <div style={{font:'400 10px var(--fb)',color:'var(--text3)',textTransform:'uppercase',letterSpacing:0.5}}>Active</div>
+                </div>
+                <div style={{flex:1,background:wl.overdue>0?'rgba(217,79,92,0.08)':'rgba(255,255,255,0.5)',borderRadius:10,padding:'10px 12px',textAlign:'center'}}>
+                  <div style={{font:'600 22px var(--fd)',color:wl.overdue>0?'var(--red)':'var(--text)'}}>{wl.overdue}</div>
+                  <div style={{font:'400 10px var(--fb)',color:'var(--text3)',textTransform:'uppercase',letterSpacing:0.5}}>Overdue</div>
+                </div>
+              </div>
+              {/* Capacity bar */}
+              <div style={{marginBottom:8}}>
+                <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
+                  <span style={{font:'400 10px var(--fb)',color:'var(--text3)'}}>Capacity</span>
+                  <span style={{font:'500 10px var(--fd)',color:loadColor}}>{Math.min(wl.total * 20, 100)}%</span>
+                </div>
+                <div style={{height:4,background:'rgba(0,0,0,0.06)',borderRadius:4,overflow:'hidden'}}>
+                  <div style={{height:'100%',width:`${Math.min(wl.total*20,100)}%`,background:loadColor,borderRadius:4,transition:'width 0.5s ease'}}/>
+                </div>
+              </div>
+              {wl.items.length > 0 && (
+                <div style={{borderTop:'1px solid var(--border)',paddingTop:10,marginTop:4}}>
+                  {wl.items.slice(0,3).map((item,i)=>(
+                    <div key={i} style={{display:'flex',alignItems:'center',gap:8,padding:'5px 0',fontSize:11,color:'var(--text2)'}}>
+                      <span>{m.emoji}</span>
+                      <span style={{flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{item.client||item.title} — {item.type||item.title}</span>
+                      {item.due && item.due < "Mar 18" && <span style={{color:'var(--red)',fontWeight:600,fontSize:9}}>OVERDUE</span>}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ─── UNIFIED CONTENT PIPELINE (KANBAN) ────────────────────────────────────────
 function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, showToast }) {
   const [clientFilter, setClientFilter] = useState("all");
@@ -2549,7 +2696,7 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
                         </div>
                       </div>
                       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-                        <span style={{font:'400 10px var(--fb)',color:'var(--text3)'}}>Due {item.due}</span>
+                        <span style={{font:'500 10px var(--fb)',color:item.due&&item.due<"Mar 18"?'var(--red)':item.due&&item.due<="Mar 19"?'var(--amber)':'var(--text3)'}}>{item.due&&item.due<"Mar 18"?"⚠ OVERDUE":"Due "+item.due}</span>
                         <Badge type={item.type==="script"?"blue":"purple"}>{item.type==="script"?"Script":"Video"}</Badge>
                       </div>
                       {item.priority==="high" && <div style={{width:'100%',height:2,background:'var(--red)',borderRadius:2,marginTop:6,opacity:0.6}}/>}
@@ -2835,20 +2982,83 @@ function ClientTeam({ showToast, onOpenMessages }) {
 
 // ─── MODALS ───────────────────────────────────────────────────────────────────
 function AddClientModal({ onClose, onAdd }) {
-  const [form, setForm] = useState({name:"",plan:"Starter",industry:""});
+  const [step, setStep] = useState(1);
+  const [form, setForm] = useState({name:"",industry:"",plan:"Starter",ig:"",tone:"",audience:"",hashtags:"",colors:["#000000","#FFFFFF","#FFB800"]});
   const colors = ["#3B82F6","#A855F7","#22C55E","#FFB800","#FF5C00","#EF4444"];
+  const steps = [{num:1,label:"Business Info"},{num:2,label:"Plan & Socials"},{num:3,label:"Brand Kit"}];
+
+  const submit = () => {
+    if(!form.name.trim()) return;
+    const brandColor = colors[Math.floor(Math.random()*colors.length)];
+    onAdd({
+      id:Date.now(), name:form.name, industry:form.industry||"general", plan:form.plan,
+      status:"onboarding", stage:"Onboarding", nextPost:"—", color:brandColor, videos:0,
+      mrr:{Starter:600,Growth:1200,Pro:2400}[form.plan],
+      brandKit:{colors:form.colors,tone:form.tone||"Professional and engaging",hashtags:(form.hashtags||"").split(",").map(h=>h.trim()).filter(Boolean),audience:form.audience||"General",ig:form.ig||"—"},
+      metrics:{followers:0,gained:0,avgViews:0,avgLikes:0,engRate:0,topPost:"—"},
+    });
+    onClose();
+  };
+
   return (
     <div className="overlay" onClick={onClose}>
-      <div className="sheet" onClick={e=>e.stopPropagation()}>
+      <div className="sheet" style={{maxWidth:520,margin:'0 auto'}} onClick={e=>e.stopPropagation()}>
         <div className="sheet-handle"/>
-        <div className="sheet-title">Add New Client</div>
-        <div className="form-group"><label className="form-label">Business Name</label><input className="form-input" placeholder="e.g. Scottsdale Med Spa" value={form.name} onChange={e=>setForm(p=>({...p,name:e.target.value}))}/></div>
-        <div className="form-group"><label className="form-label">Industry</label><input className="form-input" placeholder="e.g. med spa, restaurant, law firm" value={form.industry} onChange={e=>setForm(p=>({...p,industry:e.target.value}))}/></div>
-        <div className="form-group"><label className="form-label">Plan</label><select className="form-select" value={form.plan} onChange={e=>setForm(p=>({...p,plan:e.target.value}))}><option>Starter</option><option>Growth</option><option>Pro</option></select></div>
-        <div className="form-actions">
-          <button className="btn" onClick={onClose}>Cancel</button>
-          <button className="btn primary" onClick={()=>{if(!form.name.trim())return;onAdd({id:Date.now(),name:form.name,industry:form.industry||form.name,plan:form.plan,status:"onboarding",stage:"Onboarding",nextPost:"—",color:colors[Math.floor(Math.random()*colors.length)],videos:0,mrr:{Starter:600,Growth:1200,Pro:2400}[form.plan]});onClose();}}>Add Client</button>
+        <div className="sheet-title">New Client Onboarding</div>
+        {/* Step indicator */}
+        <div style={{display:'flex',gap:8,marginBottom:20}}>
+          {steps.map(s=>(
+            <div key={s.num} style={{flex:1,textAlign:'center'}}>
+              <div style={{height:3,borderRadius:2,background:step>=s.num?'var(--accent)':'var(--border2)',marginBottom:6,transition:'background 0.2s'}}/>
+              <span style={{font:`${step===s.num?600:400} 10px var(--fd)`,color:step>=s.num?'var(--accent)':'var(--text3)',textTransform:'uppercase',letterSpacing:0.8}}>{s.label}</span>
+            </div>
+          ))}
         </div>
+
+        {step===1 && (<>
+          <div className="form-group"><label className="form-label">Business Name *</label><input className="form-input" placeholder="e.g. Scottsdale Med Spa" value={form.name} onChange={e=>setForm(p=>({...p,name:e.target.value}))}/></div>
+          <div className="form-group"><label className="form-label">Industry</label><input className="form-input" placeholder="e.g. med spa, restaurant, law firm" value={form.industry} onChange={e=>setForm(p=>({...p,industry:e.target.value}))}/></div>
+          <div className="form-group"><label className="form-label">Target Audience</label><input className="form-input" placeholder="e.g. Women 25-45, Phoenix area" value={form.audience} onChange={e=>setForm(p=>({...p,audience:e.target.value}))}/></div>
+          <div className="form-actions">
+            <button className="btn" onClick={onClose}>Cancel</button>
+            <button className="btn primary" onClick={()=>form.name.trim()&&setStep(2)}>Next →</button>
+          </div>
+        </>)}
+
+        {step===2 && (<>
+          <div className="form-group"><label className="form-label">Plan</label>
+            <div style={{display:'flex',gap:8}}>
+              {["Starter","Growth","Pro"].map(p=>(
+                <button key={p} className={`action-btn ${form.plan===p?"accent":""}`} style={{flex:1,padding:'12px 8px',fontSize:12,fontWeight:600}} onClick={()=>setForm(f=>({...f,plan:p}))}>
+                  <div>{p}</div>
+                  <div style={{font:'400 10px var(--fb)',marginTop:2,color:'var(--text3)'}}>{p==="Starter"?"2 vids/mo":p==="Growth"?"4 vids/mo":"8 vids/mo"}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="form-group"><label className="form-label">Instagram Handle</label><input className="form-input" placeholder="@theiraccount" value={form.ig} onChange={e=>setForm(p=>({...p,ig:e.target.value}))}/></div>
+          <div className="form-actions">
+            <button className="btn" onClick={()=>setStep(1)}>← Back</button>
+            <button className="btn primary" onClick={()=>setStep(3)}>Next →</button>
+          </div>
+        </>)}
+
+        {step===3 && (<>
+          <div className="form-group"><label className="form-label">Brand Tone / Voice</label><input className="form-input" placeholder="e.g. Fun, casual, mouth-watering" value={form.tone} onChange={e=>setForm(p=>({...p,tone:e.target.value}))}/></div>
+          <div className="form-group"><label className="form-label">Key Hashtags</label><input className="form-input" placeholder="#BrandName, #Industry, #Location (comma separated)" value={form.hashtags} onChange={e=>setForm(p=>({...p,hashtags:e.target.value}))}/></div>
+          <div className="form-group"><label className="form-label">Brand Colors</label>
+            <div style={{display:'flex',gap:8,alignItems:'center'}}>
+              {form.colors.map((c,i)=>(
+                <input key={i} type="color" value={c} onChange={e=>{const nc=[...form.colors];nc[i]=e.target.value;setForm(p=>({...p,colors:nc}));}} style={{width:36,height:36,borderRadius:8,border:'1px solid var(--border2)',cursor:'pointer',padding:2}}/>
+              ))}
+              <span style={{font:'400 10px var(--fb)',color:'var(--text3)'}}>Primary, Secondary, Accent</span>
+            </div>
+          </div>
+          <div className="form-actions">
+            <button className="btn" onClick={()=>setStep(2)}>← Back</button>
+            <button className="btn primary" onClick={submit}>✅ Complete Onboarding</button>
+          </div>
+        </>)}
       </div>
     </div>
   );
@@ -2884,7 +3094,7 @@ const ROLES = [
   {key:"client",      label:"Client",       name:"Desert Sun Realty",color:"#FFB800",initial:"C"},
 ];
 const NAV_CONFIG = {
-  admin:        [{label:"Dashboard",icon:"⬛",view:"dashboard"},{label:"Pipeline",icon:"🔄",view:"pipeline"},{label:"Clients",icon:"👥",view:"clients"},{label:"Revenue",icon:"💰",view:"revenue"},{label:"Ads",icon:"📢",view:"ads"},{label:"Settings",icon:"⚙️",view:"settings"}],
+  admin:        [{label:"Dashboard",icon:"⬛",view:"dashboard"},{label:"Pipeline",icon:"🔄",view:"pipeline"},{label:"Team",icon:"👤",view:"team"},{label:"Clients",icon:"👥",view:"clients"},{label:"Revenue",icon:"💰",view:"revenue"},{label:"Ads",icon:"📢",view:"ads"},{label:"Settings",icon:"⚙️",view:"settings"}],
   sales:        [{label:"Pipeline",icon:"📊",view:"dashboard",badge:3},{label:"Calls",icon:"🎥",view:"calls"},{label:"Leads",icon:"🎯",view:"leads"},{label:"Activity",icon:"📋",view:"activity"}],
   scriptwriter: [{label:"Queue",icon:"✍️",view:"dashboard",badge:2},{label:"Done",icon:"✅",view:"completed"}],
   editor:       [{label:"Production",icon:"🎬",view:"dashboard",badge:2},{label:"Upload",icon:"📤",view:"upload"},{label:"Done",icon:"✅",view:"completed"}],
@@ -2896,9 +3106,12 @@ const TITLES = {admin:"Admin",sales:"Sales",scriptwriter:"Scripts",editor:"Produ
 export default function App() {
   const [role, setRole]           = useState("admin");
   const [view, setView]           = useState("dashboard");
-  const [panel, setPanel]         = useState(null); // "notifs"|"messages"|"ideas"|"calendar"|"caption"|"outreach"|"idea-script"
+  const [panel, setPanel]         = useState(null);
   const [panelData, setPanelData] = useState(null);
   const [sheetOpen, setSheet]     = useState(false);
+  const [darkMode, setDarkMode]   = useState(false);
+
+  useEffect(() => { document.documentElement.classList.toggle("dark", darkMode); }, [darkMode]);
   const [modal, setModal]         = useState(null);
   const [toast, setToast]         = useState(null);
   const [subView, setSubView]     = useState(null);
@@ -2953,10 +3166,11 @@ export default function App() {
     if(role==="admin"){
       if(view==="dashboard") return <AdminDashboard clients={clients} onNav={navTo} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} onOpenClientDetail={(c)=>openPanel("client-detail",c)} showToast={showToast}/>;
       if(view==="pipeline")  return <ContentPipeline scripts={scripts} videos={videos} onAdvanceVideo={advanceVideo} onUpdateScript={updateScript} showToast={showToast}/>;
+      if(view==="team")      return <TeamWorkload scripts={scripts} videos={videos}/>;
       if(view==="clients")   return <AdminClients clients={clients} showToast={showToast} onOpenIdeas={(c)=>openPanel("ideas",c)}/>;
       if(view==="revenue")   return <AdminRevenue clients={clients}/>;
       if(view==="ads")       return <AdminAds showToast={showToast}/>;
-      if(view==="settings")  return <AdminSettings showToast={showToast}/>;
+      if(view==="settings")  return <AdminSettings showToast={showToast} darkMode={darkMode} setDarkMode={setDarkMode}/>;
     }
     if(role==="sales"){
       if(view==="dashboard") return <SalesDashboard leads={leads} onOpenOutreach={()=>openPanel("outreach")} showToast={showToast}/>;
@@ -2965,7 +3179,7 @@ export default function App() {
       if(view==="activity")  return <SalesActivity/>;
     }
     if(role==="scriptwriter"){
-      if(view==="dashboard") return <ScriptQueue scripts={scripts} onSelect={setSelScript}/>;
+      if(view==="dashboard") return <ScriptQueue scripts={scripts} onSelect={setSelScript} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} clients={clients}/>;
       if(view==="completed") return <ScriptCompleted scripts={scripts}/>;
     }
     if(role==="editor"){
@@ -3114,6 +3328,43 @@ export default function App() {
                   <div className="stat-card"><div className="stat-label">Next Delivery</div><div className="stat-value" style={{fontSize:16}}>{panelData.nextPost}</div></div>
                   <div className="stat-card"><div className="stat-label">Stage</div><div className="stat-value" style={{fontSize:16}}>{panelData.stage}</div></div>
                 </div>
+                {/* Brand Kit */}
+                {panelData.brandKit && (
+                  <div className="card">
+                    <div className="card-title">Brand Kit</div>
+                    <div className="row-item" style={{paddingTop:0}}>
+                      <div className="row-main"><div className="row-title">Colors</div></div>
+                      <div style={{display:'flex',gap:4}}>
+                        {panelData.brandKit.colors.map((c,i)=><div key={i} style={{width:22,height:22,borderRadius:6,background:c,border:'1px solid var(--border2)'}}/>)}
+                      </div>
+                    </div>
+                    <div className="row-item"><div className="row-main"><div className="row-title">Tone</div><div className="row-sub">{panelData.brandKit.tone}</div></div></div>
+                    <div className="row-item"><div className="row-main"><div className="row-title">Instagram</div><div className="row-sub">{panelData.brandKit.ig}</div></div></div>
+                    <div className="row-item"><div className="row-main"><div className="row-title">Audience</div><div className="row-sub">{panelData.brandKit.audience}</div></div></div>
+                    {panelData.brandKit.hashtags?.length > 0 && (
+                      <div className="row-item" style={{borderBottom:'none'}}>
+                        <div className="row-main">
+                          <div className="row-title">Hashtags</div>
+                          <div style={{display:'flex',gap:4,flexWrap:'wrap',marginTop:4}}>
+                            {panelData.brandKit.hashtags.map((h,i)=><span key={i} style={{font:'400 10px var(--fb)',color:'var(--accent)',background:'var(--accent-dim)',padding:'2px 8px',borderRadius:12}}>{h}</span>)}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {/* Performance Metrics */}
+                {panelData.metrics && panelData.metrics.followers > 0 && (
+                  <div className="card">
+                    <div className="card-title">Performance This Month</div>
+                    <div className="stats-grid" style={{marginBottom:0}}>
+                      <div className="stat-card"><div className="stat-label">Followers</div><div className="stat-value" style={{fontSize:20}}>{panelData.metrics.followers.toLocaleString()}</div><div className="stat-sub" style={{color:'var(--green)'}}>+{panelData.metrics.gained} gained</div></div>
+                      <div className="stat-card"><div className="stat-label">Avg Views</div><div className="stat-value" style={{fontSize:20}}>{panelData.metrics.avgViews.toLocaleString()}</div></div>
+                      <div className="stat-card"><div className="stat-label">Eng. Rate</div><div className="stat-value" style={{fontSize:20}}>{panelData.metrics.engRate}%</div></div>
+                      <div className="stat-card"><div className="stat-label">Top Post</div><div className="stat-value" style={{fontSize:12}}>{panelData.metrics.topPost}</div></div>
+                    </div>
+                  </div>
+                )}
                 <div className="card">
                   <div className="card-title">Content Pipeline</div>
                   {[{title:"Day in the Life",status:"Scripting",progress:20,icon:"✍️"},{title:"Listing Showcase",status:"Editing",progress:60,icon:"🎬"},{title:"Testimonial Reel",status:"Review",progress:85,icon:"👁️"}].map((p,i)=>(
