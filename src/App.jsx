@@ -1737,7 +1737,18 @@ function AdminClients({ clients, showToast, onOpenIdeas }) {
       {action:"Content approved",item:"Agent Intro — Meet Sarah",by:c.name,time:"3 days ago",dot:"var(--green)"},
       {action:"New content idea generated",item:"5 AI ideas created",by:"Alex M.",time:"4 days ago",dot:"var(--accent)"},
     ];
-    const tabs = [{key:"overview",label:"Overview"},{key:"content",label:"Content"},{key:"analytics",label:"Analytics"},{key:"brand",label:"Brand Kit"}];
+    const planInfo = PLAN_DETAILS[c.plan] || PLAN_DETAILS.Copper;
+    const clientShoots = INIT_SHOOTS.filter(s=>s.client===c.name);
+    const clientCoaching = INIT_COACHING.filter(s=>s.client===c.name);
+    const clientAds = AD_CAMPAIGNS.filter(a=>a.client===c.name);
+    const [expandedSection, setExpandedSection] = useState(null);
+    const socials = [
+      {platform:"Instagram",handle:c.brandKit?.ig||"—",icon:"📸",connected:c.status==="active",followers:c.metrics?.followers||0},
+      {platform:"Facebook",handle:c.name+" Page",icon:"📘",connected:c.status==="active",followers:Math.round((c.metrics?.followers||0)*0.6)},
+      {platform:"Google Business",handle:c.name,icon:"🔍",connected:planInfo.googleAds,followers:0},
+      {platform:"TikTok",handle:"—",icon:"🎵",connected:false,followers:0},
+    ];
+    const tabs = [{key:"overview",label:"Overview"},{key:"content",label:"Content"},{key:"ads",label:"Ads"},{key:"shoots",label:"Shoots"},{key:"analytics",label:"Analytics"},{key:"brand",label:"Brand Kit"}];
 
     return (
       <div>
@@ -1751,59 +1762,119 @@ function AdminClients({ clients, showToast, onOpenIdeas }) {
             </div>
           </div>
           <div style={{display:"flex",gap:8,marginTop:14,flexWrap:"wrap"}}>
-            <Badge type={c.plan==="Platinum"?"purple":c.plan==="Gold"?"blue":"gray"}>{c.plan} Plan — ${c.mrr}/mo</Badge>
+            <Badge type={c.plan==="Platinum"?"purple":c.plan==="Gold"?"blue":"gray"}>{c.plan} Plan — ${c.mrr.toLocaleString()}/mo</Badge>
             <Badge type={c.status==="active"?"green":c.status==="onboarding"?"amber":"red"}>{c.status}</Badge>
           </div>
         </div>
 
         {/* Tabs */}
-        <div style={{display:'flex',gap:4,marginBottom:16,borderBottom:'1px solid var(--border)',paddingBottom:0}}>
+        <div style={{display:'flex',gap:2,marginBottom:16,borderBottom:'1px solid var(--border)',overflowX:'auto',flexShrink:0}}>
           {tabs.map(t=>(
             <button key={t.key} onClick={()=>setClientTab(t.key)} style={{
-              padding:'10px 16px',border:'none',background:'none',cursor:'pointer',
-              font:`${clientTab===t.key?600:400} 12px var(--fd)`,
+              padding:'10px 14px',border:'none',background:'none',cursor:'pointer',whiteSpace:'nowrap',
+              font:`${clientTab===t.key?600:400} 11px var(--fd)`,
               color:clientTab===t.key?'var(--accent)':'var(--text3)',
               borderBottom:clientTab===t.key?'2px solid var(--accent)':'2px solid transparent',
-              transition:'all 0.15s',
             }}>{t.label}</button>
           ))}
         </div>
 
         {clientTab==="overview" && (<>
-          <div className="stats-grid">
-            <div className="stat-card"><div className="stat-label">MRR</div><div className="stat-value">${c.mrr.toLocaleString()}</div></div>
-            <div className="stat-card"><div className="stat-label">Videos</div><div className="stat-value">{c.videos}</div><div className="stat-sub">produced</div></div>
-            <div className="stat-card"><div className="stat-label">Next Delivery</div><div className="stat-value" style={{fontSize:16}}>{c.nextPost}</div></div>
-            <div className="stat-card"><div className="stat-label">Stage</div><div className="stat-value" style={{fontSize:16}}>{c.stage}</div></div>
-          </div>
-          <div className="card">
-            <div className="card-title">Assigned Team</div>
-            {teamMembers.map(m=>(
-              <div className="row-item" key={m.name} style={{cursor:'pointer'}} onClick={()=>showToast(m.status==="Active"?"🟢":"🔵",m.name,m.tasks+" active tasks · "+m.status)}>
-                <div className="row-avatar" style={{background:`${m.color}20`,color:m.color}}>{m.name[0]}</div>
-                <div className="row-main"><div className="row-title">{m.name}</div><div className="row-sub">{m.role}</div></div>
-                <div style={{display:'flex',alignItems:'center',gap:6}}>
-                  <span style={{font:'500 11px var(--fd)',color:'var(--text3)'}}>{m.tasks} tasks</span>
-                  <div style={{width:7,height:7,borderRadius:'50%',background:m.status==="Active"?"var(--green)":"var(--blue)"}}/>
-                </div>
+          {/* Plan Deliverables */}
+          <div className="card" style={{cursor:'pointer'}} onClick={()=>setExpandedSection(expandedSection==="plan"?null:"plan")}>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+              <div className="card-title" style={{margin:0}}>{c.plan} Plan Deliverables</div>
+              <span style={{color:'var(--text3)',fontSize:14}}>{expandedSection==="plan"?"▾":"›"}</span>
+            </div>
+            {expandedSection==="plan" && (
+              <div style={{marginTop:12}}>
+                {[
+                  {label:`${planInfo.videos} HD Videos/mo`,included:true},
+                  {label:`Shoot Sessions: ${planInfo.shoots}`,included:true},
+                  {label:"Scheduled Post Management",included:planInfo.socialMgmt},
+                  {label:"Scriptwriting",included:planInfo.scriptwriting},
+                  {label:"Camera Coaching",included:planInfo.coaching},
+                  {label:"Facebook Ad Management",included:planInfo.fbAds},
+                  {label:"Google Ad Management",included:planInfo.googleAds},
+                  {label:"Monthly Strategy Call + Sales Coaching",included:planInfo.strategy},
+                  {label:`${planInfo.photos} Edited Photos/mo`,included:planInfo.photos>0},
+                ].map((d,i)=>(
+                  <div key={i} style={{display:'flex',alignItems:'center',gap:8,padding:'6px 0',font:'400 12px var(--fb)',color:d.included?'var(--text)':'var(--text3)'}}>
+                    <span style={{fontSize:12}}>{d.included?"✅":"—"}</span>
+                    <span style={{textDecoration:d.included?'none':'line-through'}}>{d.label}</span>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
+
+          <div className="stats-grid">
+            <div className="stat-card" style={{cursor:'pointer'}} onClick={()=>setClientTab("analytics")}><div className="stat-label">MRR</div><div className="stat-value">${c.mrr.toLocaleString()}</div></div>
+            <div className="stat-card" style={{cursor:'pointer'}} onClick={()=>setClientTab("content")}><div className="stat-label">Videos</div><div className="stat-value">{c.videos}</div><div className="stat-sub">produced</div></div>
+            <div className="stat-card" style={{cursor:'pointer'}} onClick={()=>setClientTab("shoots")}><div className="stat-label">Shoots</div><div className="stat-value">{clientShoots.length}</div><div className="stat-sub">scheduled</div></div>
+            <div className="stat-card" style={{cursor:'pointer'}} onClick={()=>setClientTab("ads")}><div className="stat-label">Ad Campaigns</div><div className="stat-value">{clientAds.length}</div><div className="stat-sub">active</div></div>
+          </div>
+
+          {/* Connected Accounts */}
+          <div className="card" style={{cursor:'pointer'}} onClick={()=>setExpandedSection(expandedSection==="socials"?null:"socials")}>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+              <div className="card-title" style={{margin:0}}>Connected Accounts</div>
+              <span style={{color:'var(--text3)',fontSize:14}}>{expandedSection==="socials"?"▾":"›"}</span>
+            </div>
+            {expandedSection==="socials" && (
+              <div style={{marginTop:12}}>
+                {socials.map((s,i)=>(
+                  <div key={i} className="row-item" style={{cursor:'pointer'}} onClick={(e)=>{e.stopPropagation();showToast(s.icon,s.platform,s.connected?s.handle+" · Connected":"Not connected — tap to connect");}}>
+                    <div style={{fontSize:20,width:28,textAlign:'center',flexShrink:0}}>{s.icon}</div>
+                    <div className="row-main">
+                      <div className="row-title">{s.platform}</div>
+                      <div className="row-sub">{s.handle}{s.followers>0?` · ${s.followers.toLocaleString()} followers`:""}</div>
+                    </div>
+                    <Badge type={s.connected?"green":"gray"}>{s.connected?"Connected":"Not Connected"}</Badge>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Team */}
+          <div className="card" style={{cursor:'pointer'}} onClick={()=>setExpandedSection(expandedSection==="team"?null:"team")}>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+              <div className="card-title" style={{margin:0}}>Assigned Team</div>
+              <span style={{color:'var(--text3)',fontSize:14}}>{expandedSection==="team"?"▾":"›"}</span>
+            </div>
+            {expandedSection==="team" && (
+              <div style={{marginTop:12}}>
+                {teamMembers.map(m=>(
+                  <div className="row-item" key={m.name} style={{cursor:'pointer'}} onClick={(e)=>{e.stopPropagation();showToast(m.status==="Active"?"🟢":"🔵",m.name,m.tasks+" active tasks · "+m.role);}}>
+                    <div className="row-avatar" style={{background:`${m.color}20`,color:m.color}}>{m.name[0]}</div>
+                    <div className="row-main"><div className="row-title">{m.name}</div><div className="row-sub">{m.role}</div></div>
+                    <div style={{display:'flex',alignItems:'center',gap:6}}>
+                      <span style={{font:'500 11px var(--fd)',color:'var(--text3)'}}>{m.tasks} tasks</span>
+                      <div style={{width:7,height:7,borderRadius:'50%',background:m.status==="Active"?"var(--green)":"var(--blue)"}}/>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Activity */}
           <div className="card">
             <div className="card-title">Recent Activity</div>
             {activity.map((a,i)=>(
-              <div className="activity-item" key={i}>
+              <div className="activity-item" key={i} style={{cursor:'pointer'}} onClick={()=>showToast("📋",a.action,a.item+" — "+a.by)}>
                 <div className="activity-dot" style={{background:a.dot}}/>
                 <div style={{flex:1}}>
                   <div className="activity-text"><strong>{a.action}</strong> — {a.item}</div>
                   <div className="activity-time">{a.by} · {a.time}</div>
                 </div>
+                <span style={{color:'var(--text3)',fontSize:12}}>›</span>
               </div>
             ))}
           </div>
           <div style={{display:"flex",gap:8}}>
-            <button className="btn" style={{flex:1}} onClick={()=>showToast("✏️","Edit mode","Client details are now editable")}>Edit</button>
-            <button className="btn" style={{flex:1}} onClick={()=>showToast("⏸️","Paused","Client account paused")}>Pause</button>
+            <button className="btn" style={{flex:1}} onClick={()=>showToast("✏️","Edit mode","Client details are now editable")}>Edit Client</button>
             <button className="btn" style={{flex:1}} onClick={()=>showToast("💬","Message sent","Notification sent to team")}>Message</button>
           </div>
         </>)}
@@ -1846,28 +1917,121 @@ function AdminClients({ clients, showToast, onOpenIdeas }) {
           </div>
         </>)}
 
+        {clientTab==="ads" && (<>
+          {clientAds.length > 0 ? (
+            <div>
+              <div className="stats-grid">
+                <div className="stat-card"><div className="stat-label">Monthly Spend</div><div className="stat-value" style={{fontSize:20}}>${clientAds.reduce((s,a)=>s+a.budget,0).toLocaleString()}</div></div>
+                <div className="stat-card"><div className="stat-label">Impressions</div><div className="stat-value" style={{fontSize:20}}>{(clientAds.reduce((s,a)=>s+a.impressions,0)/1000).toFixed(0)}K</div></div>
+                <div className="stat-card"><div className="stat-label">Conversions</div><div className="stat-value" style={{fontSize:20}}>{clientAds.reduce((s,a)=>s+a.conversions,0)}</div></div>
+                <div className="stat-card"><div className="stat-label">Best ROAS</div><div className="stat-value" style={{fontSize:20}}>{clientAds[0]?.roas||"—"}</div></div>
+              </div>
+              <div className="card">
+                <div className="card-title">Active Campaigns</div>
+                {clientAds.map(a=>(
+                  <div key={a.id} className="row-item" style={{cursor:'pointer'}} onClick={()=>showToast("📢",a.name,`${a.platform} · $${a.budget}/mo · ${a.ctr} CTR · ${a.conversions} conversions`)}>
+                    <div style={{fontSize:18,flexShrink:0}}>{a.platform==="Google Ads"?"🔍":"📸"}</div>
+                    <div className="row-main">
+                      <div className="row-title">{a.name}</div>
+                      <div className="row-sub">{a.platform} · ${a.budget}/mo · {a.ctr} CTR</div>
+                    </div>
+                    <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4}}>
+                      <Badge type={a.status==="Running"?"green":"amber"}>{a.status}</Badge>
+                      <span style={{font:'600 11px var(--fd)',color:'var(--accent)'}}>{a.roas} ROAS</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="card">
+                <div className="card-title">Platforms</div>
+                <div style={{display:'flex',gap:8}}>
+                  {[...new Set(clientAds.map(a=>a.platform))].map(p=>(
+                    <div key={p} style={{flex:1,textAlign:'center',padding:14,background:'var(--accent-dim)',borderRadius:12,border:'1px solid rgba(252,198,18,0.15)'}}>
+                      <div style={{fontSize:20,marginBottom:4}}>{p==="Google Ads"?"🔍":p==="Instagram"?"📸":"📘"}</div>
+                      <div style={{font:'600 12px var(--fd)',color:'var(--text)'}}>{p}</div>
+                      <div style={{font:'400 10px var(--fb)',color:'var(--text3)',marginTop:2}}>Active</div>
+                    </div>
+                  ))}
+                  {!planInfo.googleAds && <div style={{flex:1,textAlign:'center',padding:14,background:'var(--surface2)',borderRadius:12,border:'1px solid var(--border)',opacity:0.5}}>
+                    <div style={{fontSize:20,marginBottom:4}}>🔍</div>
+                    <div style={{font:'600 12px var(--fd)',color:'var(--text3)'}}>Google Ads</div>
+                    <div style={{font:'400 10px var(--fb)',color:'var(--text3)',marginTop:2}}>Platinum only</div>
+                  </div>}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="empty"><div className="empty-icon">📢</div><div className="empty-title">No ad campaigns yet</div><div style={{fontSize:12,color:'var(--text3)'}}>Facebook Ads included in {c.plan} plan</div></div>
+          )}
+        </>)}
+
+        {clientTab==="shoots" && (<>
+          {clientShoots.length > 0 ? (
+            <div className="card">
+              <div className="card-title">Scheduled Shoots</div>
+              {clientShoots.map(s=>(
+                <div key={s.id} className="row-item" style={{cursor:'pointer'}} onClick={()=>setExpandedSection(expandedSection===`shoot-${s.id}`?null:`shoot-${s.id}`)}>
+                  <div style={{width:44,height:44,borderRadius:10,background:s.status==="Confirmed"?"rgba(45,154,106,0.1)":"rgba(212,150,11,0.1)",display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                    <div style={{font:'600 13px var(--fd)',color:s.status==="Confirmed"?"var(--green)":"var(--amber)"}}>{s.date.split(" ")[1]}</div>
+                    <div style={{font:'500 8px var(--fd)',color:'var(--text3)'}}>{s.date.split(" ")[0]}</div>
+                  </div>
+                  <div className="row-main">
+                    <div className="row-title">{s.time} · {s.duration}</div>
+                    <div className="row-sub">{s.location}</div>
+                    {expandedSection===`shoot-${s.id}` && (
+                      <div style={{marginTop:8}}>
+                        <div style={{font:'400 11px var(--fb)',color:'var(--text2)',marginBottom:4}}>Crew: {s.crew}</div>
+                        <div style={{font:'400 11px var(--fb)',color:'var(--text2)'}}>Notes: {s.notes}</div>
+                      </div>
+                    )}
+                  </div>
+                  <Badge type={s.status==="Confirmed"?"green":"amber"}>{s.status}</Badge>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="empty"><div className="empty-icon">🎥</div><div className="empty-title">No shoots scheduled</div></div>
+          )}
+          {clientCoaching.length > 0 && (
+            <div className="card">
+              <div className="card-title">Coaching & Strategy Sessions</div>
+              {clientCoaching.map(s=>(
+                <div key={s.id} className="row-item" style={{cursor:'pointer'}} onClick={()=>showToast(s.type==="Strategy Call"?"📊":"📷",s.type,s.date+" at "+s.time+" · "+s.notes)}>
+                  <div style={{fontSize:18,flexShrink:0}}>{s.type==="Strategy Call"?"📊":s.type==="Camera Coaching"?"📷":"💰"}</div>
+                  <div className="row-main">
+                    <div className="row-title">{s.type}</div>
+                    <div className="row-sub">{s.date} at {s.time} · {s.duration}</div>
+                  </div>
+                  <Badge type={s.status==="Upcoming"?"amber":"green"}>{s.status}</Badge>
+                </div>
+              ))}
+            </div>
+          )}
+        </>)}
+
         {clientTab==="analytics" && (<>
           {c.metrics && c.metrics.followers > 0 ? (
             <div>
               <div className="stats-grid">
-                <div className="stat-card"><div className="stat-label">Followers</div><div className="stat-value">{c.metrics.followers.toLocaleString()}</div><div className="stat-sub" style={{color:'var(--green)'}}>+{c.metrics.gained} this month</div></div>
-                <div className="stat-card"><div className="stat-label">Avg Views</div><div className="stat-value">{c.metrics.avgViews.toLocaleString()}</div></div>
-                <div className="stat-card"><div className="stat-label">Avg Likes</div><div className="stat-value">{c.metrics.avgLikes}</div></div>
-                <div className="stat-card"><div className="stat-label">Engagement Rate</div><div className="stat-value">{c.metrics.engRate}%</div></div>
+                <div className="stat-card" style={{cursor:'pointer'}} onClick={()=>showToast("📸","Instagram Followers",c.metrics.followers.toLocaleString()+" total · +"+c.metrics.gained+" this month")}><div className="stat-label">Followers</div><div className="stat-value">{c.metrics.followers.toLocaleString()}</div><div className="stat-sub" style={{color:'var(--green)'}}>+{c.metrics.gained} this month</div></div>
+                <div className="stat-card" style={{cursor:'pointer'}} onClick={()=>showToast("👁️","Average Views",c.metrics.avgViews.toLocaleString()+" per video")}><div className="stat-label">Avg Views</div><div className="stat-value">{c.metrics.avgViews.toLocaleString()}</div></div>
+                <div className="stat-card" style={{cursor:'pointer'}} onClick={()=>showToast("❤️","Average Likes",c.metrics.avgLikes+" per video")}><div className="stat-label">Avg Likes</div><div className="stat-value">{c.metrics.avgLikes}</div></div>
+                <div className="stat-card" style={{cursor:'pointer'}} onClick={()=>showToast("📊","Engagement",c.metrics.engRate+"% — "+(c.metrics.engRate>5?"Above average":"Average"))}><div className="stat-label">Engagement</div><div className="stat-value">{c.metrics.engRate}%</div></div>
               </div>
               <div className="card">
                 <div className="card-title">Top Performing Content</div>
-                <div className="row-item" style={{paddingTop:0}}>
+                <div className="row-item" style={{paddingTop:0,cursor:'pointer'}} onClick={()=>showToast("🏆","Top Post",c.metrics.topPost+" — highest engagement this month")}>
                   <div style={{fontSize:20}}>🏆</div>
                   <div className="row-main"><div className="row-title">{c.metrics.topPost}</div><div className="row-sub">Highest engagement this month</div></div>
+                  <span style={{color:'var(--text3)',fontSize:12}}>›</span>
                 </div>
               </div>
               <div className="card">
                 <div className="card-title">Growth Summary</div>
-                <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Followers Gained</div></div><div style={{font:'600 14px var(--fd)',color:'var(--green)'}}>+{c.metrics.gained}</div></div>
-                <div className="row-item"><div className="row-main"><div className="row-title">Total Views (est.)</div></div><div style={{font:'600 14px var(--fd)',color:'var(--text)'}}>{(c.metrics.avgViews * c.videos).toLocaleString()}</div></div>
-                <div className="row-item"><div className="row-main"><div className="row-title">Videos Produced</div></div><div style={{font:'600 14px var(--fd)',color:'var(--text)'}}>{c.videos}</div></div>
-                <div className="row-item" style={{borderBottom:'none'}}><div className="row-main"><div className="row-title">ROI Score</div></div><Badge type="green">Strong</Badge></div>
+                <div className="row-item" style={{paddingTop:0,cursor:'pointer'}} onClick={()=>showToast("📈","Follower Growth","+"+c.metrics.gained+" followers gained this month")}><div className="row-main"><div className="row-title">Followers Gained</div></div><div style={{font:'600 14px var(--fd)',color:'var(--green)'}}>+{c.metrics.gained}</div></div>
+                <div className="row-item" style={{cursor:'pointer'}} onClick={()=>showToast("👁️","Total Views","Estimated "+((c.metrics.avgViews*c.videos).toLocaleString())+" total views across "+c.videos+" videos")}><div className="row-main"><div className="row-title">Total Views (est.)</div></div><div style={{font:'600 14px var(--fd)',color:'var(--text)'}}>{(c.metrics.avgViews * c.videos).toLocaleString()}</div></div>
+                <div className="row-item" style={{cursor:'pointer'}} onClick={()=>setClientTab("content")}><div className="row-main"><div className="row-title">Videos Produced</div></div><div style={{font:'600 14px var(--fd)',color:'var(--text)'}}>{c.videos}</div></div>
+                <div className="row-item" style={{borderBottom:'none',cursor:'pointer'}} onClick={()=>showToast("💪","ROI Score","Strong — engagement rate above industry average")}><div className="row-main"><div className="row-title">ROI Score</div></div><Badge type="green">Strong</Badge></div>
               </div>
             </div>
           ) : (
@@ -1882,7 +2046,7 @@ function AdminClients({ clients, showToast, onOpenIdeas }) {
                 <div className="card-title">Brand Colors</div>
                 <div style={{display:'flex',gap:10,marginBottom:12}}>
                   {c.brandKit.colors.map((clr,i)=>(
-                    <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
+                    <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4,cursor:'pointer'}} onClick={()=>showToast("🎨","Color copied",clr+" — "+["Primary","Secondary","Accent"][i])}>
                       <div style={{width:48,height:48,borderRadius:12,background:clr,border:'1px solid var(--border2)',boxShadow:'var(--shadow-sm)'}}/>
                       <span style={{font:'400 9px var(--fd)',color:'var(--text3)',textTransform:'uppercase'}}>{clr}</span>
                     </div>
@@ -1890,16 +2054,19 @@ function AdminClients({ clients, showToast, onOpenIdeas }) {
                 </div>
               </div>
               <div className="card">
-                <div className="card-title">Brand Voice</div>
-                <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Tone</div><div className="row-sub">{c.brandKit.tone}</div></div></div>
-                <div className="row-item"><div className="row-main"><div className="row-title">Target Audience</div><div className="row-sub">{c.brandKit.audience}</div></div></div>
-                <div className="row-item"><div className="row-main"><div className="row-title">Instagram</div><div className="row-sub">{c.brandKit.ig}</div></div></div>
+                <div className="card-title">Brand Voice & Socials</div>
+                <div className="row-item" style={{paddingTop:0,cursor:'pointer'}} onClick={()=>showToast("🎯","Tone",c.brandKit.tone)}><div className="row-main"><div className="row-title">Tone</div><div className="row-sub">{c.brandKit.tone}</div></div><span style={{color:'var(--text3)',fontSize:12}}>›</span></div>
+                <div className="row-item" style={{cursor:'pointer'}} onClick={()=>showToast("👥","Target Audience",c.brandKit.audience)}><div className="row-main"><div className="row-title">Target Audience</div><div className="row-sub">{c.brandKit.audience}</div></div><span style={{color:'var(--text3)',fontSize:12}}>›</span></div>
+                <div className="row-item" style={{cursor:'pointer'}} onClick={()=>showToast("📸","Instagram",c.brandKit.ig)}><div className="row-main"><div className="row-title">Instagram</div><div className="row-sub">{c.brandKit.ig}</div></div><Badge type="green">Connected</Badge></div>
+                <div className="row-item" style={{cursor:'pointer'}} onClick={()=>showToast("📘","Facebook",c.name+" Page")}><div className="row-main"><div className="row-title">Facebook</div><div className="row-sub">{c.name} Page</div></div><Badge type="green">Connected</Badge></div>
+                {planInfo.googleAds && <div className="row-item" style={{cursor:'pointer'}} onClick={()=>showToast("🔍","Google Business",c.name)}><div className="row-main"><div className="row-title">Google Business</div><div className="row-sub">{c.name}</div></div><Badge type="green">Connected</Badge></div>}
+                <div className="row-item" style={{borderBottom:'none',cursor:'pointer'}} onClick={()=>showToast("🎵","TikTok","Not connected — tap to set up")}><div className="row-main"><div className="row-title">TikTok</div><div className="row-sub">Not connected</div></div><Badge type="gray">Not Connected</Badge></div>
               </div>
               <div className="card">
                 <div className="card-title">Hashtags</div>
                 <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
                   {c.brandKit.hashtags.map((h,i)=>(
-                    <span key={i} style={{font:'500 12px var(--fb)',color:'var(--accent)',background:'var(--accent-dim)',padding:'6px 14px',borderRadius:20,border:'1px solid rgba(252,198,18,0.2)'}}>{h}</span>
+                    <span key={i} style={{font:'500 12px var(--fb)',color:'var(--accent)',background:'var(--accent-dim)',padding:'6px 14px',borderRadius:20,border:'1px solid rgba(252,198,18,0.2)',cursor:'pointer'}} onClick={()=>showToast("📋","Copied",h)}>{h}</span>
                   ))}
                 </div>
               </div>
