@@ -792,6 +792,36 @@ async function callClaude(prompt) {
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 function Badge({ type, children, onClick }) { return <span className={`badge badge-${type}`} style={onClick?{cursor:'pointer'}:{}} onClick={onClick}>{children}</span>; }
 
+// ─── COMMENTS SYSTEM ─────────────────────────────────────────────────────────
+function CommentThread({ itemId, showToast }) {
+  const [comments, setComments] = useState([]);
+  const [input, setInput] = useState("");
+  const addComment = () => {
+    if (!input.trim()) return;
+    setComments(p=>[...p,{id:Date.now(),author:"You",text:input,time:"Just now"}]);
+    setInput("");
+    showToast("✓","Comment added","");
+  };
+  return (
+    <div style={{marginTop:12}}>
+      <div style={{font:'600 10px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text3)',marginBottom:8}}>Comments ({comments.length})</div>
+      {comments.map(c=>(
+        <div key={c.id} style={{display:'flex',gap:8,marginBottom:10}}>
+          <div style={{width:24,height:24,borderRadius:6,background:'var(--accent-dim)',display:'flex',alignItems:'center',justifyContent:'center',font:'600 10px var(--fd)',color:'var(--accent)',flexShrink:0}}>Y</div>
+          <div style={{flex:1}}>
+            <div style={{font:'500 12px var(--fb)',color:'var(--text)'}}>{c.text}</div>
+            <div style={{font:'400 10px var(--fb)',color:'var(--text3)',marginTop:2}}>{c.author} · {c.time}</div>
+          </div>
+        </div>
+      ))}
+      <div style={{display:'flex',gap:6}}>
+        <input className="form-input" style={{flex:1,padding:'8px 12px',fontSize:12,borderRadius:20}} placeholder="Add a comment..." value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")addComment();}}/>
+        <button className="action-btn accent" onClick={addComment}>Post</button>
+      </div>
+    </div>
+  );
+}
+
 // ─── CONFETTI ────────────────────────────────────────────────────────────────
 function fireConfetti() {
   const colors = ['#fcc612','#fd8040','#22C55E','#3B82F6','#A855F7','#EF4444'];
@@ -1177,7 +1207,8 @@ Punchy, Arizona flavor where relevant. No hashtags. Just the script.`
             <button className="btn primary" style={{flex:1}} onClick={()=>{updatePost(post.id,{status:"Approved"});showToast("✓","Approved",post.title+" is ready for production");}}>Approve Post</button>
             <button className="btn success" style={{flex:1}} onClick={()=>{updatePost(post.id,{status:"Scheduled"});showToast("📅","Scheduled",post.title+" added to queue");}}>Schedule →</button>
           </div>
-          <button className="btn danger full" style={{marginTop:8}} onClick={()=>{setCalendar(prev=>prev.filter(p=>p.id!==post.id));setSelectedPost(null);showToast("🗑","Removed",post.title+" removed from calendar");}}>Remove from Calendar</button>
+          <CommentThread itemId={`cal-${post.id}`} showToast={showToast}/>
+          <button className="btn danger full" style={{marginTop:8}} onClick={()=>{setCalendar(prev=>prev.filter(p=>p.id!==post.id));setSelectedPost(null);showToast("◉","Removed",post.title+" removed from calendar");}}>Remove from Calendar</button>
         </div>
       </div>
     );
@@ -1545,6 +1576,35 @@ function NotificationsPanel({ notifs, onClear, onRead, onNavigate }) {
 }
 
 // ─── MESSAGING ────────────────────────────────────────────────────────────────
+// Item lookup for rich previews
+const TAG_PREVIEWS = {
+  "Listing Showcase":{type:"Script",status:"Editing",assigned:"Jordan T.",preview:"HOOK: This Scottsdale listing just hit the market and it is STUNNING..."},
+  "Day in the Life":{type:"Script",status:"Scripting",assigned:"Maya R.",preview:"HOOK: Ever wonder what a day looks like behind the scenes..."},
+  "Testimonial Reel":{type:"Video",status:"Review",assigned:"Jordan T.",preview:"Final cut ready. Awaiting client review for brand tone and CTA."},
+  "Neighborhood Spotlight":{type:"Script",status:"Scripting",assigned:"Maya R.",preview:"Area guide reel — drive-through tour of a neighborhood."},
+  "Desert Sun Realty":{type:"Client",status:"Active",assigned:"Carlos V.",preview:"Platinum Plan · $5,000/mo · 8 videos produced · Real Estate"},
+  "Frost Barbershop":{type:"Client",status:"Active",assigned:"Carlos V.",preview:"Gold Plan · $3,000/mo · 4 videos produced · Barbershop"},
+  "Mar 20 Shoot — Desert Sun":{type:"Shoot",status:"Confirmed",assigned:"Jordan T.",preview:"9:00 AM · 3hr · 4821 Cactus Rd, Scottsdale — Listing showcase + drone"},
+  "Spring Detail Special":{type:"Campaign",status:"Running",assigned:"—",preview:"Instagram · $800/mo · 3.2% CTR · 89 conversions · 3.8x ROAS"},
+};
+
+function RichTagPreview({ tag }) {
+  const data = TAG_PREVIEWS[tag];
+  if (!data) return null;
+  const typeColors = {Script:"blue",Video:"purple",Client:"green",Shoot:"amber",Campaign:"orange"};
+  return (
+    <div style={{background:'rgba(255,255,255,0.9)',border:'1px solid var(--border)',borderRadius:10,padding:'10px 12px',margin:'8px 0 4px',backdropFilter:'blur(8px)',boxShadow:'var(--shadow-sm)',maxWidth:280}}>
+      <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:4}}>
+        <Badge type={typeColors[data.type]||"gray"}>{data.type}</Badge>
+        <Badge type={data.status==="Active"||data.status==="Running"||data.status==="Confirmed"?"green":"amber"}>{data.status}</Badge>
+      </div>
+      <div style={{font:'500 12px var(--fd)',color:'var(--text)',marginBottom:2}}>{tag}</div>
+      <div style={{font:'400 11px var(--fb)',color:'var(--text2)',lineHeight:1.5}}>{data.preview}</div>
+      {data.assigned && data.assigned!=="—" && <div style={{font:'400 10px var(--fb)',color:'var(--text3)',marginTop:4}}>Assigned: {data.assigned}</div>}
+    </div>
+  );
+}
+
 function MessagingPanel({ threads, onSend }) {
   const [activeThread, setActiveThread] = useState(null);
   const messagesEndRef = useRef(null);
@@ -1564,7 +1624,17 @@ function MessagingPanel({ threads, onSend }) {
           {t.messages.map(m => (
             <div key={m.id} className={`chat-msg ${m.mine?"mine":""}`}>
               {!m.mine && <div className="row-avatar" style={{background:`${t.color}20`,color:t.color,width:28,height:28,borderRadius:7,fontSize:11}}>{t.name[0]}</div>}
-              <div><div className="chat-bubble">{m.text.split(/(@[^@]+?\s)/g).map((part,i)=>part.startsWith("@")?<span key={i} style={{background:m.mine?'rgba(255,255,255,0.25)':'var(--accent-dim)',color:m.mine?'white':'var(--accent)',padding:'1px 6px',borderRadius:4,fontWeight:600,fontSize:12}}>{part.trim()}</span>:part)}</div><div className="chat-time">{m.time}</div></div>
+              <div>
+                <div className="chat-bubble">
+                  {m.text.split(/(@[^@]+?\s)/g).map((part,i)=>part.startsWith("@")?<span key={i} style={{background:m.mine?'rgba(255,255,255,0.25)':'var(--accent-dim)',color:m.mine?'white':'var(--accent)',padding:'1px 6px',borderRadius:4,fontWeight:600,fontSize:12,cursor:'pointer'}}>{part.trim()}</span>:part)}
+                </div>
+                {/* Rich previews for tagged items */}
+                {m.text.match(/@([^@]+?)\s/g)?.map((tag,i)=>{
+                  const name=tag.trim().substring(1);
+                  return TAG_PREVIEWS[name]?<RichTagPreview key={i} tag={name}/>:null;
+                })}
+                <div className="chat-time">{m.time}</div>
+              </div>
             </div>
           ))}
           <div ref={messagesEndRef}/>
@@ -2364,8 +2434,9 @@ function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAuto
                     )}
                     <div style={{display:'flex',gap:6,marginTop:10}}>
                       <button className="btn primary" style={{flex:1,padding:'8px 12px',fontSize:11}} onClick={()=>{showToast("✓","Approved","Content moved to next stage");fireConfetti();}}>Approve</button>
-                      <button className="btn" style={{padding:'8px 12px',fontSize:11}} onClick={()=>showToast("📝","Revision","Request sent to team")}>Request Changes</button>
+                      <button className="btn" style={{padding:'8px 12px',fontSize:11}} onClick={()=>showToast("◉","Revision","Request sent to team")}>Request Changes</button>
                     </div>
+                    <CommentThread itemId={`pipeline-${p.id}`} showToast={showToast}/>
                   </div>
                 )}
               </div>
@@ -3487,6 +3558,7 @@ function EditorProduction({ videos, onAdvance, showToast }) {
                   )}
                   <button className="btn" onClick={()=>showToast("◉","Re-export","Queuing 1080p re-export...")}>Re-export</button>
                 </div>
+                <CommentThread itemId={`video-${v.id}`} showToast={showToast}/>
               </div>
             )}
           </div>
@@ -3567,9 +3639,10 @@ function ShootCalendar({ shoots, showToast }) {
                 <div className="row-item"><div className="row-main"><div className="row-title">Notes</div><div className="row-sub">{s.notes}</div></div></div>
                 <div style={{display:'flex',gap:8,marginTop:10}}>
                   {s.status==="Pending" && <button className="btn success" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("✓","Confirmed",s.client+" shoot confirmed");}}>Confirm</button>}
-                  <button className="btn" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("📝","Reschedule","Reschedule request sent");}}>Reschedule</button>
-                  <button className="btn" onClick={(e)=>{e.stopPropagation();showToast("💬","Message","Notification sent to crew");}}>Message Crew</button>
+                  <button className="btn" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("◉","Reschedule","Reschedule request sent");}}>Reschedule</button>
+                  <button className="btn" onClick={(e)=>{e.stopPropagation();showToast("◉","Message","Notification sent to crew");}}>Message Crew</button>
                 </div>
+                <CommentThread itemId={`shoot-${s.id}`} showToast={showToast}/>
               </div>
             )}
           </div>
