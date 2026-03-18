@@ -646,11 +646,14 @@ Make each idea specific to their industry and Arizona market.`,
 }
 
 // ─── AI: CONTENT CALENDAR ─────────────────────────────────────────────────────
-function ContentCalendar({ clients, onClose }) {
+function ContentCalendar({ clients, onClose, showToast }) {
   const [calendar, setCalendar] = useState([]);
   const [loading, setLoading] = useState(false);
   const [generated, setGenerated] = useState(false);
   const [selClient, setSelClient] = useState("all");
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [captionLoading, setCaptionLoading] = useState(false);
+  const [scriptLoading, setScriptLoading] = useState(false);
 
   const generate = async () => {
     setLoading(true);
@@ -661,32 +664,204 @@ function ContentCalendar({ clients, onClose }) {
 ${targetClients.map(c=>`- ${c.name} (${c.industry}, ${c.plan} plan: ${c.plan==="Starter"?2:c.plan==="Growth"?4:8} posts/mo)`).join("\n")}
 
 Return ONLY a JSON array (no markdown):
-[{"date":"Apr X","client":"...","title":"...","type":"..."}]
+[{"date":"Apr X","client":"...","title":"...","type":"...","description":"2-3 sentence description of the video concept","platform":"Instagram Reel","time":"9:00 AM"}]
 
-Distribute posts evenly. Use realistic content types for each industry.`,
+Distribute posts evenly. Use realistic content types for each industry. Include specific video descriptions.`,
         "Return only valid JSON arrays, no markdown backticks, no extra text."
       );
       const parsed = JSON.parse(result.trim());
-      setCalendar(parsed);
+      setCalendar(parsed.map((p,i)=>({...p,id:i+1,status:"Planned",caption:"",script:"",assigned:""})));
       setGenerated(true);
     } catch(e) {
       setCalendar([
-        {date:"Apr 1", client:"Frost Barbershop",    title:"Spring Lineup Styles",          type:"Promotional"},
-        {date:"Apr 3", client:"Desert Sun Realty",   title:"New Listing — Scottsdale",      type:"Listing"},
-        {date:"Apr 5", client:"Sky Harbor Dental",   title:"Teeth Whitening Before/After",  type:"Before/After"},
-        {date:"Apr 7", client:"Mesa Auto Detailing", title:"Spring Detail Special",         type:"Promotional"},
-        {date:"Apr 10",client:"Cactus CrossFit",     title:"Member Transformation Story",   type:"Testimonial"},
-        {date:"Apr 12",client:"Desert Sun Realty",   title:"Neighborhood Tour — Mesa",      type:"Educational"},
-        {date:"Apr 15",client:"Frost Barbershop",    title:"Day in the Shop — Saturday",    type:"Behind Scenes"},
-        {date:"Apr 17",client:"Sky Harbor Dental",   title:"Meet the Hygienist Team",       type:"Team Intro"},
+        {id:1,date:"Apr 1", client:"Frost Barbershop",    title:"Spring Lineup Styles",          type:"Promotional",  description:"Showcase the top 5 trending haircuts for spring. Quick cuts between styles with upbeat music and text overlays naming each cut.",platform:"Instagram Reel",time:"9:00 AM",status:"Planned",caption:"",script:"",assigned:""},
+        {id:2,date:"Apr 3", client:"Desert Sun Realty",   title:"New Listing — Scottsdale",      type:"Listing Tour", description:"Cinematic walkthrough of a new Scottsdale listing. Drone opening shot, interior highlights, backyard reveal with mountain views.",platform:"Instagram Reel",time:"10:00 AM",status:"Planned",caption:"",script:"",assigned:""},
+        {id:3,date:"Apr 5", client:"Sky Harbor Dental",   title:"Teeth Whitening Before/After",  type:"Before/After", description:"Split-screen before and after of a teeth whitening patient. Show the process briefly, then the dramatic smile reveal.",platform:"Instagram Reel",time:"11:00 AM",status:"Planned",caption:"",script:"",assigned:""},
+        {id:4,date:"Apr 7", client:"Mesa Auto Detailing", title:"Spring Detail Special",         type:"Promotional",  description:"Time-lapse of a full exterior detail on a red sports car. Show wash, clay bar, polish, and ceramic coat with satisfying close-ups.",platform:"Instagram Reel",time:"9:00 AM",status:"Planned",caption:"",script:"",assigned:""},
+        {id:5,date:"Apr 10",client:"Cactus CrossFit",     title:"Member Transformation Story",   type:"Testimonial",  description:"Interview a member about their 6-month fitness journey. Cut between their story and workout footage. End with their results.",platform:"Instagram Reel",time:"8:00 AM",status:"Planned",caption:"",script:"",assigned:""},
+        {id:6,date:"Apr 12",client:"Desert Sun Realty",   title:"Neighborhood Tour — Mesa",      type:"Educational",  description:"Drive-through tour of a Mesa neighborhood. Highlight local restaurants, parks, schools, and home styles. Great for relocating buyers.",platform:"Instagram Reel",time:"10:00 AM",status:"Planned",caption:"",script:"",assigned:""},
+        {id:7,date:"Apr 15",client:"Frost Barbershop",    title:"Day in the Shop — Saturday",    type:"Behind Scenes",description:"Follow the busiest day of the week from open to close. Show the energy, the clients, the banter, and the craft of each barber.",platform:"Instagram Reel",time:"9:00 AM",status:"Planned",caption:"",script:"",assigned:""},
+        {id:8,date:"Apr 17",client:"Sky Harbor Dental",   title:"Meet the Hygienist Team",       type:"Team Intro",   description:"Quick personality intros of each hygienist. Fun questions, their favorite dental tip, and why they love working here.",platform:"Instagram Reel",time:"11:00 AM",status:"Planned",caption:"",script:"",assigned:""},
       ]);
       setGenerated(true);
     }
     setLoading(false);
   };
 
-  const filtered = selClient==="all" ? calendar : calendar.filter(p=>p.client===selClient);
+  const updatePost = (id, updates) => {
+    setCalendar(prev=>prev.map(p=>p.id===id?{...p,...updates}:p));
+    if(selectedPost?.id===id) setSelectedPost(prev=>({...prev,...updates}));
+  };
 
+  const generateCaption = async (post) => {
+    setCaptionLoading(true);
+    try {
+      const result = await callClaude(
+        `Write an Instagram caption for a video post.
+Client: ${post.client}
+Video: ${post.title}
+Description: ${post.description||post.type}
+
+Requirements:
+- 2-3 sentences max, punchy and engaging
+- Include a clear call to action
+- Add 8-12 relevant hashtags on a new line
+- Local Arizona hashtags where relevant
+- Sound natural, not corporate
+
+Return just the caption and hashtags, nothing else.`
+      );
+      updatePost(post.id, {caption:result});
+      showToast("✨","Caption generated","Review and edit below");
+    } catch(e) {
+      updatePost(post.id, {caption:`Ready to transform your feed? ${post.client} is bringing the heat this spring 🔥 Check out what's new and book your spot before it's gone!\n\n#Arizona #Phoenix #${post.client.replace(/\s/g,'')} #SmallBusiness #ContentCreation #Reels #SocialMediaMarketing #AZBusiness #Media4You`});
+      showToast("✨","Caption generated","Review and edit below");
+    }
+    setCaptionLoading(false);
+  };
+
+  const generateScript = async (post) => {
+    setScriptLoading(true);
+    try {
+      const result = await callClaude(
+        `Write a short-form Instagram Reel script for:
+Client: ${post.client}
+Video: ${post.title}
+Concept: ${post.description||post.type}
+
+Format exactly as:
+HOOK (0-3 sec)
+[hook text]
+
+SETUP (3-10 sec)
+[setup text]
+
+BODY (10-40 sec)
+[body text]
+
+CTA (40-50 sec)
+[cta text]
+
+Punchy, Arizona flavor where relevant. No hashtags. Just the script.`
+      );
+      updatePost(post.id, {script:result});
+      showToast("✨","Script generated","Review and edit below");
+    } catch(e) {
+      updatePost(post.id, {script:`HOOK (0-3 sec)\nYou need to see this.\n\nSETUP (3-10 sec)\n${post.client} just leveled up and we caught it all on camera...\n\nBODY (10-40 sec)\nWatch as we take you through the full process from start to finish. Every detail matters and this is why ${post.client} is the best in Arizona.\n\nCTA (40-50 sec)\nFollow for more and tap the link in bio to book yours today.`});
+      showToast("✨","Script generated","Review and edit below");
+    }
+    setScriptLoading(false);
+  };
+
+  const filtered = selClient==="all" ? calendar : calendar.filter(p=>p.client===selClient);
+  const statusColors = {Planned:"gray",Scripted:"blue","Caption Ready":"amber",Approved:"green",Scheduled:"purple",Published:"green"};
+  const teamMembers = ["Maya R.","Jordan T.","Carlos V."];
+
+  // ── POST DETAIL VIEW ──
+  if (selectedPost) {
+    const post = calendar.find(p=>p.id===selectedPost.id)||selectedPost;
+    return (
+      <div className="full-panel">
+        <div style={{padding:"12px 14px",borderBottom:"1px solid var(--border)",background:"var(--surface)",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
+          <button className="btn back" style={{margin:0,padding:"6px 10px",fontSize:12}} onClick={()=>setSelectedPost(null)}>←</button>
+          <div style={{flex:1,minWidth:0}}>
+            <div style={{fontFamily:"var(--fd)",fontSize:14,fontWeight:700,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{post.title}</div>
+            <div style={{fontSize:11,color:"var(--text3)"}}>{post.client} · {post.date}</div>
+          </div>
+          <Badge type={statusColors[post.status]||"gray"}>{post.status}</Badge>
+        </div>
+        <div className="full-panel-scroll">
+          {/* Post Overview */}
+          <div className="card">
+            <div className="card-title">Post Details</div>
+            <div className="row-item" style={{borderBottom:"none"}}>
+              <div style={{flex:1}}>
+                <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:10}}>
+                  <Badge type="gray">{post.type}</Badge>
+                  <Badge type="blue">{post.platform||"Instagram Reel"}</Badge>
+                  <Badge type="amber">{post.time||"9:00 AM"}</Badge>
+                </div>
+                <div style={{fontSize:13,color:"var(--text2)",lineHeight:1.6}}>{post.description||"No description yet."}</div>
+              </div>
+            </div>
+            {/* Status & Assignment */}
+            <div style={{marginTop:12,display:"flex",gap:8}}>
+              <div className="form-group" style={{flex:1,margin:0}}>
+                <label className="form-label">Status</label>
+                <select className="form-select" value={post.status} onChange={e=>{updatePost(post.id,{status:e.target.value});showToast("✅","Status updated",post.title+" → "+e.target.value);}}>
+                  {["Planned","Scripted","Caption Ready","Approved","Scheduled","Published"].map(s=><option key={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="form-group" style={{flex:1,margin:0}}>
+                <label className="form-label">Assigned To</label>
+                <select className="form-select" value={post.assigned||""} onChange={e=>{updatePost(post.id,{assigned:e.target.value});showToast("👤","Assigned",post.title+" → "+e.target.value);}}>
+                  <option value="">Unassigned</option>
+                  {teamMembers.map(m=><option key={m}>{m}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Script Section */}
+          <div className="card">
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+              <div className="card-title" style={{margin:0}}>Script</div>
+              <button className="action-btn accent" onClick={()=>generateScript(post)} disabled={scriptLoading}>
+                {scriptLoading?"Writing...":"✨ AI Script"}
+              </button>
+            </div>
+            {scriptLoading && <AILoading text="Writing script..."/>}
+            {post.script ? (
+              <>
+                <textarea className="form-textarea" style={{minHeight:160,fontSize:12,lineHeight:1.7}} value={post.script} onChange={e=>updatePost(post.id,{script:e.target.value})}/>
+                <div style={{display:"flex",gap:8,marginTop:8}}>
+                  <button className="btn" style={{fontSize:11}} onClick={()=>{navigator.clipboard?.writeText(post.script);showToast("📋","Copied","Script copied to clipboard");}}>Copy</button>
+                  <button className="btn" style={{fontSize:11}} onClick={()=>generateScript(post)}>↺ Regenerate</button>
+                </div>
+              </>
+            ) : !scriptLoading && (
+              <div style={{textAlign:"center",padding:"20px 0",color:"var(--text3)",fontSize:12}}>
+                No script yet. Tap ✨ AI Script to generate one.
+              </div>
+            )}
+          </div>
+
+          {/* Caption Section */}
+          <div className="card">
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+              <div className="card-title" style={{margin:0}}>Caption + Hashtags</div>
+              <button className="action-btn accent" onClick={()=>generateCaption(post)} disabled={captionLoading}>
+                {captionLoading?"Writing...":"✨ AI Caption"}
+              </button>
+            </div>
+            {captionLoading && <AILoading text="Writing caption..."/>}
+            {post.caption ? (
+              <>
+                <textarea className="form-textarea" style={{minHeight:120,fontSize:12,lineHeight:1.7}} value={post.caption} onChange={e=>updatePost(post.id,{caption:e.target.value})}/>
+                <div style={{display:"flex",gap:8,marginTop:8}}>
+                  <button className="btn" style={{fontSize:11}} onClick={()=>{navigator.clipboard?.writeText(post.caption);showToast("📋","Copied","Caption copied to clipboard");}}>Copy</button>
+                  <button className="btn" style={{fontSize:11}} onClick={()=>generateCaption(post)}>↺ Regenerate</button>
+                </div>
+              </>
+            ) : !captionLoading && (
+              <div style={{textAlign:"center",padding:"20px 0",color:"var(--text3)",fontSize:12}}>
+                No caption yet. Tap ✨ AI Caption to generate one.
+              </div>
+            )}
+          </div>
+
+          {/* Actions */}
+          <div style={{display:"flex",gap:8,marginTop:4}}>
+            <button className="btn primary" style={{flex:1}} onClick={()=>{updatePost(post.id,{status:"Approved"});showToast("✅","Approved",post.title+" is ready for production");}}>Approve Post</button>
+            <button className="btn success" style={{flex:1}} onClick={()=>{updatePost(post.id,{status:"Scheduled"});showToast("📅","Scheduled",post.title+" added to queue");}}>Schedule →</button>
+          </div>
+          <button className="btn danger full" style={{marginTop:8}} onClick={()=>{setCalendar(prev=>prev.filter(p=>p.id!==post.id));setSelectedPost(null);showToast("🗑","Removed",post.title+" removed from calendar");}}>Remove from Calendar</button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── CALENDAR LIST VIEW ──
   return (
     <div className="full-panel">
       <div style={{padding:"12px 14px",borderBottom:"1px solid var(--border)",background:"var(--surface)",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
@@ -710,19 +885,31 @@ Distribute posts evenly. Use realistic content types for each industry.`,
         {generated && !loading && (
           <>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-              <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"1px",fontWeight:700}}>{filtered.length} posts scheduled</div>
+              <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"1px",fontWeight:700}}>{filtered.length} posts · Tap for details</div>
               <button className="action-btn accent" onClick={generate}>↺ Regenerate</button>
             </div>
-            {filtered.map((p,i)=>{
-              const c = clients.find(cl=>cl.name===p.client);
+            {filtered.map((p)=>{
+              const cl = clients.find(c=>c.name===p.client);
               return (
-                <div className="cal-post-item" key={i}>
-                  <div className="cal-post-date">{p.date}</div>
-                  <div className="cal-post-info">
-                    <div className="cal-post-title">{p.title}</div>
-                    <div className="cal-post-client">{p.client}</div>
+                <div key={p.id} onClick={()=>setSelectedPost(p)} style={{display:"flex",gap:10,padding:"12px 14px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:14,marginBottom:8,cursor:"pointer",alignItems:"center",backdropFilter:"blur(12px)",boxShadow:"var(--shadow-sm)",transition:"all 0.15s"}}>
+                  <div style={{minWidth:46,textAlign:"center"}}>
+                    <div style={{fontFamily:"var(--fd)",fontSize:14,fontWeight:700,color:"var(--accent)"}}>{p.date.split(" ")[1]}</div>
+                    <div style={{fontSize:9,color:"var(--text3)",textTransform:"uppercase"}}>{p.date.split(" ")[0]}</div>
                   </div>
-                  <span className="badge badge-gray">{p.type}</span>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:13,fontWeight:600,color:"var(--text)",marginBottom:2}}>{p.title}</div>
+                    <div style={{fontSize:11,color:"var(--text3)"}}>{p.client}</div>
+                    <div style={{display:"flex",gap:6,marginTop:4,flexWrap:"wrap"}}>
+                      <Badge type={statusColors[p.status]||"gray"}>{p.status}</Badge>
+                      <span className="badge badge-gray">{p.type}</span>
+                      {p.assigned&&<span style={{fontSize:10,color:"var(--text3)"}}>👤 {p.assigned}</span>}
+                    </div>
+                  </div>
+                  <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
+                    {p.script&&<span style={{fontSize:10,color:"var(--green)"}}>✓ Script</span>}
+                    {p.caption&&<span style={{fontSize:10,color:"var(--green)"}}>✓ Caption</span>}
+                    <span style={{color:"var(--text3)",fontSize:18}}>›</span>
+                  </div>
                 </div>
               );
             })}
@@ -2358,7 +2545,7 @@ export default function App() {
             showToast={showToast}
           />
         )}
-        {panel==="calendar" && <ContentCalendar clients={clients} onClose={closePanel}/>}
+        {panel==="calendar" && <ContentCalendar clients={clients} onClose={closePanel} showToast={showToast}/>}
         {panel==="caption" && <CaptionWriter onClose={closePanel} showToast={showToast}/>}
         {panel==="outreach" && <OutreachWriter onClose={closePanel} showToast={showToast}/>}
         {panel==="client-detail" && panelData && (
