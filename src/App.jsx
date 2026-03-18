@@ -836,12 +836,40 @@ function StatusBadge({ status, options, onChange, colorMap }) {
 function CommentThread({ itemId, showToast }) {
   const [comments, setComments] = useState([]);
   const [input, setInput] = useState("");
+  const [showTagPicker, setShowTagPicker] = useState(false);
+  const [tagFilter, setTagFilter] = useState("");
+
+  const tagPeople = ["Sabrina","Jaden","Maya R.","Jordan T.","Carlos V.","Alex M.","Desert Sun Realty","Frost Barbershop","Sky Harbor Dental","Mesa Auto Detailing","Cactus CrossFit"];
+  const filteredTags = tagFilter ? tagPeople.filter(t=>t.toLowerCase().includes(tagFilter.toLowerCase())) : tagPeople;
+
+  const handleInput = (e) => {
+    const v = e.target.value;
+    setInput(v);
+    const lastAt = v.lastIndexOf("@");
+    if (lastAt >= 0 && lastAt === v.length - 1) { setShowTagPicker(true); setTagFilter(""); }
+    else if (lastAt >= 0 && !v.substring(lastAt).includes(" ")) { setShowTagPicker(true); setTagFilter(v.substring(lastAt + 1)); }
+    else { setShowTagPicker(false); }
+  };
+
+  const insertTag = (name) => {
+    const before = input.substring(0, input.lastIndexOf("@"));
+    setInput(before + `@${name} `);
+    setShowTagPicker(false);
+    setTagFilter("");
+  };
+
   const addComment = () => {
     if (!input.trim()) return;
     setComments(p=>[...p,{id:Date.now(),author:"You",text:input,time:"Just now"}]);
     setInput("");
+    setShowTagPicker(false);
     showToast("✓","Comment added","");
   };
+
+  const renderText = (text) => text.split(/(@\S+(?:\s\S+)?\.?\s?)/g).map((part,i) =>
+    part.startsWith("@") ? <span key={i} style={{background:'var(--accent-dim)',color:'var(--accent)',padding:'1px 4px',borderRadius:3,fontWeight:600,fontSize:11}}>{part.trim()}</span> : part
+  );
+
   return (
     <div style={{marginTop:12}}>
       <div style={{font:'600 10px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text3)',marginBottom:8}}>Comments ({comments.length})</div>
@@ -849,14 +877,29 @@ function CommentThread({ itemId, showToast }) {
         <div key={c.id} style={{display:'flex',gap:8,marginBottom:10}}>
           <div style={{width:24,height:24,borderRadius:6,background:'var(--accent-dim)',display:'flex',alignItems:'center',justifyContent:'center',font:'600 10px var(--fd)',color:'var(--accent)',flexShrink:0}}>Y</div>
           <div style={{flex:1}}>
-            <div style={{font:'500 12px var(--fb)',color:'var(--text)'}}>{c.text}</div>
+            <div style={{font:'500 12px var(--fb)',color:'var(--text)',lineHeight:1.5}}>{renderText(c.text)}</div>
             <div style={{font:'400 10px var(--fb)',color:'var(--text3)',marginTop:2}}>{c.author} · {c.time}</div>
           </div>
         </div>
       ))}
-      <div style={{display:'flex',gap:6}}>
-        <input className="form-input" style={{flex:1,padding:'8px 12px',fontSize:12,borderRadius:20}} placeholder="Add a comment..." value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")addComment();}}/>
-        <button className="action-btn accent" onClick={addComment}>Post</button>
+      <div style={{position:'relative'}}>
+        {showTagPicker && (
+          <div style={{position:'absolute',bottom:'100%',left:0,right:0,maxHeight:180,overflowY:'auto',background:'rgba(255,255,255,0.97)',border:'1px solid var(--border2)',borderRadius:10,boxShadow:'0 -6px 20px rgba(0,0,0,0.1)',backdropFilter:'blur(20px)',marginBottom:4,padding:4}}>
+            <div style={{padding:'4px 10px',font:'600 9px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text3)'}}>Tag someone</div>
+            {filteredTags.slice(0,8).map(name=>(
+              <div key={name} style={{padding:'7px 12px',borderRadius:6,cursor:'pointer',font:'400 12px var(--fb)',color:'var(--text)',display:'flex',alignItems:'center',gap:8}}
+                onMouseEnter={e=>e.currentTarget.style.background='var(--accent-dim)'} onMouseLeave={e=>e.currentTarget.style.background='none'}
+                onClick={()=>insertTag(name)}>
+                <div style={{width:20,height:20,borderRadius:5,background:'var(--accent-dim)',display:'flex',alignItems:'center',justifyContent:'center',font:'600 9px var(--fd)',color:'var(--accent)'}}>{name[0]}</div>
+                {name}
+              </div>
+            ))}
+          </div>
+        )}
+        <div style={{display:'flex',gap:6}}>
+          <input className="form-input" style={{flex:1,padding:'8px 12px',fontSize:12,borderRadius:20}} placeholder="Comment... (type @ to tag)" value={input} onChange={handleInput} onKeyDown={e=>{if(e.key==="Enter"&&!showTagPicker)addComment();if(e.key==="Escape")setShowTagPicker(false);}}/>
+          <button className="action-btn accent" onClick={addComment}>Post</button>
+        </div>
       </div>
     </div>
   );
