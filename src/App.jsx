@@ -2578,12 +2578,15 @@ function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAuto
       {id:2,title:"Listing Showcase",status:"Editing",progress:60,icon:"🎬",assigned:"Jordan T.",due:"Mar 20",script:"HOOK (0–3 sec)\nThis Scottsdale listing just hit the market and it is STUNNING.\n\nSETUP (3–10 sec)\nLocated in the heart of Old Town, this 4-bed, 3-bath beauty features mountain views and a backyard oasis you have to see to believe.\n\nBODY (10–40 sec)\nWalk through the open-concept living area with floor-to-ceiling windows. The chef's kitchen has quartz counters and a massive island. The primary suite includes a spa-like bathroom with dual vanities. And the real showstopper? That heated pool with an unobstructed view of Camelback Mountain.\n\nCTA (40–50 sec)\nDM us or tap the link in bio to schedule a private showing before this one is gone. Homes like this do not last in Scottsdale.",notes:"Drone shots approved. Need to add text overlays for property specs."},
       {id:3,title:"Testimonial Reel",status:"Review",progress:85,icon:"👁️",assigned:"Jordan T.",due:"Mar 19",script:"HOOK (0–3 sec)\nThis client drove 45 minutes just for "+c.name+". Here is why.\n\nSETUP (3–10 sec)\nWe sat down with a real customer to hear their experience working with "+c.name+". No scripts, no prompts — just their honest words.\n\nBODY (10–40 sec)\nThey talk about the problem they had, how they found "+c.name+", and what happened next. The transformation speaks for itself. You can see the genuine emotion and satisfaction in every word.\n\nCTA (40–50 sec)\nIf you want results like this, follow "+c.name+" and tap the link in bio. Your turn is next.",notes:"Client mentioned they want a stronger call-to-action at the end."},
     ];
+    const [expandedActivity, setExpandedActivity] = useState(null);
     const activity = [
-      {action:"Script submitted",item:"Testimonial Reel",by:"Maya R.",time:"2 hours ago",dot:"var(--blue)"},
-      {action:"Video uploaded",item:"Listing Showcase — raw footage",by:"Jordan T.",time:"Yesterday",dot:"var(--green)"},
-      {action:"Revision requested",item:"Day in the Life script",by:c.name,time:"2 days ago",dot:"var(--amber)"},
-      {action:"Content approved",item:"Agent Intro — Meet Sarah",by:c.name,time:"3 days ago",dot:"var(--green)"},
-      {action:"New content idea generated",item:"5 AI ideas created",by:"Alex M.",time:"4 days ago",dot:"var(--accent)"},
+      {action:"Script submitted",item:"Testimonial Reel",by:"Maya R.",time:"2 hours ago",dot:"var(--blue)",detail:"Maya submitted the final draft of the Testimonial Reel script. It's now in Review status and ready for client approval. The script follows the HOOK/SETUP/BODY/CTA format with a strong emotional close.",tab:"content"},
+      {action:"Video uploaded",item:"Listing Showcase — raw footage",by:"Jordan T.",time:"Yesterday",dot:"var(--green)",detail:"Jordan uploaded 1.2 GB of 4K raw footage from the 4821 Cactus Rd listing shoot. 47 clips total including drone footage, interior walkthrough, and backyard reveal. Ready for editing.",tab:"content"},
+      {action:"Revision requested",item:"Day in the Life script",by:c.name,time:"2 days ago",dot:"var(--amber)",detail:"Client requested changes to the Day in the Life script. Notes: 'We want to highlight the morning rush more and include a clip of our new equipment. The CTA should mention our booking link specifically.'",tab:"content"},
+      {action:"Content approved",item:"Agent Intro — Meet Sarah",by:c.name,time:"3 days ago",dot:"var(--green)",detail:"Client approved the Agent Intro video. It's been moved to Scheduled status and will be posted on Instagram and TikTok this Thursday at 10:00 AM (peak engagement time).",tab:"content"},
+      {action:"New content idea generated",item:"5 AI ideas created",by:"Alex M.",time:"4 days ago",dot:"var(--accent)",detail:"Alex generated 5 new content ideas for this client using the AI Video Ideas tool. Ideas include: Arizona Hidden Gem, Process Breakdown, Customer Story Spotlight, 5 Things You Didn't Know, and Saturday Rush.",tab:"content"},
+      {action:"Shoot confirmed",item:"Mar 20 — 4821 Cactus Rd",by:"Carlos V.",time:"5 days ago",dot:"var(--green)",detail:"Carlos confirmed the shoot for March 20 at 9:00 AM. Location: 4821 Cactus Rd, Scottsdale. Crew: Jordan T. Equipment: drone + 2 cameras + lav mic. Duration: 3 hours.",tab:"shoots"},
+      {action:"Invoice paid",item:"February 2025 — $5,000",by:c.name,time:"1 week ago",dot:"var(--green)",detail:"Client paid the February invoice ($5,000 Platinum Plan). Payment processed via Stripe. Receipt emailed to client automatically.",tab:null},
     ];
     const planInfo = PLAN_DETAILS[c.plan] || PLAN_DETAILS.Copper;
     const clientShoots = INIT_SHOOTS.filter(s=>s.client===c.name);
@@ -2711,13 +2714,21 @@ function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAuto
           <div className="card">
             <div className="card-title">Recent Activity</div>
             {activity.map((a,i)=>(
-              <div className="activity-item" key={i} style={{cursor:'pointer'}} onClick={()=>showToast("📋",a.action,a.item+" — "+a.by)}>
-                <div className="activity-dot" style={{background:a.dot}}/>
-                <div style={{flex:1}}>
-                  <div className="activity-text"><strong>{a.action}</strong> — {a.item}</div>
-                  <div className="activity-time">{a.by} · {a.time}</div>
+              <div key={i}>
+                <div className="activity-item" style={{cursor:'pointer'}} onClick={()=>setExpandedActivity(expandedActivity===i?null:i)}>
+                  <div className="activity-dot" style={{background:a.dot}}/>
+                  <div style={{flex:1}}>
+                    <div className="activity-text"><strong>{a.action}</strong> — {a.item}</div>
+                    <div className="activity-time">{a.by} · {a.time}</div>
+                  </div>
+                  <span style={{color:'var(--text3)',fontSize:12,transition:'transform 0.2s',transform:expandedActivity===i?'rotate(90deg)':'none'}}>›</span>
                 </div>
-                <span style={{color:'var(--text3)',fontSize:12}}>›</span>
+                {expandedActivity===i && (
+                  <div style={{padding:'8px 0 14px 18px',borderBottom:'1px solid var(--border)'}}>
+                    <div style={{font:'400 12px var(--fb)',color:'var(--text2)',lineHeight:1.6,marginBottom:10}}>{a.detail}</div>
+                    {a.tab && <button className="btn" style={{fontSize:11,padding:'6px 14px'}} onClick={()=>setClientTab(a.tab)}>View in {a.tab.charAt(0).toUpperCase()+a.tab.slice(1)} →</button>}
+                  </div>
+                )}
               </div>
             ))}
           </div>
