@@ -175,9 +175,9 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
 <!-- HERO -->
 <section class="hero">
   <div>
-    <h1 class="reveal">Learn Your <span>System</span></h1>
-    <p class="reveal reveal-delay-1">An interactive guide to every feature, role, and workflow in the Media4You platform. Click anything to learn more.</p>
-    <div class="stats-bar reveal reveal-delay-2">
+    <h1 style="opacity:1;transform:none">Learn Your <span>System</span></h1>
+    <p style="opacity:1;transform:none">An interactive guide to every feature, role, and workflow in the Media4You platform. Click anything to learn more.</p>
+    <div class="stats-bar" style="opacity:1;transform:none">
       <div class="stat-item"><div class="stat-num" data-count="21">0</div><div class="stat-label">Pages</div></div>
       <div class="stat-item"><div class="stat-num" data-count="5">0</div><div class="stat-label">Roles</div></div>
       <div class="stat-item"><div class="stat-num" data-count="50">0</div><div class="stat-label">Features</div></div>
@@ -604,10 +604,7 @@ const countObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.5 });
 document.querySelectorAll('[data-count]').forEach(el => countObserver.observe(el));
 
-// Role filter
-// Role filter removed - features shown in dedicated sections
-void(0); if(false) {
-});
+// Role filter removed
 
 // Active nav link
 window.addEventListener('scroll', () => {
