@@ -3831,6 +3831,227 @@ function EditorCompleted({ videos }) {
 }
 
 // ─── CLIENT VIEWS ─────────────────────────────────────────────────────────────
+// ─── CONTENT LIBRARY ─────────────────────────────────────────────────────────
+function ContentLibrary({ showToast }) {
+  const [filter, setFilter] = useState("all");
+  const [selectedAsset, setSelectedAsset] = useState(null);
+  const assets = [
+    {id:1,name:"Frost Barbershop — Spring Lineup",client:"Frost Barbershop",type:"Video",format:"MP4 · 1080p",size:"380 MB",date:"Mar 15",status:"Published",platform:"Instagram + TikTok",duration:"0:47"},
+    {id:2,name:"Desert Sun — 4821 Cactus Rd Tour",client:"Desert Sun Realty",type:"Video",format:"MP4 · 4K",size:"1.2 GB",date:"Mar 12",status:"Published",platform:"Instagram",duration:"1:12"},
+    {id:3,name:"Sky Harbor — Whitening Before/After",client:"Sky Harbor Dental",type:"Video",format:"MP4 · 4K",size:"842 MB",date:"Mar 10",status:"Published",platform:"Instagram + TikTok",duration:"0:52"},
+    {id:4,name:"Mesa Auto — Tesla Detail Process",client:"Mesa Auto Detailing",type:"Video",format:"MP4 · 4K",size:"2.8 GB",date:"Mar 8",status:"In Edit",platform:"—",duration:"2:34"},
+    {id:5,name:"Frost — Saturday Vibes B-Roll",client:"Frost Barbershop",type:"Raw Footage",format:"MOV · 4K",size:"4.1 GB",date:"Mar 14",status:"Archived",platform:"—",duration:"12:30"},
+    {id:6,name:"Desert Sun — Agent Headshots",client:"Desert Sun Realty",type:"Photos",format:"JPG · 6000x4000",size:"48 MB (8 files)",date:"Mar 11",status:"Published",platform:"Instagram",duration:"—"},
+    {id:7,name:"CrossFit — Member Transformation",client:"Cactus CrossFit",type:"Video",format:"MP4 · 1080p",size:"520 MB",date:"Mar 6",status:"Published",platform:"Instagram",duration:"0:58"},
+    {id:8,name:"Sky Harbor — Team Intros",client:"Sky Harbor Dental",type:"Raw Footage",format:"MOV · 4K",size:"6.2 GB",date:"Mar 13",status:"Archived",platform:"—",duration:"18:45"},
+  ];
+  const types = ["all","Video","Raw Footage","Photos"];
+  const filtered = filter==="all"?assets:assets.filter(a=>a.type===filter);
+  const glass = {background:'rgba(255,255,255,0.6)',backdropFilter:'blur(20px)',border:'1px solid rgba(255,255,255,0.65)',borderRadius:18,boxShadow:'0 4px 24px rgba(0,0,0,0.04)'};
+
+  return (
+    <div>
+      <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
+        <h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Content Library</h1>
+        <p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>All videos, photos, and raw footage in one place</p>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(140px, 1fr))',gap:12,marginBottom:20}}>
+        {[{l:"Total Assets",v:assets.length},{l:"Videos",v:assets.filter(a=>a.type==="Video").length},{l:"Raw Footage",v:assets.filter(a=>a.type==="Raw Footage").length},{l:"Storage Used",v:"16.2 GB"}].map((s,i)=>(
+          <div key={s.l} className="dash-card-hover" style={{...glass,padding:'16px 14px'}}><div style={{font:'500 9px var(--fd)',textTransform:'uppercase',letterSpacing:1,color:'var(--text3)',marginBottom:4}}>{s.l}</div><div style={{font:'600 24px var(--fd)',color:'var(--text)'}}>{s.v}</div></div>
+        ))}
+      </div>
+      <div style={{display:'flex',gap:6,marginBottom:16}}>{types.map(t=><button key={t} className={`action-btn ${filter===t?"accent":""}`} onClick={()=>setFilter(t)} style={{textTransform:'capitalize'}}>{t}</button>)}</div>
+      <div style={{...glass,overflow:'hidden'}}>
+        {filtered.map((a,idx)=>(
+          <div key={a.id} className="dash-card-hover" style={{margin:'6px 10px',padding:'14px 18px',borderRadius:14,background:'rgba(255,255,255,0.4)',border:'1px solid rgba(0,0,0,0.02)',cursor:'pointer',animation:`dashFadeInUp 0.3s ease ${idx*30}ms backwards`}} onClick={()=>setSelectedAsset(selectedAsset===a.id?null:a.id)}>
+            <div style={{display:'flex',alignItems:'center',gap:14}}>
+              <div style={{width:48,height:36,borderRadius:8,background:'#1a1a1a',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontSize:14,flexShrink:0}}>{a.type==="Photos"?"◫":"▶"}</div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{font:'500 13px var(--fd)',color:'var(--text)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{a.name}</div>
+                <div style={{font:'400 11px var(--fb)',color:'var(--text3)',marginTop:2}}>{a.client} · {a.format} · {a.size}</div>
+              </div>
+              <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4,flexShrink:0}}>
+                <Badge type={a.status==="Published"?"green":a.status==="In Edit"?"blue":"gray"}>{a.status}</Badge>
+                <span style={{font:'400 10px var(--fb)',color:'var(--text3)'}}>{a.date}</span>
+              </div>
+            </div>
+            {selectedAsset===a.id && (
+              <div style={{marginTop:12,paddingTop:12,borderTop:'1px solid var(--border)'}}>
+                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:8,marginBottom:10}}>
+                  {[{l:"Duration",v:a.duration},{l:"Platform",v:a.platform},{l:"Size",v:a.size}].map(s=>(
+                    <div key={s.l} style={{padding:'6px 8px',background:'var(--surface2)',borderRadius:6,border:'1px solid var(--border)'}}>
+                      <div style={{font:'400 8px var(--fd)',color:'var(--text3)',textTransform:'uppercase',letterSpacing:0.5}}>{s.l}</div>
+                      <div style={{font:'500 11px var(--fb)',color:'var(--text)'}}>{s.v}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{display:'flex',gap:6}}>
+                  <button className="btn" style={{flex:1,fontSize:11,padding:'6px 10px'}} onClick={e=>{e.stopPropagation();showToast("✓","Downloaded",a.name);}}>Download</button>
+                  <button className="btn" style={{flex:1,fontSize:11,padding:'6px 10px'}} onClick={e=>{e.stopPropagation();showToast("✓","Copied","Share link copied");}}>Share Link</button>
+                  <button className="btn" style={{fontSize:11,padding:'6px 10px'}} onClick={e=>{e.stopPropagation();showToast("✓","Reuse","Added to content calendar");}}>Reuse</button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── MULTI-PLATFORM SCHEDULER ────────────────────────────────────────────────
+function PlatformScheduler({ showToast }) {
+  const [selectedDay, setSelectedDay] = useState(null);
+  const schedule = [
+    {id:1,client:"Frost Barbershop",title:"Spring Lineup Styles",date:"Mar 19",time:"9:00 AM",platforms:["Instagram","TikTok"],status:"Scheduled",peakTime:true},
+    {id:2,client:"Desert Sun Realty",title:"4821 Cactus Rd Tour",date:"Mar 20",time:"10:00 AM",platforms:["Instagram","TikTok","Facebook"],status:"Scheduled",peakTime:true},
+    {id:3,client:"Sky Harbor Dental",title:"Whitening Results",date:"Mar 21",time:"11:00 AM",platforms:["Instagram"],status:"Draft",peakTime:false},
+    {id:4,client:"Mesa Auto Detailing",title:"Tesla Detail Reveal",date:"Mar 22",time:"9:00 AM",platforms:["Instagram","TikTok"],status:"Scheduled",peakTime:true},
+    {id:5,client:"Cactus CrossFit",title:"Saturday Workout",date:"Mar 22",time:"7:00 AM",platforms:["Instagram","TikTok"],status:"Draft",peakTime:true},
+    {id:6,client:"Desert Sun Realty",title:"Market Update Reel",date:"Mar 24",time:"12:00 PM",platforms:["Instagram","Facebook"],status:"Scheduled",peakTime:false},
+    {id:7,client:"Frost Barbershop",title:"Behind the Chair",date:"Mar 25",time:"2:00 PM",platforms:["TikTok"],status:"Draft",peakTime:false},
+    {id:8,client:"Sky Harbor Dental",title:"Meet Dr. Chen",date:"Mar 26",time:"10:00 AM",platforms:["Instagram","Facebook","TikTok"],status:"Scheduled",peakTime:true},
+  ];
+  const glass = {background:'rgba(255,255,255,0.6)',backdropFilter:'blur(20px)',border:'1px solid rgba(255,255,255,0.65)',borderRadius:18,boxShadow:'0 4px 24px rgba(0,0,0,0.04)'};
+  const platformColors = {Instagram:"#A855F7",TikTok:"#3B82F6",Facebook:"#3B82F6",Google:"#22C55E"};
+
+  return (
+    <div>
+      <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
+        <h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Post Scheduler</h1>
+        <p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Schedule content across Instagram, TikTok, and Facebook</p>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(140px, 1fr))',gap:12,marginBottom:20}}>
+        {[{l:"Scheduled",v:schedule.filter(s=>s.status==="Scheduled").length,c:"var(--green)"},{l:"Drafts",v:schedule.filter(s=>s.status==="Draft").length,c:"var(--amber)"},{l:"This Week",v:schedule.filter(s=>s.date>="Mar 18"&&s.date<="Mar 24").length,c:"var(--blue)"},{l:"Peak Time",v:schedule.filter(s=>s.peakTime).length,c:"var(--accent)"}].map(s=>(
+          <div key={s.l} className="dash-card-hover" style={{...glass,padding:'16px 14px'}}><div style={{font:'500 9px var(--fd)',textTransform:'uppercase',letterSpacing:1,color:'var(--text3)',marginBottom:4}}>{s.l}</div><div style={{font:'600 24px var(--fd)',color:s.c}}>{s.v}</div></div>
+        ))}
+      </div>
+      <div style={{...glass,overflow:'hidden'}}>
+        <div style={{padding:'18px 22px',borderBottom:'1px solid rgba(0,0,0,0.04)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <span style={{font:'600 15px var(--fd)',color:'var(--text)'}}>Upcoming Posts</span>
+          <button className="top-action-btn" style={{fontSize:11,padding:'0 14px',height:30}} onClick={()=>showToast("✓","Scheduling","Opening content calendar...")}>+ Schedule Post</button>
+        </div>
+        {schedule.map((s,idx)=>(
+          <div key={s.id} className="dash-card-hover" style={{margin:'6px 10px',padding:'16px 18px',borderRadius:14,background:s.peakTime?'rgba(252,198,18,0.04)':'rgba(255,255,255,0.4)',border:s.peakTime?'1px solid rgba(252,198,18,0.12)':'1px solid rgba(0,0,0,0.02)',cursor:'pointer'}} onClick={()=>setSelectedDay(selectedDay===s.id?null:s.id)}>
+            <div style={{display:'flex',alignItems:'center',gap:14}}>
+              <div style={{minWidth:50,textAlign:'center'}}>
+                <div style={{font:'600 16px var(--fd)',color:'var(--accent)'}}>{s.date.split(" ")[1]}</div>
+                <div style={{font:'400 9px var(--fd)',color:'var(--text3)',textTransform:'uppercase'}}>{s.date.split(" ")[0]}</div>
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{font:'500 13px var(--fd)',color:'var(--text)'}}>{s.title}</div>
+                <div style={{font:'400 11px var(--fb)',color:'var(--text2)',marginTop:2}}>{s.client} · {s.time}</div>
+                <div style={{display:'flex',gap:4,marginTop:6}}>
+                  {s.platforms.map(p=><span key={p} style={{font:'500 9px var(--fd)',color:platformColors[p]||'var(--text3)',background:`${platformColors[p]||'var(--text3)'}15`,padding:'2px 8px',borderRadius:10,border:`1px solid ${platformColors[p]||'var(--text3)'}30`}}>{p}</span>)}
+                </div>
+              </div>
+              <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4,flexShrink:0}}>
+                <Badge type={s.status==="Scheduled"?"green":"amber"}>{s.status}</Badge>
+                {s.peakTime && <span style={{font:'500 9px var(--fd)',color:'var(--accent)'}}>Peak time</span>}
+              </div>
+            </div>
+            {selectedDay===s.id && (
+              <div style={{marginTop:12,paddingTop:12,borderTop:'1px solid var(--border)',display:'flex',gap:6}}>
+                <button className="btn primary" style={{flex:1,fontSize:11,padding:'6px 10px'}} onClick={e=>{e.stopPropagation();showToast("✓","Published","Posted to "+s.platforms.join(", "));fireConfetti();}}>Publish Now</button>
+                <button className="btn" style={{fontSize:11,padding:'6px 10px'}} onClick={e=>{e.stopPropagation();showToast("◉","Rescheduled","Pick a new time...");}}>Reschedule</button>
+                <button className="btn" style={{fontSize:11,padding:'6px 10px'}} onClick={e=>{e.stopPropagation();showToast("◉","Preview","Opening preview...");}}>Preview</button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── PROPOSAL GENERATOR ──────────────────────────────────────────────────────
+function ProposalGenerator({ showToast }) {
+  const [proposals, setProposals] = useState([
+    {id:1,client:"Chandler Law Group",plan:"Gold",status:"Sent",date:"Mar 17",value:"$3,000/mo",opened:true},
+    {id:2,client:"Sun Devil Gym",plan:"Gold",status:"Draft",date:"Mar 16",value:"$3,000/mo",opened:false},
+    {id:3,client:"AZ Pool Pros",plan:"Gold",status:"Accepted",date:"Mar 14",value:"$3,000/mo",opened:true},
+  ]);
+  const [showNew, setShowNew] = useState(false);
+  const [newForm, setNewForm] = useState({client:"",plan:"Gold"});
+
+  return (
+    <div>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:20}}>
+        <div><h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Proposals</h1><p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Create and track client proposals</p></div>
+        <button className="top-action-btn" onClick={()=>setShowNew(!showNew)}>+ New Proposal</button>
+      </div>
+      {showNew && (
+        <div className="card" style={{marginBottom:16}}>
+          <div className="card-title">Create Proposal</div>
+          <div className="form-group"><label className="form-label">Client / Business Name</label><input className="form-input" placeholder="e.g. Scottsdale Med Spa" value={newForm.client} onChange={e=>setNewForm(p=>({...p,client:e.target.value}))}/></div>
+          <div className="form-group"><label className="form-label">Recommended Plan</label>
+            <div style={{display:'flex',gap:8}}>{["Copper","Gold","Platinum"].map(p=>(<button key={p} className={`action-btn ${newForm.plan===p?"accent":""}`} style={{flex:1,padding:10}} onClick={()=>setNewForm(f=>({...f,plan:p}))}><div style={{font:'600 12px var(--fd)'}}>{p}</div><div style={{font:'400 10px var(--fb)',color:'var(--text3)',marginTop:2}}>{PLAN_DETAILS[p]?.price||""}/mo</div></button>))}</div>
+          </div>
+          <button className="btn primary full" onClick={()=>{if(!newForm.client.trim())return;setProposals(p=>[{id:Date.now(),client:newForm.client,plan:newForm.plan,status:"Draft",date:"Mar 18",value:PLAN_DETAILS[newForm.plan]?.price+"/mo"||"",opened:false},...p]);setShowNew(false);showToast("✓","Proposal created","Ready to send");}}>Generate Proposal</button>
+        </div>
+      )}
+      <div className="card">
+        <div className="card-title">All Proposals</div>
+        {proposals.map(p=>(
+          <div key={p.id} className="row-item" style={{cursor:'pointer'}} onClick={()=>showToast("◉","Proposal",p.client+" — "+p.plan+" plan · "+p.value)}>
+            <div className="row-avatar" style={{background:'var(--accent-dim)',color:'var(--accent)'}}>{p.client[0]}</div>
+            <div className="row-main">
+              <div className="row-title">{p.client}</div>
+              <div className="row-sub">{p.plan} Plan · {p.value} · {p.date}</div>
+            </div>
+            <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4}}>
+              <Badge type={p.status==="Accepted"?"green":p.status==="Sent"?"blue":"gray"}>{p.status}</Badge>
+              {p.opened && p.status==="Sent" && <span style={{font:'400 10px var(--fb)',color:'var(--green)'}}>Opened</span>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── SCRIPT TEMPLATES ────────────────────────────────────────────────────────
+function ScriptTemplates({ showToast }) {
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const templates = [
+    {id:1,name:"Barbershop — Day in the Life",industry:"Barbershop",script:"HOOK (0–3 sec)\nEver wonder what happens inside [BUSINESS] before the doors open?\n\nSETUP (3–10 sec)\nWe spent the morning with the crew and captured everything — the prep, the banter, the craft.\n\nBODY (10–40 sec)\nWatch as [BUSINESS] takes on a packed [DAY]. Every detail is dialed in. The lineups are sharp, the vibes are right, and the clients keep coming back. This is why [BUSINESS] is the go-to spot in [CITY].\n\nCTA (40–50 sec)\nFollow [BUSINESS] for more behind-the-scenes content. Link in bio to book your appointment.",uses:12},
+    {id:2,name:"Real Estate — Listing Tour",industry:"Real Estate",script:"HOOK (0–3 sec)\nThis [CITY] listing just hit the market and it is STUNNING.\n\nSETUP (3–10 sec)\nLocated in [NEIGHBORHOOD], this [BEDS]-bed, [BATHS]-bath home features [KEY FEATURE] and [KEY FEATURE].\n\nBODY (10–40 sec)\nWalk through the [ROOM 1], the [ROOM 2], and the [STANDOUT FEATURE]. The real showstopper? [HERO FEATURE].\n\nCTA (40–50 sec)\nDM us or tap the link in bio to schedule a private showing before this one is gone.",uses:18},
+    {id:3,name:"Before/After Transformation",industry:"Universal",script:"HOOK (0–3 sec)\nWait for the reveal at the end... trust me.\n\nSETUP (3–10 sec)\n[CLIENT] came to [BUSINESS] with [PROBLEM]. Here is what we did.\n\nBODY (10–40 sec)\n[Describe process step by step]. Every detail matters. The difference is night and day.\n\nCTA (40–50 sec)\nIf you want results like this, follow [BUSINESS] and tap the link in bio. Your turn is next.",uses:24},
+    {id:4,name:"Client Testimonial",industry:"Universal",script:"HOOK (0–3 sec)\nThis customer drove [DISTANCE] just for [BUSINESS]. Here is why.\n\nSETUP (3–10 sec)\nWe sat down with a real customer to hear their experience. No scripts, no prompts.\n\nBODY (10–40 sec)\n[Customer talks about their problem, how they found BUSINESS, and the result]. The genuine emotion says it all.\n\nCTA (40–50 sec)\nIf you want results like this, follow [BUSINESS] and tap the link in bio.",uses:15},
+    {id:5,name:"Dental — Smile Transformation",industry:"Dental",script:"HOOK (0–3 sec)\nYou will not believe this smile transformation.\n\nSETUP (3–10 sec)\n[PATIENT] came to [BUSINESS] wanting [TREATMENT]. Here is the journey from start to finish.\n\nBODY (10–40 sec)\nWatch the process: [STEP 1], [STEP 2], [STEP 3]. The final reveal speaks for itself.\n\nCTA (40–50 sec)\nReady for your transformation? Follow [BUSINESS] and book your consultation through the link in bio.",uses:8},
+    {id:6,name:"Fitness — Member Story",industry:"Gym/Fitness",script:"HOOK (0–3 sec)\n[MONTHS] months. [POUNDS] pounds. One gym.\n\nSETUP (3–10 sec)\nMeet [MEMBER], a member at [BUSINESS] who decided to change their life.\n\nBODY (10–40 sec)\n[Member's journey — what motivated them, the workouts, the struggles, the wins]. Cut between interview and workout footage.\n\nCTA (40–50 sec)\nYour story could be next. Follow [BUSINESS] and start your journey today.",uses:10},
+  ];
+
+  return (
+    <div>
+      <div style={{marginBottom:20}}><h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Script Templates</h1><p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Reusable scripts by industry — customize and use</p></div>
+      <div className="card">
+        {templates.map(t=>(
+          <div key={t.id}>
+            <div className="row-item" style={{cursor:'pointer'}} onClick={()=>setSelectedTemplate(selectedTemplate===t.id?null:t.id)}>
+              <div className="row-avatar" style={{background:'var(--accent-dim)',color:'var(--accent)'}}>{t.industry[0]}</div>
+              <div className="row-main">
+                <div className="row-title">{t.name}</div>
+                <div className="row-sub">{t.industry} · Used {t.uses} times</div>
+              </div>
+              <span style={{color:'var(--text3)',fontSize:14}}>{selectedTemplate===t.id?"▾":"›"}</span>
+            </div>
+            {selectedTemplate===t.id && (
+              <div style={{padding:'12px 0 16px 48px',borderBottom:'1px solid var(--border)'}}>
+                <div style={{background:'var(--surface2)',border:'1px solid var(--border)',borderRadius:10,padding:'14px 16px',font:'400 12px var(--fb)',color:'var(--text)',lineHeight:1.7,whiteSpace:'pre-wrap',marginBottom:10}}>{t.script}</div>
+                <div style={{display:'flex',gap:6}}>
+                  <button className="btn primary" style={{flex:1,fontSize:11,padding:'6px 10px'}} onClick={()=>{navigator.clipboard?.writeText(t.script);showToast("✓","Copied","Template copied — paste into script editor");}}>Copy Template</button>
+                  <button className="btn" style={{fontSize:11,padding:'6px 10px'}} onClick={()=>showToast("✓","Duplicated","Template saved as new draft")}>Duplicate</button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── SHOOT CALENDAR ──────────────────────────────────────────────────────────
 function ShootCalendar({ shoots, showToast }) {
   const [selectedShoot, setSelectedShoot] = useState(null);
@@ -4104,6 +4325,8 @@ function TeamWorkload({ scripts, videos }) {
 function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, showToast }) {
   const [clientFilter, setClientFilter] = useState("all");
   const [dragging, setDragging] = useState(null);
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [didDrag, setDidDrag] = useState(false);
   const [dragOver, setDragOver] = useState(null);
 
   const PIPELINE_STAGES = ["Scripting","Editing","Review","Approved","Scheduled","Published"];
@@ -4148,15 +4371,20 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
   // Drag handlers
   const handleDragStart = (e, item) => {
     setDragging(item.id);
+    setDidDrag(true);
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("text/plain", item.id);
-    // Make drag image slightly transparent
     if (e.target) e.target.style.opacity = "0.5";
   };
   const handleDragEnd = (e) => {
     setDragging(null);
     setDragOver(null);
     if (e.target) e.target.style.opacity = "1";
+    setTimeout(()=>setDidDrag(false),100);
+  };
+  const handleCardClick = (item) => {
+    if (didDrag) return;
+    setSelectedCard(selectedCard===item.id?null:item.id);
   };
   const handleColumnDragOver = (e, stage) => {
     e.preventDefault();
@@ -4232,9 +4460,10 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
                       draggable
                       onDragStart={e=>handleDragStart(e,item)}
                       onDragEnd={handleDragEnd}
+                      onClick={()=>handleCardClick(item)}
                       className="dash-card-hover" style={{
-                      background: dragging===item.id ? 'rgba(252,198,18,0.15)' : 'rgba(255,255,255,0.85)',
-                      border: dragging===item.id ? '1px solid var(--accent)' : '1px solid rgba(0,0,0,0.06)',
+                      background: dragging===item.id ? 'rgba(252,198,18,0.15)' : selectedCard===item.id ? 'rgba(252,198,18,0.08)' : 'rgba(255,255,255,0.85)',
+                      border: dragging===item.id ? '1px solid var(--accent)' : selectedCard===item.id ? '1px solid var(--accent)' : '1px solid rgba(0,0,0,0.06)',
                       borderRadius:12,padding:'12px 14px',
                       cursor:'grab',backdropFilter:'blur(8px)',boxShadow:'var(--shadow-sm)',
                       transition:'all 0.15s ease',
@@ -4253,6 +4482,18 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
                         <Badge type={item.type==="script"?"blue":"purple"}>{item.type==="script"?"Script":"Video"}</Badge>
                       </div>
                       {item.priority==="high" && <div style={{width:'100%',height:2,background:'var(--red)',borderRadius:2,marginTop:6,opacity:0.6}}/>}
+                      {/* Expanded detail */}
+                      {selectedCard===item.id && (
+                        <div style={{marginTop:10,paddingTop:10,borderTop:'1px solid var(--border)'}} onClick={e=>e.stopPropagation()}>
+                          <div style={{font:'400 11px var(--fb)',color:'var(--text2)',marginBottom:6}}>Assigned: {item.type==="script"?"Maya R.":"Jordan T."}</div>
+                          <div style={{font:'400 11px var(--fb)',color:'var(--text2)',marginBottom:8}}>Due: {item.due} · {item.client}</div>
+                          <div style={{display:'flex',gap:6}}>
+                            <StatusBadge status={item.status} options={["Scripting","Editing","Review","Approved","Scheduled","Published"]} onChange={(s)=>{moveItem(item,s);setSelectedCard(null);}}/>
+                            <button className="btn" style={{flex:1,padding:'6px 10px',fontSize:10}} onClick={()=>showToast("◉","Details","Opening full details...")}>Full Details</button>
+                          </div>
+                          <CommentThread itemId={`pipeline-card-${item.id}`} showToast={showToast}/>
+                        </div>
+                      )}
                     </div>
                   ))}
                   {stageItems.length===0 && (
@@ -4506,9 +4747,10 @@ function ClientIG({ igPosts }) {
 function ClientInvoices({ showToast }) {
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [invoices, setInvoices] = useState([
-    {id:1,month:"March 2025",amount:"$2,400",status:"Due Apr 1",paid:false,processing:false},
-    {id:2,month:"February 2025",amount:"$2,400",status:"Paid Feb 28",paid:true,processing:false},
-    {id:3,month:"January 2025",amount:"$2,400",status:"Paid Jan 31",paid:true,processing:false},
+    {id:1,month:"March 2025",amount:"$5,000",status:"Due Apr 1",paid:false,processing:false,items:[{name:"Platinum Plan — 20 videos/mo",amount:"$5,000"},{name:"Google Ads management",amount:"Included"},{name:"Strategy call + sales coaching",amount:"Included"}]},
+    {id:2,month:"February 2025",amount:"$5,000",status:"Paid Feb 28",paid:true,processing:false,items:[{name:"Platinum Plan — 20 videos/mo",amount:"$5,000"},{name:"Ad spend pass-through",amount:"$1,200 (separate)"}]},
+    {id:3,month:"January 2025",amount:"$5,000",status:"Paid Jan 31",paid:true,processing:false,items:[{name:"Platinum Plan — 20 videos/mo",amount:"$5,000"}]},
+    {id:4,month:"December 2024",amount:"$5,000",status:"Paid Dec 31",paid:true,processing:false,items:[{name:"Platinum Plan — 20 videos/mo",amount:"$5,000"}]},
   ]);
   const handlePay = (id) => {
     setInvoices(p=>p.map(inv=>inv.id===id?{...inv,processing:true}:inv));
@@ -4538,12 +4780,21 @@ function ClientInvoices({ showToast }) {
           </div>
           {selectedInvoice===inv.id && (
             <div style={{padding:"8px 0 12px 47px",borderBottom:"1px solid var(--border)"}}>
-              <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:6}}>Invoice Details</div>
+              <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:6}}>Invoice #{inv.id.toString().padStart(4,"0")}</div>
               <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Period</div><div className="row-sub">{inv.month}</div></div></div>
-              <div className="row-item"><div className="row-main"><div className="row-title">Platinum Plan — 8 videos/mo</div><div className="row-sub">Monthly retainer</div></div><div style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700}}>{inv.amount}</div></div>
-              <div className="row-item"><div className="row-main"><div className="row-title">Payment Status</div></div><Badge type={inv.paid?"green":"amber"}>{inv.paid?"Paid":"Unpaid"}</Badge></div>
-              <div className="row-item" style={{borderBottom:"none",paddingBottom:0}}><div className="row-main"><div className="row-title">Due Date</div><div className="row-sub">{inv.status}</div></div></div>
-              {!inv.paid && !inv.processing && <button className="btn primary full" style={{marginTop:10}} onClick={()=>handlePay(inv.id)}>Pay Now — {inv.amount}</button>}
+              {inv.items?.map((item,idx)=>(
+                <div key={idx} className="row-item"><div className="row-main"><div className="row-title">{item.name}</div></div><div style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700}}>{item.amount}</div></div>
+              ))}
+              <div style={{borderTop:'1px solid var(--border)',paddingTop:8,marginTop:4,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <span style={{font:'600 12px var(--fd)',color:'var(--text)'}}>Total</span>
+                <span style={{font:'700 16px var(--fd)',color:'var(--text)'}}>{inv.amount}</span>
+              </div>
+              <div className="row-item"><div className="row-main"><div className="row-title">Status</div></div><Badge type={inv.paid?"green":"amber"}>{inv.paid?"Paid":"Due"}</Badge></div>
+              <div style={{display:'flex',gap:6,marginTop:8}}>
+                {!inv.paid && !inv.processing && <button className="btn primary" style={{flex:1}} onClick={()=>handlePay(inv.id)}>Pay Now</button>}
+                {inv.paid && <button className="btn" style={{flex:1}} onClick={()=>showToast("✓","Downloaded","Receipt PDF downloaded")}>Download Receipt</button>}
+                <button className="btn" style={{flex:1}} onClick={()=>showToast("✓","Sent","Invoice sent to email")}>Email Invoice</button>
+              </div>
             </div>
           )}
         </div>
@@ -4698,9 +4949,9 @@ const ROLES = [
   {key:"client",      label:"Client",       name:"Desert Sun Realty",color:"#FFB800",initial:"C"},
 ];
 const NAV_CONFIG = {
-  admin:        [{label:"Dashboard",icon:"◆",view:"dashboard"},{label:"Pipeline",icon:"◎",view:"pipeline"},{label:"Shoots",icon:"▶",view:"shoots"},{label:"Calls",icon:"◉",view:"coaching"},{label:"Team",icon:"◈",view:"team"},{label:"Clients",icon:"▣",view:"clients"},{label:"Revenue",icon:"$",view:"revenue"},{label:"Expenses",icon:"−",view:"expenses"},{label:"Ads",icon:"◐",view:"ads"},{label:"Settings",icon:"⟐",view:"settings"}],
-  sales:        [{label:"Pipeline",icon:"◎",view:"dashboard",badge:3},{label:"Comms",icon:"◉",view:"calls"},{label:"Lead Finder",icon:"◇",view:"finder"},{label:"Leads",icon:"◆",view:"leads"},{label:"Activity",icon:"▤",view:"activity"}],
-  scriptwriter: [{label:"Queue",icon:"▤",view:"dashboard",badge:2},{label:"Done",icon:"✓",view:"completed"}],
+  admin:        [{label:"Dashboard",icon:"◆",view:"dashboard"},{label:"Pipeline",icon:"◎",view:"pipeline"},{label:"Library",icon:"▦",view:"library"},{label:"Scheduler",icon:"◫",view:"scheduler"},{label:"Shoots",icon:"▶",view:"shoots"},{label:"Calls",icon:"◉",view:"coaching"},{label:"Team",icon:"◈",view:"team"},{label:"Clients",icon:"▣",view:"clients"},{label:"Revenue",icon:"$",view:"revenue"},{label:"Expenses",icon:"−",view:"expenses"},{label:"Ads",icon:"◐",view:"ads"},{label:"Settings",icon:"⟐",view:"settings"}],
+  sales:        [{label:"Pipeline",icon:"◎",view:"dashboard",badge:3},{label:"Comms",icon:"◉",view:"calls"},{label:"Lead Finder",icon:"◇",view:"finder"},{label:"Proposals",icon:"◫",view:"proposals"},{label:"Leads",icon:"◆",view:"leads"},{label:"Activity",icon:"▤",view:"activity"}],
+  scriptwriter: [{label:"Queue",icon:"▤",view:"dashboard",badge:2},{label:"Templates",icon:"◫",view:"templates"},{label:"Done",icon:"✓",view:"completed"}],
   editor:       [{label:"Production",icon:"▶",view:"dashboard",badge:2},{label:"Upload",icon:"△",view:"upload"},{label:"Done",icon:"✓",view:"completed"}],
   client:       [{label:"Content",icon:"▶",view:"dashboard"},{label:"Instagram",icon:"◎",view:"instagram"},{label:"Ads",icon:"◐",view:"ads"},{label:"Invoices",icon:"▤",view:"invoices"},{label:"Team",icon:"◈",view:"team"}],
 };
@@ -4780,6 +5031,8 @@ export default function App() {
     if(role==="admin"){
       if(view==="dashboard") return <AdminDashboard clients={clients} onNav={navTo} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} onOpenClientDetail={(c)=>{setAutoSelectClient(c);navTo("clients");}} showToast={showToast}/>;
       if(view==="pipeline")  return <ContentPipeline scripts={scripts} videos={videos} onAdvanceVideo={advanceVideo} onUpdateScript={updateScript} showToast={showToast}/>;
+      if(view==="library")   return <ContentLibrary showToast={showToast}/>;
+      if(view==="scheduler") return <PlatformScheduler showToast={showToast}/>;
       if(view==="shoots")    return <ShootCalendar shoots={INIT_SHOOTS} showToast={showToast}/>;
       if(view==="coaching")  return <CoachingTracker sessions={INIT_COACHING} showToast={showToast}/>;
       if(view==="team")      return <TeamWorkload scripts={scripts} videos={videos}/>;
@@ -4793,11 +5046,13 @@ export default function App() {
       if(view==="dashboard") return <SalesDashboard leads={leads} onOpenOutreach={()=>openPanel("outreach")} showToast={showToast}/>;
       if(view==="calls")     return <SalesCalls showToast={showToast}/>;
       if(view==="finder")    return <LeadFinder onAddLead={addLead} showToast={showToast}/>;
+      if(view==="proposals") return <ProposalGenerator showToast={showToast}/>;
       if(view==="leads")     return <SalesLeadsList leads={leads} showToast={showToast}/>;
       if(view==="activity")  return <SalesActivity/>;
     }
     if(role==="scriptwriter"){
       if(view==="dashboard") return <ScriptQueue scripts={scripts} onSelect={setSelScript} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} clients={clients} showToast={showToast}/>;
+      if(view==="templates") return <ScriptTemplates showToast={showToast}/>;
       if(view==="completed") return <ScriptCompleted scripts={scripts}/>;
     }
     if(role==="editor"){
