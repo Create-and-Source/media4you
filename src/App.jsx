@@ -3159,7 +3159,7 @@ function SalesActivity() {
 }
 
 // ─── SALES VIEWS ──────────────────────────────────────────────────────────────
-function LeadDetailSheet({ lead, stage, onClose, showToast }) {
+function LeadDetailSheet({ lead, stage, onClose, showToast, onOpenComms }) {
   if(!lead) return null;
   const stages = ["New","Contacted","Demo","Proposal","Won \u2713"];
   const curIdx = stages.indexOf(stage);
@@ -3195,9 +3195,9 @@ function LeadDetailSheet({ lead, stage, onClose, showToast }) {
           </div>
         </div>
         <div style={{display:"flex",gap:8}}>
-          <button className="btn" style={{flex:1}} onClick={()=>{showToast("◉","Calling...",lead.name);onClose();}}>Call</button>
-          <button className="btn" style={{flex:1}} onClick={()=>{showToast("◉","Email draft",lead.name);onClose();}}>Email</button>
-          <button className="btn" style={{flex:1}} onClick={()=>{showToast("◉","Text sent",lead.name);onClose();}}>Text</button>
+          <button className="btn" style={{flex:1}} onClick={()=>{onClose();if(onOpenComms)onOpenComms();}}>Call</button>
+          <button className="btn" style={{flex:1}} onClick={()=>{onClose();if(onOpenComms)onOpenComms();}}>Email</button>
+          <button className="btn" style={{flex:1}} onClick={()=>{onClose();if(onOpenComms)onOpenComms();}}>Text</button>
           {nextStage && <button className="btn primary" style={{flex:1}} onClick={()=>{showToast("✓","Moved",lead.name+" → "+nextStage);onClose();fireConfetti();}}>→ {nextStage}</button>}
         </div>
       </div>
@@ -3205,7 +3205,7 @@ function LeadDetailSheet({ lead, stage, onClose, showToast }) {
   );
 }
 
-function SalesDashboard({ leads, onOpenOutreach, showToast }) {
+function SalesDashboard({ leads, onOpenOutreach, showToast, onOpenComms }) {
   const [selectedLead, setSelectedLead] = useState(null);
   const [selectedStage, setSelectedStage] = useState(null);
   const total = Object.values(leads).flat().length;
@@ -3246,7 +3246,7 @@ function SalesDashboard({ leads, onOpenOutreach, showToast }) {
           </div>
         </div>
       </div>
-      {selectedLead && <LeadDetailSheet lead={selectedLead} stage={selectedStage} onClose={()=>setSelectedLead(null)} showToast={showToast}/>}
+      {selectedLead && <LeadDetailSheet lead={selectedLead} stage={selectedStage} onClose={()=>setSelectedLead(null)} showToast={showToast} onOpenComms={onOpenComms}/>}
     </div>
   );
 }
@@ -3367,7 +3367,7 @@ function SalesCalls({ showToast }) {
                   <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:4}}>Prep Notes</div>
                   <div style={{fontSize:12,color:"var(--text2)",lineHeight:1.5,marginBottom:10}}>{c.notes}</div>
                   <div style={{display:'flex',gap:6}}>
-                    <button className="btn primary" style={{flex:1,fontSize:11,padding:'8px 12px'}} onClick={()=>showToast("📞","Calling...",c.name)}>Call Now</button>
+                    <button className="btn primary" style={{flex:1,fontSize:11,padding:'8px 12px'}} onClick={()=>{handleJoin(i);showToast("◉","Connecting...",c.name);}}>Call Now</button>
                     <button className="btn" style={{fontSize:11,padding:'8px 12px'}} onClick={()=>{setCommTab("texts");showToast("💬","Opening texts",c.name);}}>Text</button>
                     <button className="btn" style={{fontSize:11,padding:'8px 12px'}} onClick={()=>{setComposeEmail(true);setEmailForm({to:c.name,subject:`Follow-up: ${c.type} Call`,body:""});setCommTab("emails");}}>Email</button>
                   </div>
@@ -3588,7 +3588,7 @@ function LeadFinder({ onAddLead, showToast }) {
 }
 
 // ─── SALES LEADS LIST ──────────────────────────────────────────────────────
-function SalesLeadsList({ leads, showToast }) {
+function SalesLeadsList({ leads, showToast, onOpenComms }) {
   const [selectedLead, setSelectedLead] = useState(null);
   const [selectedStage, setSelectedStage] = useState(null);
   return (
@@ -3603,7 +3603,7 @@ function SalesLeadsList({ leads, showToast }) {
           </div>
         )))}
       </div>
-      {selectedLead && <LeadDetailSheet lead={selectedLead} stage={selectedStage} onClose={()=>setSelectedLead(null)} showToast={showToast}/>}
+      {selectedLead && <LeadDetailSheet lead={selectedLead} stage={selectedStage} onClose={()=>setSelectedLead(null)} showToast={showToast} onOpenComms={onOpenComms}/>}
     </div>
   );
 }
@@ -5236,11 +5236,11 @@ export default function App() {
       if(view==="settings")  return <AdminSettings showToast={showToast} darkMode={darkMode} setDarkMode={setDarkMode}/>;
     }
     if(role==="sales"){
-      if(view==="dashboard") return <SalesDashboard leads={leads} onOpenOutreach={()=>openPanel("outreach")} showToast={showToast}/>;
+      if(view==="dashboard") return <SalesDashboard leads={leads} onOpenOutreach={()=>openPanel("outreach")} showToast={showToast} onOpenComms={()=>navTo("calls")}/>;
       if(view==="calls")     return <SalesCalls showToast={showToast}/>;
       if(view==="finder")    return <LeadFinder onAddLead={addLead} showToast={showToast}/>;
       if(view==="proposals") return <ProposalGenerator showToast={showToast}/>;
-      if(view==="leads")     return <SalesLeadsList leads={leads} showToast={showToast}/>;
+      if(view==="leads")     return <SalesLeadsList leads={leads} showToast={showToast} onOpenComms={()=>navTo("calls")}/>;
       if(view==="activity")  return <SalesActivity/>;
     }
     if(role==="scriptwriter"){
