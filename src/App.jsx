@@ -622,12 +622,12 @@ const INIT_NOTIFS = [
 ];
 
 const INIT_THREADS = [
-  {id:1,name:"Carlos V.",role:"Account Manager",color:"#3B82F6",last:"Your March content plan is looking great!",time:"11 min",unread:2,
-   messages:[{id:1,from:"Carlos V.",mine:false,text:"Hey! Your March content plan is looking great. 8 videos lined up.",time:"11 min ago"},{id:2,from:"Carlos V.",mine:false,text:"The listing showcase for 4821 Cactus is going into editing today.",time:"10 min ago"}]},
-  {id:2,name:"Maya R.",role:"Script Writer",color:"#A855F7",last:"I've drafted the neighborhood spotlight script!",time:"1 hr",unread:1,
-   messages:[{id:1,from:"Maya R.",mine:false,text:"I've drafted the script for your neighborhood spotlight reel — take a look!",time:"1 hr ago"}]},
+  {id:1,name:"Carlos V.",role:"Account Manager",color:"#3B82F6",last:"The listing showcase is going into editing today.",time:"11 min",unread:2,
+   messages:[{id:1,from:"Carlos V.",mine:false,text:"Hey! Your March content plan for @Desert Sun Realty is looking great. 8 videos lined up.",time:"11 min ago"},{id:2,from:"Carlos V.",mine:false,text:"The @Listing Showcase for 4821 Cactus is going into editing today. @Jordan T. is on it.",time:"10 min ago"}]},
+  {id:2,name:"Maya R.",role:"Script Writer",color:"#A855F7",last:"Drafted the neighborhood spotlight script!",time:"1 hr",unread:1,
+   messages:[{id:1,from:"Maya R.",mine:false,text:"I've drafted the script for @Neighborhood Spotlight — take a look when you get a chance!",time:"1 hr ago"},{id:2,from:"Maya R.",mine:false,text:"Also working on the @Day in the Life script for @Frost Barbershop next.",time:"45 min ago"}]},
   {id:3,name:"Jordan T.",role:"Video Editor",color:"#22C55E",last:"Sold! Desert View is ready for approval.",time:"2 hr",unread:0,
-   messages:[{id:1,from:"Jordan T.",mine:false,text:"The 'Sold! 3901 Desert View' video is ready for your approval.",time:"2 hr ago"},{id:2,from:"Me",mine:true,text:"Looks amazing! Approved 👍",time:"1 hr ago"},{id:3,from:"Jordan T.",mine:false,text:"Perfect, scheduling it for tomorrow morning.",time:"58 min ago"}]},
+   messages:[{id:1,from:"Jordan T.",mine:false,text:"The @Testimonial Reel for @Desert Sun Realty is ready for your review.",time:"2 hr ago"},{id:2,from:"Me",mine:true,text:"Looks amazing! Approved. Can you also prep for the @Mar 20 Shoot — Desert Sun session?",time:"1 hr ago"},{id:3,from:"Jordan T.",mine:false,text:"Already on it. I'll have the shot list ready by tonight.",time:"58 min ago"}]},
 ];
 
 const AD_SPEND_DATA = [
@@ -1480,7 +1480,7 @@ function MessagingPanel({ threads, onSend }) {
           {t.messages.map(m => (
             <div key={m.id} className={`chat-msg ${m.mine?"mine":""}`}>
               {!m.mine && <div className="row-avatar" style={{background:`${t.color}20`,color:t.color,width:28,height:28,borderRadius:7,fontSize:11}}>{t.name[0]}</div>}
-              <div><div className="chat-bubble">{m.text}</div><div className="chat-time">{m.time}</div></div>
+              <div><div className="chat-bubble">{m.text.split(/(@[^@]+?\s)/g).map((part,i)=>part.startsWith("@")?<span key={i} style={{background:m.mine?'rgba(255,255,255,0.25)':'var(--accent-dim)',color:m.mine?'white':'var(--accent)',padding:'1px 6px',borderRadius:4,fontWeight:600,fontSize:12}}>{part.trim()}</span>:part)}</div><div className="chat-time">{m.time}</div></div>
             </div>
           ))}
           <div ref={messagesEndRef}/>
@@ -1514,11 +1514,63 @@ function MessagingPanel({ threads, onSend }) {
 
 function ChatInput({ onSend }) {
   const [val, setVal] = useState("");
-  const send = () => { if(val.trim()){onSend(val.trim());setVal("");} };
+  const [showTags, setShowTags] = useState(false);
+  const [tagFilter, setTagFilter] = useState("");
+
+  const tagItems = [
+    {type:"client",items:["Frost Barbershop","Desert Sun Realty","Cactus CrossFit","Mesa Auto Detailing","Sky Harbor Dental","Tempe Taqueria"]},
+    {type:"project",items:["Day in the Life","Listing Showcase","Testimonial Reel","Spring Detail Special","Member Transformation"]},
+    {type:"shoot",items:["Mar 19 Shoot — Frost","Mar 20 Shoot — Desert Sun","Mar 22 Shoot — Desert Sun","Mar 24 Shoot — Sky Harbor"]},
+    {type:"campaign",items:["Spring Detail Special (Ads)","New Listing Ads","Grand Opening","Membership Drive","Invisalign Leads"]},
+  ];
+
+  const allTags = tagItems.flatMap(g=>g.items.map(i=>({label:i,type:g.type})));
+  const filteredTags = tagFilter ? allTags.filter(t=>t.label.toLowerCase().includes(tagFilter.toLowerCase())) : allTags;
+
+  const insertTag = (tag) => {
+    const before = val.substring(0, val.lastIndexOf("@"));
+    setVal(before + `@${tag.label} `);
+    setShowTags(false);
+    setTagFilter("");
+  };
+
+  const handleChange = (e) => {
+    const v = e.target.value;
+    setVal(v);
+    const lastAt = v.lastIndexOf("@");
+    if (lastAt >= 0 && lastAt === v.length - 1) {
+      setShowTags(true);
+      setTagFilter("");
+    } else if (lastAt >= 0 && !v.substring(lastAt).includes(" ")) {
+      setShowTags(true);
+      setTagFilter(v.substring(lastAt + 1));
+    } else {
+      setShowTags(false);
+    }
+  };
+
+  const send = () => { if(val.trim()){onSend(val.trim());setVal("");setShowTags(false);} };
+
   return (
-    <div className="chat-input-bar">
-      <textarea className="chat-input" placeholder="Message..." value={val} rows={1} onChange={e=>setVal(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}}/>
-      <button className="chat-send-btn" onClick={send}>↑</button>
+    <div style={{position:'relative'}}>
+      {showTags && (
+        <div style={{position:'absolute',bottom:'100%',left:14,right:14,maxHeight:220,overflowY:'auto',background:'rgba(255,255,255,0.97)',border:'1px solid var(--border2)',borderRadius:12,boxShadow:'0 -8px 30px rgba(0,0,0,0.12)',backdropFilter:'blur(20px)',marginBottom:4,padding:6}}>
+          <div style={{padding:'6px 10px',font:'600 9px var(--fd)',textTransform:'uppercase',letterSpacing:1,color:'var(--text3)'}}>Tag a client, project, shoot, or campaign</div>
+          {filteredTags.slice(0,10).map((t,i)=>(
+            <div key={i} style={{display:'flex',alignItems:'center',gap:10,padding:'8px 12px',borderRadius:8,cursor:'pointer',transition:'background 0.1s'}}
+              onMouseEnter={e=>e.currentTarget.style.background='var(--accent-dim)'} onMouseLeave={e=>e.currentTarget.style.background='none'}
+              onClick={()=>insertTag(t)}>
+              <Badge type={t.type==="client"?"blue":t.type==="project"?"purple":t.type==="shoot"?"green":"amber"}>{t.type}</Badge>
+              <span style={{font:'400 13px var(--fb)',color:'var(--text)'}}>{t.label}</span>
+            </div>
+          ))}
+          {filteredTags.length===0 && <div style={{padding:'12px',font:'400 12px var(--fb)',color:'var(--text3)',textAlign:'center'}}>No matches</div>}
+        </div>
+      )}
+      <div className="chat-input-bar">
+        <textarea className="chat-input" placeholder="Message... (type @ to tag)" value={val} rows={1} onChange={handleChange} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}if(e.key==="Escape")setShowTags(false);}}/>
+        <button className="chat-send-btn" onClick={send}>↑</button>
+      </div>
     </div>
   );
 }
