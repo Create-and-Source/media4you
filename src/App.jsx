@@ -585,8 +585,8 @@ const SALES_ACTIVITY_LOG = [
   {id:10,type:"Deals",text:<><strong>Jade</strong> updated pricing for <strong>Scottsdale Med Spa</strong> proposal</>,time:"2 days ago",icon:"💰",color:"var(--accent)"},
 ];
 
-const STATUS_FLOW = {"Raw Footage":"Editing","Editing":"Review","Review":"Approved","Approved":"Scheduled"};
-const VID_STATUS_COLOR = {"Review":"amber","Editing":"blue","Raw Footage":"gray","Approved":"green","Scheduled":"purple"};
+const STATUS_FLOW = {"Raw Footage":"Editing","Editing":"Review","Review":"Approved","Approved":"Scheduled","Scheduled":"Published"};
+const VID_STATUS_COLOR = {"Review":"amber","Editing":"blue","Raw Footage":"gray","Approved":"green","Scheduled":"purple","Published":"green"};
 
 // ─── AI HELPER ────────────────────────────────────────────────────────────────
 async function callClaude(prompt) {
@@ -2453,11 +2453,14 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
 
   // Merge scripts + videos into unified items
   const allItems = [
-    ...scripts.map(s => ({
-      id:`s-${s.id}`, sourceId:s.id, type:"script", client:s.client, title:s.type,
-      status: s.status==="Assigned"||s.status==="In Progress"||s.status==="Needs Revision" ? "Scripting" : s.status==="Submitted" ? "Review" : "Scripting",
-      due:s.due, priority:s.priority, thumb:"✍️", source:s,
-    })),
+    ...scripts.map(s => {
+      const stageMap = {"Assigned":"Scripting","In Progress":"Scripting","Needs Revision":"Scripting","Submitted":"Review","Approved":"Approved","Scheduled":"Scheduled","Published":"Published"};
+      return {
+        id:`s-${s.id}`, sourceId:s.id, type:"script", client:s.client, title:s.type,
+        status: stageMap[s.status] || "Scripting",
+        due:s.due, priority:s.priority, thumb:"✍️", source:s,
+      };
+    }),
     ...videos.map(v => ({
       id:`v-${v.id}`, sourceId:v.id, type:"video", client:v.client, title:v.title,
       status: v.status==="Raw Footage" ? "Editing" : v.status,
@@ -2479,9 +2482,12 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
     if (stageIdx < PIPELINE_STAGES.length - 1) {
       const nextStage = PIPELINE_STAGES[stageIdx + 1];
       if (item.type === "video") {
-        onAdvanceVideo(item.sourceId);
+        // Directly set the video status to the pipeline stage name
+        onAdvanceVideo(item.sourceId, nextStage);
       } else {
-        onUpdateScript(item.sourceId, nextStage === "Review" ? "Submitted" : "In Progress", item.source.draft);
+        // Map pipeline stages to script statuses
+        const scriptStatus = nextStage === "Scripting" ? "Assigned" : nextStage === "Editing" ? "In Progress" : nextStage === "Review" ? "Submitted" : nextStage;
+        onUpdateScript(item.sourceId, scriptStatus, item.source.draft);
       }
       showToast(STAGE_ICONS[nextStage], "Moved to " + nextStage, item.title);
     }
@@ -2915,7 +2921,7 @@ export default function App() {
   const openPanel = (p,data=null) => { setPanel(p);setPanelData(data); };
   const closePanel = () => { setPanel(null);setPanelData(null); };
 
-  const advanceVideo = (id) => setVideos(p=>p.map(v=>v.id===id&&STATUS_FLOW[v.status]?{...v,status:STATUS_FLOW[v.status]}:v));
+  const advanceVideo = (id, directStatus) => setVideos(p=>p.map(v=>v.id===id?{...v,status:directStatus||STATUS_FLOW[v.status]||v.status}:v));
   const scheduleVideo = (id) => {
     const v = videos.find(v=>v.id===id);
     setVideos(p=>p.map(v=>v.id===id?{...v,status:"Scheduled"}:v));
