@@ -29,7 +29,7 @@ const styles = `
     --shadow-sm: 0 2px 12px rgba(0,0,0,0.05);
     --fd: 'Montserrat', sans-serif;
     --fb: 'Lato', sans-serif;
-    --bnav: 64px;
+    --sidebar: 240px;
   }
 
   html, body {
@@ -52,68 +52,128 @@ const styles = `
     z-index: 0;
   }
 
-  .app { display:flex; flex-direction:column; height:100dvh; overflow:hidden; position:relative; z-index:1; }
+  .app { display:flex; height:100dvh; overflow:hidden; position:relative; z-index:1; }
+
+  /* ═══ SIDEBAR ═══ */
+  .sidebar {
+    width: var(--sidebar); height:100vh; position:fixed; left:0; top:0;
+    background: #111111; display:flex; flex-direction:column;
+    transition: all 0.3s ease; z-index:100; flex-shrink:0;
+  }
+  .sidebar-logo {
+    padding:20px 20px; border-bottom:1px solid #222;
+    display:flex; align-items:center; gap:12px; min-height:68px;
+  }
+  .sidebar-logo-icon {
+    width:34px; height:34px; border-radius:10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display:flex; align-items:center; justify-content:center;
+    color:white; font:700 14px var(--fd); flex-shrink:0;
+  }
+  .sidebar-logo-text { font:600 14px var(--fd); color:#fff; line-height:1.2; }
+  .sidebar-logo-sub { font:400 11px var(--fb); color:#888; }
+  .sidebar-nav { flex:1; overflow-y:auto; padding:12px 12px; }
+  .sidebar-section { font:500 10px var(--fd); text-transform:uppercase; letter-spacing:1.2px; color:#888; padding:0 16px 6px; }
+  .sidebar-section-group { margin-bottom:16px; }
+  .sidebar-link {
+    display:flex; align-items:center; gap:12px; padding:10px 16px;
+    border-radius:8px; text-decoration:none; transition:all 0.15s;
+    font:400 13px var(--fb); color:#aaa; cursor:pointer; border:none; background:none; width:100%;
+  }
+  .sidebar-link:hover { background:#1a1a1a; color:#ccc; }
+  .sidebar-link.active { background:rgba(252,198,18,0.15); color:var(--accent); font-weight:500; }
+  .sidebar-link-icon { flex-shrink:0; display:flex; font-size:16px; width:20px; justify-content:center; }
+  .sidebar-link-badge { margin-left:auto; background:var(--red); color:white; font-size:9px; font-weight:700; padding:1px 6px; border-radius:8px; min-width:16px; text-align:center; }
+  .sidebar-footer { padding:12px; border-top:1px solid #222; }
+  .sidebar-role-btn {
+    display:flex; align-items:center; gap:10px; width:100%;
+    padding:10px 16px; background:transparent; border:none; border-radius:8px;
+    cursor:pointer; font:400 13px var(--fb); color:#888; transition:all 0.15s;
+  }
+  .sidebar-role-btn:hover { background:#1a1a1a; color:#ccc; }
+  .sidebar-role-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+  /* ═══ MAIN AREA ═══ */
+  .main-area {
+    margin-left: var(--sidebar); flex:1; display:flex; flex-direction:column;
+    min-height:100vh; transition: margin-left 0.25s cubic-bezier(0.16,1,0.3,1);
+    position:relative; z-index:1;
+  }
 
   /* TOPBAR */
   .topbar {
-    display:flex; align-items:center; justify-content:space-between;
-    padding:0 16px; height:56px;
-    background: rgba(255,255,255,0.9);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    flex-shrink:0; gap:8px;
-    box-shadow: 0 1px 20px rgba(0,0,0,0.06);
+    position:sticky; top:0; z-index:50; height:56px;
+    background: rgba(245,243,239,0.6);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+    padding:0 32px; display:flex; align-items:center; justify-content:flex-end; gap:12px;
+    flex-shrink:0;
   }
-  .t-left { display:flex; align-items:center; gap:8px; min-width:0; }
-  .t-logo { font-family:var(--fd); font-size:19px; font-weight:700; white-space:nowrap; flex-shrink:0; letter-spacing:0.3px; color:var(--text); }
-  .t-logo span { color:var(--accent); }
-  .t-sep { color:var(--text3); flex-shrink:0; }
-  .t-title { font-size:13px; font-weight:400; color:var(--text2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:0.2px; }
-  .t-right { display:flex; align-items:center; gap:7px; flex-shrink:0; }
-  .role-chip {
-    display:flex; align-items:center; gap:6px; padding:5px 12px 5px 8px;
-    background: var(--surface); border:1px solid var(--border2); border-radius:20px;
-    cursor:pointer; font-size:11px; color:var(--text2); font-weight:500;
-    backdrop-filter: blur(10px); box-shadow: var(--shadow-sm);
-  }
-  .chip-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .topbar-date { font:400 12px 'JetBrains Mono', monospace; color:#aaa; letter-spacing:0.5px; }
+  .topbar-divider { width:1px; height:20px; background:rgba(0,0,0,0.08); }
+  .t-right { display:flex; align-items:center; gap:12px; flex-shrink:0; }
   .bell-btn {
     position:relative; width:34px; height:34px; border-radius:10px;
     border:1px solid var(--border2);
-    background: var(--surface);
+    background: rgba(255,255,255,0.5);
     backdrop-filter: blur(10px);
     display:flex; align-items:center; justify-content:center; font-size:15px; cursor:pointer; flex-shrink:0;
-    box-shadow: var(--shadow-sm);
+    transition:all 0.2s;
   }
+  .bell-btn:hover { background:rgba(255,255,255,0.8); }
   .bell-dot { position:absolute; top:6px; right:6px; width:6px; height:6px; border-radius:50%; background:var(--red); border:1.5px solid #fff; }
   .top-action-btn {
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     border:none; color:white; font-size:11px; font-weight:600; font-family:var(--fb);
-    padding:0 14px; height:34px; border-radius:20px; cursor:pointer; white-space:nowrap;
-    box-shadow: 0 4px 14px rgba(252,198,18,0.35); letter-spacing:0.2px;
+    padding:0 16px; height:34px; border-radius:100px; cursor:pointer; white-space:nowrap;
+    box-shadow: 0 4px 14px rgba(252,198,18,0.35); letter-spacing:0.2px; transition:all 0.2s;
   }
+  .top-action-btn:hover { box-shadow: 0 6px 20px rgba(252,198,18,0.45); transform:translateY(-1px); }
 
   /* CONTENT */
-  .content { flex:1; overflow-y:auto; padding:14px; padding-bottom:calc(var(--bnav) + 14px); }
+  .content { flex:1; overflow-y:auto; padding:32px 36px; max-width:1400px; animation:fadeIn 0.4s cubic-bezier(0.16,1,0.3,1); }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 
-  /* BOTTOM NAV */
-  .bnav {
-    position:fixed; bottom:0; left:0; right:0; height:var(--bnav);
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border-top:1px solid var(--border);
-    display:flex; align-items:stretch; z-index:100;
-    padding-bottom:env(safe-area-inset-bottom);
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+  /* ═══ DASHBOARD ANIMATIONS ═══ */
+  @keyframes dashFadeInUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
   }
-  .bnav-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:8px 2px; cursor:pointer; position:relative; }
-  .bnav-icon { font-size:18px; line-height:1; }
-  .bnav-label { font-size:9px; color:var(--text3); font-weight:500; text-transform:uppercase; letter-spacing:0.6px; transition:color 0.15s; }
-  .bnav-item.active .bnav-label { color:var(--accent); }
-  .bnav-item.active::after { content:''; position:absolute; top:0; left:25%; right:25%; height:2px; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:0 0 3px 3px; }
-  .bnav-badge { position:absolute; top:5px; right:calc(50% - 16px); background:var(--red); color:white; font-size:8px; font-weight:700; padding:1px 4px; border-radius:8px; min-width:14px; text-align:center; }
+  @keyframes dashCountUp {
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .dash-card-hover { transition:all 0.3s cubic-bezier(0.16,1,0.3,1); }
+  .dash-card-hover:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.03); }
+
+  /* Mobile menu button (hidden on desktop) */
+  .mobile-menu-btn {
+    display:none; background:none; border:none; cursor:pointer; color:#666; padding:4px;
+    flex-shrink:0; margin-right:4px;
+  }
+
+  /* Mobile overlay */
+  .mobile-sidebar-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.3);
+    backdrop-filter:blur(4px); z-index:199;
+  }
+  .mobile-sidebar {
+    width:260px; height:100vh; position:fixed; left:0; top:0;
+    background:#111; display:flex; flex-direction:column; z-index:200;
+    box-shadow:4px 0 24px rgba(0,0,0,0.2);
+  }
+
+  @media (max-width: 860px) {
+    .sidebar { display:none; }
+    .mobile-menu-btn { display:flex; }
+    .main-area { margin-left:0 !important; }
+    .topbar { padding:0 14px; justify-content:space-between; }
+    .content { padding:14px 12px; }
+  }
+  @media (max-width: 768px) {
+    .topbar { height:46px; }
+    .topbar-date, .topbar-divider { display:none; }
+  }
 
   /* OVERLAY / SHEETS */
   .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:200; display:flex; align-items:flex-end; }
@@ -130,9 +190,13 @@ const styles = `
   .sheet-sub { font-size:12px; color:var(--text2); margin-bottom:16px; }
 
   /* FULL SCREEN PANELS */
-  .full-panel { position:fixed; inset:0; top:56px; background:var(--bg); z-index:150; display:flex; flex-direction:column; animation:slideUp 0.22s ease; }
-  .full-panel-scroll { flex:1; overflow-y:auto; padding:14px; padding-bottom:calc(var(--bnav)+14px); }
+  .full-panel { position:fixed; top:56px; right:0; bottom:0; left:var(--sidebar); background:var(--bg); z-index:150; display:flex; flex-direction:column; animation:slideUp 0.22s ease; }
+  .full-panel-scroll { flex:1; overflow-y:auto; padding:32px 36px; }
   @keyframes slideUp { from { transform:translateY(10px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+  @media (max-width: 860px) {
+    .full-panel { left:0; }
+    .full-panel-scroll { padding:14px; }
+  }
 
   /* AI COMPONENTS */
   .ai-btn {
@@ -195,13 +259,15 @@ const styles = `
   .outreach-text { font-size:13px; color:var(--text); line-height:1.7; white-space:pre-wrap; }
 
   /* MESSAGING */
-  .msg-panel { position:fixed; inset:0; top:56px; background:var(--bg); z-index:150; display:flex; flex-direction:column; animation:slideUp 0.2s ease; }
+  .msg-panel { position:fixed; top:56px; right:0; bottom:0; left:var(--sidebar); background:var(--bg); z-index:150; display:flex; flex-direction:column; animation:slideUp 0.2s ease; }
+  @media (max-width:860px) { .msg-panel { left:0; } }
   .msg-top { padding:14px 16px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.9); backdrop-filter:blur(20px); flex-shrink:0; display:flex; align-items:center; justify-content:space-between; }
   .msg-thread-list { flex:1; overflow-y:auto; padding:14px; }
   .msg-thread-item { display:flex; gap:11px; padding:13px 14px; background:var(--surface); border:1px solid var(--border); border-radius:14px; margin-bottom:8px; cursor:pointer; backdrop-filter:blur(12px); box-shadow:var(--shadow-sm); transition:all 0.15s; }
   .msg-thread-item:active { box-shadow:0 4px 20px rgba(252,198,18,0.15); }
   .msg-thread-item.unread { border-left:3px solid var(--accent); }
-  .chat-view { position:fixed; inset:0; top:56px; background:var(--bg); z-index:160; display:flex; flex-direction:column; animation:slideUp 0.15s ease; }
+  .chat-view { position:fixed; top:56px; right:0; bottom:0; left:var(--sidebar); background:var(--bg); z-index:160; display:flex; flex-direction:column; animation:slideUp 0.15s ease; }
+  @media (max-width:860px) { .chat-view { left:0; } }
   .chat-header { padding:12px 14px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.9); backdrop-filter:blur(20px); display:flex; align-items:center; gap:10px; flex-shrink:0; }
   .chat-messages { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; }
   .chat-msg { display:flex; gap:8px; max-width:85%; }
@@ -403,7 +469,8 @@ const styles = `
   .ct-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; }
   .ct-value { font-family:var(--fd); font-size:18px; font-weight:600; color:var(--text); }
 
-  .toast { position:fixed; top:64px; left:14px; right:14px; background:rgba(255,255,255,0.97); border:1px solid var(--border2); border-radius:14px; padding:12px 16px; z-index:400; display:flex; align-items:center; gap:10px; box-shadow:0 8px 40px rgba(0,0,0,0.1); animation:toastIn 0.2s ease; backdrop-filter:blur(20px); }
+  .toast { position:fixed; top:64px; left:calc(var(--sidebar) + 14px); right:14px; background:rgba(255,255,255,0.97); border:1px solid var(--border2); border-radius:14px; padding:12px 16px; z-index:400; display:flex; align-items:center; gap:10px; box-shadow:0 8px 40px rgba(0,0,0,0.1); animation:toastIn 0.2s ease; backdrop-filter:blur(20px); max-width:500px; }
+  @media (max-width:860px) { .toast { left:14px; } }
   @keyframes toastIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
   .toast-icon { font-size:18px; flex-shrink:0; }
   .toast-text { font-size:13px; font-weight:500; color:var(--text); }
@@ -522,19 +589,121 @@ const STATUS_FLOW = {"Raw Footage":"Editing","Editing":"Review","Review":"Approv
 const VID_STATUS_COLOR = {"Review":"amber","Editing":"blue","Raw Footage":"gray","Approved":"green","Scheduled":"purple"};
 
 // ─── AI HELPER ────────────────────────────────────────────────────────────────
-async function callClaude(prompt, systemPrompt = "") {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      system: systemPrompt || "You are an AI assistant for Media4You, a social media marketing agency in Arizona that produces short-form video content for local businesses. Be concise, punchy, and practical.",
-      messages: [{ role: "user", content: prompt }]
-    })
-  });
-  const data = await response.json();
-  return data.content?.[0]?.text || "";
+async function callClaude(prompt) {
+  // Demo mode: simulate AI generation with realistic content
+  await new Promise(r => setTimeout(r, 800 + Math.random() * 1200));
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+  // Extract common fields from prompt
+  const clientMatch = prompt.match(/Client:\s*(.+)/i);
+  const client = clientMatch ? clientMatch[1].split("(")[0].trim() : "the business";
+  const industryMatch = prompt.match(/\(([^)]+)\s+in\s+Arizona\)/i) || prompt.match(/Industry:\s*(.+)/i);
+  const industry = industryMatch ? industryMatch[1].trim() : "local business";
+
+  // ── CONTENT IDEAS (expects JSON array) ──
+  if (prompt.includes("video content ideas") && prompt.includes("JSON array")) {
+    const types = ["Behind the Scenes","Before/After","Educational","Testimonial","Day in the Life","Trending","Promotional","Story"];
+    const ideaTemplates = [
+      {t:"Day in the Life",d:`Follow the team at ${client} through a packed Arizona morning. Capture the energy, the hustle, and the little moments that make this place special.`,h:`Ever wonder what happens before ${client} opens the doors?`},
+      {t:"Before & After Reveal",d:`Show a dramatic transformation from start to finish. Quick cuts building anticipation, then the jaw-dropping final reveal.`,h:"Wait for the reveal at the end... trust me."},
+      {t:"Client Reaction",d:`Film a genuine client seeing their results for the first time at ${client}. Raw reactions, no scripts, just real emotion.`,h:"Watch their face when they see the results..."},
+      {t:"Meet the Team",d:`Quick personality intros of the crew at ${client}. Fun questions, hot takes, and why they love what they do in Arizona.`,h:"The people behind ${client} are NOT what you'd expect."},
+      {t:"Arizona Hidden Gem",d:`Position ${client} as one of Arizona's best-kept secrets. Tour the space, highlight what makes them unique in the Valley.`,h:"Arizona locals — you need to know about this place."},
+      {t:"Process Breakdown",d:`Break down exactly how ${client} delivers their service step by step. Educational but entertaining with fast cuts and text overlays.`,h:"Here's exactly how ${client} does it (most people have no idea)."},
+      {t:"5 Things You Didn't Know",d:`Five surprising facts about ${client} or their ${industry} craft. Quick-hit format with one fact per scene.`,h:"5 things you didn't know about ${client}..."},
+      {t:"Customer Story Spotlight",d:`Tell a real customer's story — the problem they had, how ${client} solved it, and the outcome. Mini-documentary style.`,h:"This customer drove 45 minutes just for ${client}. Here's why."},
+      {t:"Trending Sound Remix",d:`Take a trending audio and put a ${industry} spin on it. Relatable humor meets real business moments.`,h:"When the trending sound fits perfectly..."},
+      {t:"Saturday Rush",d:`Capture the energy of ${client}'s busiest time. Fast cuts, great music, the chaos and craft of a packed day.`,h:"This is what a Saturday at ${client} looks like."},
+    ];
+    const shuffled = ideaTemplates.sort(() => Math.random() - 0.5).slice(0, 8);
+    return JSON.stringify(shuffled.map((idea, i) => ({
+      title: idea.t,
+      description: idea.d,
+      type: types[i % types.length],
+      hook: idea.h
+    })));
+  }
+
+  // ── CONTENT CALENDAR (expects JSON array) ──
+  if (prompt.includes("content calendar") && prompt.includes("JSON array")) {
+    const entries = [];
+    const clientsMatch = prompt.match(/- (.+)/g) || [];
+    const parsedClients = clientsMatch.map(c => {
+      const name = c.replace("- ","").split("(")[0].trim();
+      return name;
+    });
+    const types = ["Behind the Scenes","Before/After","Educational","Testimonial","Day in the Life","Promotional"];
+    const titles = ["Spring Lineup Feature","Transformation Tuesday","Meet the Team","Client Spotlight","Arizona Vibes","Weekend Recap","How It's Done","5 Things You Didn't Know"];
+    let id = 1;
+    for (let day = 1; day <= 28; day += 3) {
+      const cl = parsedClients[id % parsedClients.length] || "Client";
+      entries.push({
+        date: `Apr ${day}`, client: cl, title: pick(titles),
+        type: pick(types), description: `Engaging ${pick(types).toLowerCase()} content showcasing what makes ${cl} stand out in the Arizona market. Quick cuts, great energy, and a strong hook to stop the scroll.`,
+        platform: "Instagram Reel", time: pick(["9:00 AM","10:00 AM","11:00 AM","12:00 PM"])
+      });
+      id++;
+    }
+    return JSON.stringify(entries);
+  }
+
+  // ── CAPTION ──
+  if (prompt.includes("Instagram caption")) {
+    const descMatch = prompt.match(/Video description:\s*(.+)/i);
+    const desc = descMatch ? descMatch[1].trim() : "content";
+    const captions = [
+      `This is what happens when you let the pros handle it. ${client} never misses. Drop a 🔥 if you agree.\n\n#Arizona #AZBusiness #${client.replace(/\s+/g,"")} #SmallBusiness #ContentCreator #ReelsOfInstagram #SupportLocal #ScottsdaleAZ #PhoenixBusiness #VideoMarketing`,
+      `POV: You just found your new favorite ${industry} spot in Arizona. You're welcome. Link in bio to book.\n\n#ArizonaLife #LocalBusiness #${client.replace(/\s+/g,"")} #PhoenixAZ #ContentDay #ReelTrending #ShopLocal #AZLocal #BehindTheScenes #SmallBizLove`,
+      `Still thinking about this one. ${client} really outdid themselves and we caught every second of it. Tap that follow for more.\n\n#${client.replace(/\s+/g,"")} #ArizonaBusiness #ContentCreation #Reels #SocialMediaMarketing #AZLife #VideoContent #LocalLove #MarketingAgency #Media4You`,
+    ];
+    return pick(captions);
+  }
+
+  // ── OUTREACH MESSAGE ──
+  if (prompt.includes("outreach") && (prompt.includes("DM") || prompt.includes("email") || prompt.includes("channel"))) {
+    const leadMatch = prompt.match(/Lead business:\s*(.+)/i);
+    const lead = leadMatch ? leadMatch[1].trim() : "your business";
+    const isDM = prompt.includes("Instagram DM");
+    if (isDM) {
+      return pick([
+        `Hey! 👋 I've been following ${lead} and love what you're doing in the ${industry} space here in AZ. We help businesses like yours create scroll-stopping Reels that actually drive traffic. Would you be open to a quick 10-min call this week to see if we're a fit?`,
+        `Hi there! Came across ${lead} and had to reach out. We work with Arizona ${industry} businesses on their social media content and I think there's a huge opportunity for your brand on Reels. Would love to chat for a few minutes if you're open to it!`,
+        `Hey! 🙌 Big fan of what ${lead} is building. We're a local AZ content agency and we've helped similar ${industry} businesses grow their Instagram by 3-5x with short-form video. Want to hop on a quick call to see if it makes sense for you?`,
+      ]);
+    }
+    return pick([
+      `Subject: Quick idea for ${lead}'s social media\n\nHi there,\n\nI came across ${lead} and was really impressed with what you're building in the Arizona ${industry} space. I run Media4You, a local content agency that specializes in short-form video for businesses like yours.\n\nWe've helped several ${industry} businesses in the Valley grow their social media presence with professional Reels that actually convert followers into customers. I'd love to share a few ideas specific to ${lead}.\n\nWould you be open to a quick 15-minute call this week? No pressure at all — just wanted to connect and see if there's a fit.\n\nBest,\nMedia4You Team`,
+      `Subject: Loved what I saw from ${lead}\n\nHi,\n\nI've been following ${lead} on social and your business clearly stands out in Arizona's ${industry} scene. That said, I think there's a massive opportunity to amplify your reach with consistent, high-quality Reels content.\n\nAt Media4You, we handle everything from strategy to filming to posting — so you can focus on running your business. We work with several Arizona businesses in similar industries and the results have been incredible.\n\nI'd love to grab 10 minutes on a call to share some ideas tailored to ${lead}. Would any time this week work?\n\nCheers,\nMedia4You Team`,
+    ]);
+  }
+
+  // ── SCRIPT (default) ──
+  const hookHintMatch = prompt.match(/Hook to use:\s*(.+)/i);
+  const hookHint = hookHintMatch ? hookHintMatch[1].trim() : "";
+  const hooks = [
+    `Stop scrolling — you NEED to see what ${client} just did.`,
+    `POV: You just walked into ${client} and your jaw dropped.`,
+    `This is why ${client} is blowing up in Arizona right now.`,
+    `Wait for it… ${client} does NOT disappoint.`,
+    `"No way they actually did this" — yes. Yes they did.`,
+  ];
+  const setups = [
+    `We spent the morning with ${client} and captured something special. Here's the behind-the-scenes look you've been asking for.`,
+    `${client} called us in for a full content day and we had to share this. The vibes were unreal from the moment we walked in.`,
+    `The team at ${client} has been working on something big and today we finally got to see it in action.`,
+  ];
+  const bodies = [
+    `Watch as the team brings their A-game from start to finish. Every single detail is dialed in — the craftsmanship, the energy, the results. This is what sets ${client} apart from everyone else in the Valley.`,
+    `From the setup to the final reveal, everything about this was next level. The attention to detail? Unmatched. The customer reactions? Priceless. ${client} doesn't just deliver — they over-deliver, every single time.`,
+    `We filmed the entire process so you could see exactly what makes ${client} different. No shortcuts, no compromises — just real professionals doing what they do best right here in Arizona.`,
+  ];
+  const ctas = [
+    `Follow ${client} for more and tap the link in bio to book yours today. Spots fill up fast — don't sleep on this.`,
+    `Drop a 🔥 if you want to see more content like this. Follow us and ${client} so you don't miss the next one.`,
+    `Tag someone who needs to see this. Follow for more Arizona business content and hit the link in bio to connect with ${client}.`,
+  ];
+  const hook = hookHint && !hookHint.toLowerCase().includes("create a strong") ? hookHint : pick(hooks);
+  return `HOOK (0–3 sec)\n${hook}\n\nSETUP (3–10 sec)\n${pick(setups)}\n\nBODY (10–40 sec)\n${pick(bodies)}\n\nCTA (40–50 sec)\n${pick(ctas)}`;
 }
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
@@ -1210,54 +1379,160 @@ function ChatInput({ onSend }) {
 // ─── ADMIN VIEWS ──────────────────────────────────────────────────────────────
 function AdminDashboard({ clients, onNav, onOpenIdeas, onOpenCalendar, onOpenClientDetail, showToast }) {
   const mrr = clients.reduce((s,c)=>s+c.mrr,0);
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const dateStr = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+
+  const glass = {
+    background:'rgba(255,255,255,0.6)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',
+    border:'1px solid rgba(255,255,255,0.65)',borderRadius:18,
+    boxShadow:'0 4px 24px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)',
+    transition:'all 0.3s cubic-bezier(0.16,1,0.3,1)',
+  };
+
+  const kpis = [
+    {label:"Active Clients",value:clients.filter(c=>c.status==="active").length,sub:"↑ +1 this month",icon:"👥"},
+    {label:"Monthly Revenue",value:`$${(mrr/1000).toFixed(1)}K`,sub:"↑ +$600 added",icon:"💰"},
+    {label:"Videos MTD",value:"23",sub:"↑ +5 vs last month",icon:"🎬"},
+    {label:"IG Scheduled",value:"14",sub:"Next post: Mar 18",icon:"📸"},
+  ];
+
   return (
     <div>
-      <div className="stats-grid">
-        <div className="stat-card"><div className="stat-label">Active Clients</div><div className="stat-value">{clients.filter(c=>c.status==="active").length}</div><div className="stat-sub">↑ +1 this month</div></div>
-        <div className="stat-card"><div className="stat-label">MRR</div><div className="stat-value">${(mrr/1000).toFixed(1)}K</div><div className="stat-sub">↑ +$600 added</div></div>
-        <div className="stat-card"><div className="stat-label">Videos MTD</div><div className="stat-value">23</div><div className="stat-sub">↑ +5 vs last mo</div></div>
-        <div className="stat-card"><div className="stat-label">IG Scheduled</div><div className="stat-value">14</div><div className="stat-sub">Next: Mar 18</div></div>
-      </div>
-      <div className="card" style={{background:"linear-gradient(135deg,rgba(255,92,0,0.08),rgba(253,128,64,0.06))",borderColor:"rgba(255,92,0,0.3)"}}>
-        <div style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700,color:"var(--accent)",marginBottom:10,textTransform:"uppercase",letterSpacing:"1px"}}>✨ AI Tools</div>
-        <div onClick={onOpenCalendar} className="ai-btn">
-          <div className="ai-btn-icon">📅</div>
-          <div><div className="ai-btn-text">Content Calendar</div><div className="ai-btn-sub">Generate April posting schedule for all clients</div></div>
+      {/* ═══ WELCOME HERO ═══ */}
+      <div style={{
+        ...glass, padding:'28px 32px', marginBottom:28,
+        background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',
+        borderLeft:'3px solid var(--accent)',
+        animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both',
+      }}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:16}}>
+          <div>
+            <h1 style={{font:'600 26px var(--fd)',color:'var(--text)',marginBottom:4,letterSpacing:'-0.3px'}}>{greeting}, team</h1>
+            <p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>{dateStr}</p>
+          </div>
+          <div className="dash-hero-right" style={{textAlign:'right'}}>
+            <div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.5,color:'var(--text3)',marginBottom:2}}>Monthly MRR</div>
+            <div style={{font:'600 24px var(--fd)',color:'var(--accent)'}}>${mrr.toLocaleString()}</div>
+          </div>
         </div>
-        <div onClick={()=>onNav("clients")} className="ai-btn">
-          <div className="ai-btn-icon">💡</div>
-          <div><div className="ai-btn-text">Video Ideas</div><div className="ai-btn-sub">Generate ideas for a specific client</div></div>
-        </div>
       </div>
-      <div className="card">
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-          <div className="card-title" style={{margin:0}}>MRR Growth</div>
-          <span style={{fontSize:12,fontWeight:700,color:"var(--green)"}}>+62% 6mo</span>
-        </div>
-        <ResponsiveContainer width="100%" height={110}>
-          <AreaChart data={MRR_DATA} margin={{top:4,right:4,left:-20,bottom:0}}>
-            <defs><linearGradient id="mg" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#FF5C00" stopOpacity={0.3}/><stop offset="95%" stopColor="#FF5C00" stopOpacity={0}/></linearGradient></defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E5" vertical={false}/>
-            <XAxis dataKey="month" tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
-            <YAxis tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false} tickFormatter={v=>`$${v/1000}K`}/>
-            <Tooltip content={<CustomTooltip/>}/>
-            <Area type="monotone" dataKey="mrr" stroke="#FF5C00" strokeWidth={2} fill="url(#mg)"/>
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-      <div className="card">
-        <div className="card-title">Clients — Tap row for details</div>
-        {clients.map(c => (
-          <div className="row-item" key={c.id} onClick={()=>onOpenClientDetail(c)} style={{cursor:"pointer"}}>
-            <div className="row-avatar" style={{background:`${c.color}20`,color:c.color}}>{c.name[0]}</div>
-            <div className="row-main"><div className="row-title">{c.name}</div><div className="row-sub">{c.stage} · Next {c.nextPost}</div></div>
-            <div className="row-right">
-              <Badge type={c.plan==="Pro"?"purple":c.plan==="Growth"?"blue":"gray"}>{c.plan}</Badge>
-              <span style={{fontSize:16,color:"var(--accent)",cursor:"pointer"}} onClick={(e)=>{e.stopPropagation();onOpenIdeas(c);}}>💡</span>
+
+      {/* ═══ KPI CARDS ═══ */}
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))',gap:16,marginBottom:28}}>
+        {kpis.map((k,idx)=>(
+          <div key={k.label} className="dash-card-hover" style={{
+            ...glass, padding:'24px 22px', cursor:'pointer',
+            animation:`dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) ${(idx+1)*80}ms backwards`,
+          }}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:14}}>
+              <div style={{width:40,height:40,borderRadius:12,background:'var(--accent-dim)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:18}}>
+                {k.icon}
+              </div>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" strokeWidth="2" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
             </div>
+            <div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.5,color:'var(--text3)',marginBottom:8}}>{k.label}</div>
+            <div style={{font:'600 32px var(--fd)',color:'var(--text)',marginBottom:6,letterSpacing:'-0.5px',animation:'dashCountUp 0.6s cubic-bezier(0.16,1,0.3,1) both'}}>{k.value}</div>
+            <div style={{font:'400 13px var(--fb)',color:'var(--text2)'}}>{k.sub}</div>
           </div>
         ))}
       </div>
+
+      {/* ═══ MAIN GRID ═══ */}
+      <div className="dash-main-grid" style={{display:'grid',gridTemplateColumns:'1.1fr 0.9fr',gap:20}}>
+
+        {/* LEFT: Clients */}
+        <div style={{...glass,overflow:'hidden',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) 400ms backwards'}}>
+          <div style={{padding:'18px 22px',borderBottom:'1px solid rgba(0,0,0,0.04)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <span style={{font:'600 15px var(--fd)',color:'var(--text)'}}>Clients</span>
+            <button onClick={()=>onNav("clients")} style={{padding:'5px 14px',borderRadius:100,border:'1px solid rgba(0,0,0,0.08)',background:'rgba(255,255,255,0.5)',font:'400 11px var(--fb)',color:'var(--text3)',cursor:'pointer',backdropFilter:'blur(8px)'}}>View All</button>
+          </div>
+          <div>
+            {clients.map((c,idx)=>(
+              <div key={c.id} className="dash-card-hover" onClick={()=>onOpenClientDetail(c)} style={{
+                margin:'6px 10px',padding:'14px 16px',borderRadius:14,
+                background:'rgba(255,255,255,0.4)',border:'1px solid rgba(0,0,0,0.02)',
+                display:'flex',alignItems:'center',gap:14,cursor:'pointer',
+                animation:`dashFadeInUp 0.4s cubic-bezier(0.16,1,0.3,1) ${500+idx*50}ms backwards`,
+              }}>
+                <div style={{width:40,height:40,borderRadius:12,background:`${c.color}15`,display:'flex',alignItems:'center',justifyContent:'center',color:c.color,font:'600 15px var(--fd)'}}>{c.name[0]}</div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{font:'500 14px var(--fd)',color:'var(--text)'}}>{c.name}</div>
+                  <div style={{font:'400 12px var(--fb)',color:'var(--text2)'}}>{c.industry} · {c.stage}</div>
+                </div>
+                <div style={{textAlign:'right',flexShrink:0}}>
+                  <div style={{font:'600 13px var(--fd)',color:'var(--text)',marginBottom:2}}>${c.mrr.toLocaleString()}</div>
+                  <Badge type={c.plan==="Pro"?"purple":c.plan==="Growth"?"blue":"gray"}>{c.plan}</Badge>
+                </div>
+                <span style={{fontSize:16,color:"var(--accent)",cursor:"pointer",flexShrink:0}} onClick={(e)=>{e.stopPropagation();onOpenIdeas(c);}}>💡</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN */}
+        <div style={{display:'flex',flexDirection:'column',gap:20}}>
+
+          {/* MRR Chart */}
+          <div style={{...glass,padding:'20px 22px',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) 480ms backwards'}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+              <div>
+                <div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.5,color:'var(--text3)',marginBottom:4}}>6-Month MRR Trend</div>
+                <div style={{font:'600 22px var(--fd)',color:'var(--text)',letterSpacing:'-0.3px'}}>${mrr.toLocaleString()}</div>
+              </div>
+              <div style={{padding:'4px 10px',borderRadius:100,background:'rgba(45,154,106,0.1)',font:'500 11px var(--fd)',color:'var(--green)'}}>+62%</div>
+            </div>
+            <ResponsiveContainer width="100%" height={90}>
+              <AreaChart data={MRR_DATA} margin={{top:4,right:4,left:-20,bottom:0}}>
+                <defs><linearGradient id="mg" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--accent2)" stopOpacity={0.3}/><stop offset="95%" stopColor="var(--accent2)" stopOpacity={0}/></linearGradient></defs>
+                <XAxis dataKey="month" tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
+                <Tooltip content={<CustomTooltip/>}/>
+                <Area type="monotone" dataKey="mrr" stroke="var(--accent2)" strokeWidth={2} fill="url(#mg)"/>
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* AI Tools */}
+          <div style={{...glass,padding:'20px 22px',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) 560ms backwards'}}>
+            <div style={{font:'600 15px var(--fd)',color:'var(--text)',marginBottom:14}}>AI Tools</div>
+            <div onClick={onOpenCalendar} className="ai-btn" style={{marginBottom:8}}>
+              <div className="ai-btn-icon">📅</div>
+              <div><div className="ai-btn-text">Content Calendar</div><div className="ai-btn-sub">Generate posting schedule</div></div>
+            </div>
+            <div onClick={()=>onOpenIdeas(clients[0])} className="ai-btn" style={{marginBottom:0}}>
+              <div className="ai-btn-icon">💡</div>
+              <div><div className="ai-btn-text">Video Ideas</div><div className="ai-btn-sub">AI ideas for {clients[0]?.name||"clients"}</div></div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div style={{...glass,padding:'20px 22px',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) 640ms backwards'}}>
+            <div style={{font:'600 15px var(--fd)',color:'var(--text)',marginBottom:14}}>Quick Actions</div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+              {[{label:'Add Client',icon:'👥',action:()=>showToast("✅","Add client","Use + Client button")},
+                {label:'Content Calendar',icon:'📅',action:onOpenCalendar},
+                {label:'View Revenue',icon:'💰',action:()=>onNav("revenue")},
+                {label:'Manage Ads',icon:'📢',action:()=>onNav("ads")}
+              ].map(a=>(
+                <button key={a.label} className="dash-card-hover" onClick={a.action} style={{
+                  padding:'14px 16px',background:'rgba(255,255,255,0.5)',border:'1px solid rgba(0,0,0,0.06)',
+                  borderRadius:12,cursor:'pointer',textAlign:'left',font:'500 13px var(--fb)',color:'var(--text)',
+                  display:'flex',alignItems:'center',gap:10,backdropFilter:'blur(8px)',transition:'all 0.25s cubic-bezier(0.16,1,0.3,1)',
+                }}>
+                  <span style={{opacity:0.7,fontSize:16}}>{a.icon}</span>{a.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @media (max-width:860px) {
+          .dash-main-grid { grid-template-columns:1fr !important; }
+          .dash-hero-right { display:none !important; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -1363,7 +1638,7 @@ function AdminSettings({ showToast }) {
 }
 
 // ─── ADMIN CLIENTS ────────────────────────────────────────────────────────
-function AdminClients({ clients, showToast }) {
+function AdminClients({ clients, showToast, onOpenIdeas }) {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedClient, setSelectedClient] = useState(null);
@@ -1423,8 +1698,9 @@ function AdminClients({ clients, showToast }) {
             </div>
           ))}
         </div>
+        {onOpenIdeas && <button className="btn primary full" style={{marginBottom:8}} onClick={()=>onOpenIdeas(c)}>💡 Generate AI Content Ideas</button>}
         <div style={{display:"flex",gap:8}}>
-          <button className="btn primary" style={{flex:1}} onClick={()=>showToast("✏️","Edit mode","Client details are now editable")}>Edit</button>
+          <button className="btn" style={{flex:1}} onClick={()=>showToast("✏️","Edit mode","Client details are now editable")}>Edit</button>
           <button className="btn" style={{flex:1}} onClick={()=>showToast("⏸️","Paused","Client account paused")}>Pause</button>
           <button className="btn" style={{flex:1}} onClick={()=>showToast("💬","Message sent","Notification sent to team")}>Message</button>
         </div>
@@ -1453,7 +1729,7 @@ function AdminClients({ clients, showToast }) {
             </div>
             <div className="row-right">
               <Badge type={c.plan==="Pro"?"purple":c.plan==="Growth"?"blue":"gray"}>{c.plan}</Badge>
-              <Badge type={c.status==="active"?"green":c.status==="onboarding"?"amber":"red"}>{c.status}</Badge>
+              {onOpenIdeas && <span style={{fontSize:16,color:"var(--accent)",cursor:"pointer"}} onClick={(e)=>{e.stopPropagation();onOpenIdeas(c);}}>💡</span>}
             </div>
           </div>
         ))}
@@ -1853,9 +2129,9 @@ function LeadDetailSheet({ lead, stage, onClose, showToast }) {
           </div>
         </div>
         <div style={{display:"flex",gap:8}}>
-          <button className="btn" style={{flex:1}} onClick={()=>{showToast("\ud83d\udcde","Calling...",lead.name);onClose();}}>\ud83d\udcde Call</button>
-          <button className="btn" style={{flex:1}} onClick={()=>{showToast("\ud83d\udce7","Email draft opened",lead.name);onClose();}}>\ud83d\udce7 Email</button>
-          {nextStage && <button className="btn primary" style={{flex:1}} onClick={()=>{showToast("\ud83d\udcca","Moved",lead.name+" \u2192 "+nextStage);onClose();}}>\u2192 {nextStage}</button>}
+          <button className="btn" style={{flex:1}} onClick={()=>{showToast("📞","Calling...",lead.name);onClose();}}>📞 Call</button>
+          <button className="btn" style={{flex:1}} onClick={()=>{showToast("📧","Email draft opened",lead.name);onClose();}}>📧 Email</button>
+          {nextStage && <button className="btn primary" style={{flex:1}} onClick={()=>{showToast("📊","Moved",lead.name+" → "+nextStage);onClose();}}>→ {nextStage}</button>}
         </div>
       </div>
     </div>
@@ -2457,7 +2733,7 @@ export default function App() {
 
     if(role==="admin"){
       if(view==="dashboard") return <AdminDashboard clients={clients} onNav={navTo} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} onOpenClientDetail={(c)=>openPanel("client-detail",c)} showToast={showToast}/>;
-      if(view==="clients")   return <AdminClients clients={clients} showToast={showToast}/>;
+      if(view==="clients")   return <AdminClients clients={clients} showToast={showToast} onOpenIdeas={(c)=>openPanel("ideas",c)}/>;
       if(view==="revenue")   return <AdminRevenue clients={clients}/>;
       if(view==="ads")       return <AdminAds showToast={showToast}/>;
       if(view==="settings")  return <AdminSettings showToast={showToast}/>;
@@ -2487,124 +2763,158 @@ export default function App() {
     return <div className="empty"><div className="empty-icon">🚧</div><div className="empty-title">Coming soon</div></div>;
   };
 
+  const [sidebarMobileOpen, setSidebarMobileOpen] = useState(false);
+
+  const SidebarContent = ({ mobile }) => (
+    <div className={mobile ? "mobile-sidebar" : "sidebar"}>
+      <div className="sidebar-logo">
+        <div className="sidebar-logo-icon">M</div>
+        <div>
+          <div className="sidebar-logo-text">MEDIA<span style={{color:"var(--accent)"}}>4</span>YOU</div>
+          <div className="sidebar-logo-sub">{roleInfo.label} View</div>
+        </div>
+      </div>
+      <nav className="sidebar-nav">
+        <div className="sidebar-section-group">
+          <div className="sidebar-section">Navigation</div>
+          {NAV_CONFIG[role].map(n=>(
+            <button key={n.view} className={`sidebar-link ${view===n.view&&!panel&&selScript===null?"active":""}`}
+              onClick={()=>{navTo(n.view);if(mobile)setSidebarMobileOpen(false);}}>
+              <span className="sidebar-link-icon">{n.icon}</span>
+              <span>{n.label}</span>
+              {n.badge && <span className="sidebar-link-badge">{n.badge}</span>}
+            </button>
+          ))}
+          <button className={`sidebar-link ${panel==="messages"?"active":""}`}
+            onClick={()=>{openPanel("messages");if(mobile)setSidebarMobileOpen(false);}}>
+            <span className="sidebar-link-icon">💬</span>
+            <span>Messages</span>
+            {unreadMsgs>0 && <span className="sidebar-link-badge">{unreadMsgs}</span>}
+          </button>
+        </div>
+      </nav>
+      <div className="sidebar-footer">
+        <button className="sidebar-role-btn" onClick={()=>setSheet(true)}>
+          <span className="sidebar-role-dot" style={{background:roleInfo.color}}/>
+          <span style={{flex:1,textAlign:"left"}}>{roleInfo.label}</span>
+          <span style={{fontSize:11,color:"#666"}}>{roleInfo.name}</span>
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <style>{styles}</style>
       <div className="app">
 
-        {/* TOPBAR */}
-        <div className="topbar">
-          <div className="t-left">
-            <div className="t-logo">MEDIA<span>4</span>YOU</div>
-            <div className="t-sep">·</div>
-            <div className="t-title">{currentTitle}</div>
+        {/* ═══ DESKTOP SIDEBAR ═══ */}
+        <SidebarContent />
+
+        {/* ═══ MOBILE SIDEBAR ═══ */}
+        {sidebarMobileOpen && <div className="mobile-sidebar-overlay" onClick={()=>setSidebarMobileOpen(false)}/>}
+        {sidebarMobileOpen && <SidebarContent mobile />}
+
+        {/* ═══ MAIN AREA ═══ */}
+        <div className="main-area">
+
+          {/* TOPBAR */}
+          <div className="topbar">
+            <button className="mobile-menu-btn" onClick={()=>setSidebarMobileOpen(true)}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div className="t-right">
+              {panel ? (
+                <button className="btn back" style={{margin:0,padding:"5px 14px",fontSize:12}} onClick={closePanel}>✕ Close</button>
+              ) : (
+                <>
+                  <span className="topbar-date">
+                    {new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}
+                  </span>
+                  <div className="topbar-divider"/>
+                  <button className="bell-btn" onClick={()=>openPanel("notifs")}>
+                    🔔{unreadNotifs>0&&<div className="bell-dot"/>}
+                  </button>
+                  <div className="topbar-divider"/>
+                  <button className="top-action-btn" onClick={topbarAction}>{topbarActionLabel}</button>
+                </>
+              )}
+            </div>
           </div>
-          <div className="t-right">
-            {panel ? (
-              <button className="btn back" style={{margin:0,padding:"5px 12px",fontSize:12}} onClick={closePanel}>✕ Close</button>
-            ) : (
-              <>
-                <div className="role-chip" onClick={()=>setSheet(true)}>
-                  <div className="chip-dot" style={{background:roleInfo.color}}/>
-                  {roleInfo.label}
+
+          {/* MAIN CONTENT */}
+          <div className="content" style={{display:panel?"none":"block"}}>
+            {renderMain()}
+          </div>
+
+          {/* FULL SCREEN PANELS */}
+          {panel==="notifs" && (
+            <div className="content">
+              <NotificationsPanel notifs={notifs} onClear={()=>setNotifs(p=>p.map(n=>({...n,unread:false})))} onRead={(id)=>setNotifs(p=>p.map(n=>n.id===id?{...n,unread:false}:n))}/>
+            </div>
+          )}
+          {panel==="messages" && <MessagingPanel threads={threads} onSend={sendMessage}/>}
+          {panel==="ideas" && panelData && (
+            <VideoIdeaGenerator
+              client={panelData}
+              onClose={closePanel}
+              onIdeaToScript={(client,idea)=>openPanel("idea-script",{client,idea})}
+            />
+          )}
+          {panel==="idea-script" && panelData && (
+            <IdeaScriptView
+              client={panelData.client}
+              idea={panelData.idea}
+              onBack={()=>openPanel("ideas",panelData.client)}
+              onSaveToQueue={addScriptFromIdea}
+              showToast={showToast}
+            />
+          )}
+          {panel==="calendar" && <ContentCalendar clients={clients} onClose={closePanel} showToast={showToast}/>}
+          {panel==="caption" && <CaptionWriter onClose={closePanel} showToast={showToast}/>}
+          {panel==="outreach" && <OutreachWriter onClose={closePanel} showToast={showToast}/>}
+          {panel==="client-detail" && panelData && (
+            <div className="full-panel">
+              <div style={{padding:"12px 24px",borderBottom:"1px solid var(--border)",background:"var(--surface)",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
+                <button className="btn back" style={{margin:0,padding:"6px 10px",fontSize:12}} onClick={closePanel}>←</button>
+                <div className="row-avatar" style={{background:`${panelData.color}20`,color:panelData.color,width:36,height:36}}>{panelData.name[0]}</div>
+                <div style={{flex:1}}>
+                  <div style={{fontFamily:"var(--fd)",fontSize:14,fontWeight:700}}>{panelData.name}</div>
+                  <div style={{fontSize:11,color:"var(--text3)"}}>{panelData.industry}</div>
                 </div>
-                <button className="bell-btn" onClick={()=>openPanel("notifs")}>
-                  🔔{unreadNotifs>0&&<div className="bell-dot"/>}
-                </button>
-                <button className="top-action-btn" onClick={topbarAction}>{topbarActionLabel}</button>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* MAIN CONTENT */}
-        <div className="content" style={{display:panel?"none":"block"}}>
-          {renderMain()}
-        </div>
-
-        {/* FULL SCREEN PANELS */}
-        {panel==="notifs" && (
-          <div className="content" style={{paddingBottom:"calc(var(--bnav)+14px)"}}>
-            <NotificationsPanel notifs={notifs} onClear={()=>setNotifs(p=>p.map(n=>({...n,unread:false})))} onRead={(id)=>setNotifs(p=>p.map(n=>n.id===id?{...n,unread:false}:n))}/>
-          </div>
-        )}
-        {panel==="messages" && <MessagingPanel threads={threads} onSend={sendMessage}/>}
-        {panel==="ideas" && panelData && (
-          <VideoIdeaGenerator
-            client={panelData}
-            onClose={closePanel}
-            onIdeaToScript={(client,idea)=>openPanel("idea-script",{client,idea})}
-          />
-        )}
-        {panel==="idea-script" && panelData && (
-          <IdeaScriptView
-            client={panelData.client}
-            idea={panelData.idea}
-            onBack={()=>openPanel("ideas",panelData.client)}
-            onSaveToQueue={addScriptFromIdea}
-            showToast={showToast}
-          />
-        )}
-        {panel==="calendar" && <ContentCalendar clients={clients} onClose={closePanel} showToast={showToast}/>}
-        {panel==="caption" && <CaptionWriter onClose={closePanel} showToast={showToast}/>}
-        {panel==="outreach" && <OutreachWriter onClose={closePanel} showToast={showToast}/>}
-        {panel==="client-detail" && panelData && (
-          <div className="full-panel">
-            <div style={{padding:"12px 14px",borderBottom:"1px solid var(--border)",background:"var(--surface)",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
-              <button className="btn back" style={{margin:0,padding:"6px 10px",fontSize:12}} onClick={closePanel}>←</button>
-              <div className="row-avatar" style={{background:`${panelData.color}20`,color:panelData.color,width:36,height:36}}>{panelData.name[0]}</div>
-              <div style={{flex:1}}>
-                <div style={{fontFamily:"var(--fd)",fontSize:14,fontWeight:700}}>{panelData.name}</div>
-                <div style={{fontSize:11,color:"var(--text3)"}}>{panelData.industry}</div>
               </div>
-            </div>
-            <div className="full-panel-scroll">
-              <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
-                <Badge type={panelData.plan==="Pro"?"purple":panelData.plan==="Growth"?"blue":"gray"}>{panelData.plan} Plan</Badge>
-                <Badge type={panelData.status==="active"?"green":panelData.status==="onboarding"?"amber":"red"}>{panelData.status}</Badge>
-              </div>
-              <div className="stats-grid">
-                <div className="stat-card"><div className="stat-label">MRR</div><div className="stat-value">${panelData.mrr.toLocaleString()}</div></div>
-                <div className="stat-card"><div className="stat-label">Videos</div><div className="stat-value">{panelData.videos}</div><div className="stat-sub">produced</div></div>
-                <div className="stat-card"><div className="stat-label">Next Delivery</div><div className="stat-value" style={{fontSize:16}}>{panelData.nextPost}</div></div>
-                <div className="stat-card"><div className="stat-label">Stage</div><div className="stat-value" style={{fontSize:16}}>{panelData.stage}</div></div>
-              </div>
-              <div className="card">
-                <div className="card-title">Content Pipeline</div>
-                {[{title:"Day in the Life",status:"Scripting",progress:20,icon:"✍️"},{title:"Listing Showcase",status:"Editing",progress:60,icon:"🎬"},{title:"Testimonial Reel",status:"Review",progress:85,icon:"👁️"}].map((p,i)=>(
-                  <div className="deliverable-item" key={i}>
-                    <div className="deliverable-icon">{p.icon}</div>
-                    <div className="deliverable-info">
-                      <div className="deliverable-title">{p.title}</div>
-                      <div className="deliverable-sub">{p.status}</div>
-                      <div className="progress-bar-wrap"><div className="progress-bar" style={{width:`${p.progress}%`,background:"var(--accent)"}}/></div>
+              <div className="full-panel-scroll">
+                <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
+                  <Badge type={panelData.plan==="Pro"?"purple":panelData.plan==="Growth"?"blue":"gray"}>{panelData.plan} Plan</Badge>
+                  <Badge type={panelData.status==="active"?"green":panelData.status==="onboarding"?"amber":"red"}>{panelData.status}</Badge>
+                </div>
+                <div className="stats-grid">
+                  <div className="stat-card"><div className="stat-label">MRR</div><div className="stat-value">${panelData.mrr.toLocaleString()}</div></div>
+                  <div className="stat-card"><div className="stat-label">Videos</div><div className="stat-value">{panelData.videos}</div><div className="stat-sub">produced</div></div>
+                  <div className="stat-card"><div className="stat-label">Next Delivery</div><div className="stat-value" style={{fontSize:16}}>{panelData.nextPost}</div></div>
+                  <div className="stat-card"><div className="stat-label">Stage</div><div className="stat-value" style={{fontSize:16}}>{panelData.stage}</div></div>
+                </div>
+                <div className="card">
+                  <div className="card-title">Content Pipeline</div>
+                  {[{title:"Day in the Life",status:"Scripting",progress:20,icon:"✍️"},{title:"Listing Showcase",status:"Editing",progress:60,icon:"🎬"},{title:"Testimonial Reel",status:"Review",progress:85,icon:"👁️"}].map((p,i)=>(
+                    <div className="deliverable-item" key={i}>
+                      <div className="deliverable-icon">{p.icon}</div>
+                      <div className="deliverable-info">
+                        <div className="deliverable-title">{p.title}</div>
+                        <div className="deliverable-sub">{p.status}</div>
+                        <div className="progress-bar-wrap"><div className="progress-bar" style={{width:`${p.progress}%`,background:"var(--accent)"}}/></div>
+                      </div>
+                      <Badge type={p.status==="Scripting"?"gray":p.status==="Editing"?"blue":"amber"}>{p.status}</Badge>
                     </div>
-                    <Badge type={p.status==="Scripting"?"gray":p.status==="Editing"?"blue":"amber"}>{p.status}</Badge>
-                  </div>
-                ))}
-              </div>
-              <div style={{display:"flex",gap:8}}>
-                <button className="btn primary" style={{flex:1}} onClick={()=>{openPanel("ideas",panelData);}}>💡 AI Ideas</button>
-                <button className="btn" style={{flex:1}} onClick={()=>showToast("💬","Message sent","Notification sent to team")}>Message</button>
+                  ))}
+                </div>
+                <div style={{display:"flex",gap:8}}>
+                  <button className="btn primary" style={{flex:1}} onClick={()=>{openPanel("ideas",panelData);}}>💡 AI Ideas</button>
+                  <button className="btn" style={{flex:1}} onClick={()=>showToast("💬","Message sent","Notification sent to team")}>Message</button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* BOTTOM NAV */}
-        <div className="bnav">
-          {NAV_CONFIG[role].map(n=>(
-            <div key={n.view} className={`bnav-item ${view===n.view&&!panel&&selScript===null?"active":""}`} onClick={()=>navTo(n.view)}>
-              {n.badge&&<span className="bnav-badge">{n.badge}</span>}
-              <span className="bnav-icon">{n.icon}</span>
-              <span className="bnav-label">{n.label}</span>
-            </div>
-          ))}
-          <div className={`bnav-item ${panel==="messages"?"active":""}`} onClick={()=>openPanel("messages")}>
-            {unreadMsgs>0&&<span className="bnav-badge">{unreadMsgs}</span>}
-            <span className="bnav-icon">💬</span>
-            <span className="bnav-label">Messages</span>
-          </div>
+          )}
         </div>
 
         {/* ROLE SHEET */}
