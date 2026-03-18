@@ -2350,7 +2350,7 @@ function AdminSettings({ showToast, darkMode, setDarkMode }) {
 }
 
 // ─── ADMIN CLIENTS ────────────────────────────────────────────────────────
-function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAutoSelect, onUpdateClient }) {
+function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAutoSelect, onUpdateClient, onOpenMessages }) {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedClient, setSelectedClient] = useState(autoSelect||null);
@@ -2452,7 +2452,7 @@ function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAuto
           </div>
 
           <div className="stats-grid">
-            <div className="stat-card" style={{cursor:'pointer'}} onClick={()=>setClientTab("analytics")}><div className="stat-label">MRR</div><div className="stat-value">${c.mrr.toLocaleString()}</div></div>
+            <div className="stat-card" style={{cursor:'pointer'}}><div className="stat-label">MRR</div><div className="stat-value">$<InlineEdit value={c.mrr.toLocaleString()} onSave={v=>{const num=parseInt(v.replace(/,/g,""))||0;if(onUpdateClient)onUpdateClient(c.id,{mrr:num});showToast("✓","MRR updated","$"+num.toLocaleString());}} style={{font:'inherit'}}/></div></div>
             <div className="stat-card" style={{cursor:'pointer'}} onClick={()=>setClientTab("content")}><div className="stat-label">Videos</div><div className="stat-value">{c.videos}</div><div className="stat-sub">produced</div></div>
             <div className="stat-card" style={{cursor:'pointer'}} onClick={()=>setClientTab("shoots")}><div className="stat-label">Shoots</div><div className="stat-value">{clientShoots.length}</div><div className="stat-sub">scheduled</div></div>
             <div className="stat-card" style={{cursor:'pointer'}} onClick={()=>setClientTab("ads")}><div className="stat-label">Ad Campaigns</div><div className="stat-value">{clientAds.length}</div><div className="stat-sub">active</div></div>
@@ -2518,7 +2518,7 @@ function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAuto
           </div>
           <div style={{display:"flex",gap:8}}>
             <button className="btn" style={{flex:1}} onClick={()=>showToast("✏️","Edit mode","Client details are now editable")}>Edit Client</button>
-            <button className="btn" style={{flex:1}} onClick={()=>showToast("💬","Message sent","Notification sent to team")}>Message</button>
+            <button className="btn" style={{flex:1}} onClick={()=>{if(onOpenMessages)onOpenMessages();else showToast("◉","Messages","Opening messages...");}}>Message</button>
           </div>
         </>)}
 
@@ -2535,7 +2535,7 @@ function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAuto
                     <div className="deliverable-sub">{p.status} · {p.assigned}</div>
                     <div className="progress-bar-wrap"><div className="progress-bar" style={{width:`${p.progress}%`,background:p.status==="Review"?"var(--amber)":p.status==="Editing"?"var(--blue)":"var(--accent)"}}/></div>
                   </div>
-                  <Badge type={p.status==="Scripting"?"gray":p.status==="Editing"?"blue":"amber"}>{p.status}</Badge>
+                  <StatusBadge status={p.status} options={["Scripting","Editing","Review","Approved","Scheduled","Published"]} onChange={(s)=>showToast("✓","Status changed",p.title+" → "+s)}/>
                 </div>
                 {expandedPipeline===p.id && (
                   <div style={{padding:'12px 0 16px 40px',borderBottom:'1px solid var(--border)'}}>
@@ -3571,7 +3571,7 @@ function SalesLeadsList({ leads, showToast }) {
 }
 
 // ─── SCRIPT VIEWS ─────────────────────────────────────────────────────────────
-function ScriptQueue({ scripts, onSelect, onOpenIdeas, onOpenCalendar, clients }) {
+function ScriptQueue({ scripts, onSelect, onOpenIdeas, onOpenCalendar, clients, showToast }) {
   const [clientFilter, setClientFilter] = useState("all");
   const clientNames = [...new Set(scripts.map(s=>s.client))];
   const filtered = clientFilter==="all" ? scripts : scripts.filter(s=>s.client===clientFilter);
@@ -3608,7 +3608,7 @@ function ScriptQueue({ scripts, onSelect, onOpenIdeas, onOpenCalendar, clients }
             <div className="script-client">{s.client}</div>
             <div className="script-type">{s.type}</div>
             <div className="script-meta">
-              <Badge type={s.status==="In Progress"?"blue":s.status==="Needs Revision"?"red":s.status==="Submitted"?"green":"gray"}>{s.status}</Badge>
+              <StatusBadge status={s.status} options={["Assigned","In Progress","Needs Revision","Submitted"]} onChange={(st)=>showToast("✓","Status",s.client+" → "+st)}/>
               <span style={{fontSize:10,color:"var(--text3)"}}>Due {s.due}</span>
             </div>
           </div>
@@ -4365,6 +4365,28 @@ function ClientContent({ showToast }) {
         </div>
       )}
 
+      {/* Video Gallery — completed content */}
+      {items.filter(i=>i.status==="Published"||i.status==="Approved").length > 0 && (
+        <div className="card">
+          <div className="card-title">Your Videos</div>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill, minmax(220px, 1fr))',gap:10}}>
+            {items.filter(i=>i.status==="Published"||i.status==="Approved").map(d=>(
+              <div key={d.id} className="dash-card-hover" style={{borderRadius:12,overflow:'hidden',border:'1px solid var(--border)',cursor:'pointer'}} onClick={()=>setSelectedItem(selectedItem===d.id?null:d.id)}>
+                <div style={{height:120,background:'linear-gradient(135deg, #1a1a1a, #2d2d2d)',display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
+                  <div style={{width:44,height:44,borderRadius:'50%',background:'rgba(255,255,255,0.15)',backdropFilter:'blur(8px)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:18,color:'white'}}>▶</div>
+                  <div style={{position:'absolute',top:8,right:8}}><Badge type="green">{d.status}</Badge></div>
+                  <div style={{position:'absolute',bottom:8,left:8,font:'500 10px var(--fd)',color:'rgba(255,255,255,0.8)',background:'rgba(0,0,0,0.5)',padding:'2px 8px',borderRadius:4}}>0:47</div>
+                </div>
+                <div style={{padding:'10px 12px'}}>
+                  <div style={{font:'500 12px var(--fd)',color:'var(--text)',marginBottom:2}}>{d.title}</div>
+                  <div style={{font:'400 10px var(--fb)',color:'var(--text3)'}}>{d.type}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* All content */}
       <div className="card">
         <div className="card-title">All Content — March</div>
@@ -4761,7 +4783,7 @@ export default function App() {
       if(view==="shoots")    return <ShootCalendar shoots={INIT_SHOOTS} showToast={showToast}/>;
       if(view==="coaching")  return <CoachingTracker sessions={INIT_COACHING} showToast={showToast}/>;
       if(view==="team")      return <TeamWorkload scripts={scripts} videos={videos}/>;
-      if(view==="clients")   return <AdminClients clients={clients} showToast={showToast} onOpenIdeas={(c)=>openPanel("ideas",c)} autoSelect={autoSelectClient} onClearAutoSelect={()=>setAutoSelectClient(null)} onUpdateClient={(id,updates)=>setClients(p=>p.map(c=>c.id===id?{...c,...updates}:c))}/>;
+      if(view==="clients")   return <AdminClients clients={clients} showToast={showToast} onOpenIdeas={(c)=>openPanel("ideas",c)} autoSelect={autoSelectClient} onClearAutoSelect={()=>setAutoSelectClient(null)} onUpdateClient={(id,updates)=>setClients(p=>p.map(c=>c.id===id?{...c,...updates}:c))} onOpenMessages={()=>openPanel("messages")}/>;
       if(view==="revenue")   return <AdminRevenue clients={clients} expenses={expenses}/>;
       if(view==="expenses")  return <AdminExpenses expenses={expenses} setExpenses={setExpenses} showToast={showToast}/>;
       if(view==="ads")       return <AdminAds showToast={showToast}/>;
@@ -4775,7 +4797,7 @@ export default function App() {
       if(view==="activity")  return <SalesActivity/>;
     }
     if(role==="scriptwriter"){
-      if(view==="dashboard") return <ScriptQueue scripts={scripts} onSelect={setSelScript} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} clients={clients}/>;
+      if(view==="dashboard") return <ScriptQueue scripts={scripts} onSelect={setSelScript} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} clients={clients} showToast={showToast}/>;
       if(view==="completed") return <ScriptCompleted scripts={scripts}/>;
     }
     if(role==="editor"){
