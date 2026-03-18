@@ -556,6 +556,10 @@ const INIT_COACHING = [
   {id:3,client:"Mesa Auto Detailing",type:"Camera Coaching",date:"Mar 18",time:"4:00 PM",duration:"45min",status:"Completed",notes:"Taught team how to film BTS clips on iPhone. Covered lighting + audio."},
   {id:4,client:"Frost Barbershop",type:"Camera Coaching",date:"Mar 15",time:"11:00 AM",duration:"30min",status:"Completed",notes:"Showed barbers how to capture client reactions. Quick phone filming tips."},
   {id:5,client:"Cactus CrossFit",type:"Sales Coaching",date:"Mar 28",time:"10:00 AM",duration:"45min",status:"Upcoming",notes:"Help gym convert IG followers to memberships. DM strategy + landing page review."},
+  {id:6,client:"Internal",type:"Team 1:1 — Maya R.",date:"Mar 18",time:"9:00 AM",duration:"30min",status:"Upcoming",notes:"Weekly 1:1 with Maya. Review script queue, workload, any blockers."},
+  {id:7,client:"Internal",type:"Team 1:1 — Jordan T.",date:"Mar 18",time:"9:30 AM",duration:"30min",status:"Upcoming",notes:"Weekly 1:1 with Jordan. Check edit progress, equipment needs, upcoming shoots."},
+  {id:8,client:"Internal",type:"Team 1:1 — Carlos V.",date:"Mar 18",time:"10:00 AM",duration:"30min",status:"Upcoming",notes:"Weekly 1:1 with Carlos. Pipeline review, lead follow-ups, client feedback."},
+  {id:9,client:"Internal",type:"All Hands",date:"Mar 19",time:"10:00 AM",duration:"45min",status:"Upcoming",notes:"Weekly team standup. Review pipeline, shoot schedule, wins from last week."},
 ];
 
 const INIT_CLIENTS = [
@@ -614,11 +618,13 @@ const INIT_IG = [
 ];
 
 const INIT_NOTIFS = [
-  {id:1,icon:"🎬",text:<><strong>Jordan T.</strong> uploaded Patient Transformation #4</>,  time:"11 min ago",unread:true },
-  {id:2,icon:"📊",text:<><strong>Carlos V.</strong> moved Chandler Law → Demo Scheduled</>, time:"34 min ago",unread:true },
-  {id:3,icon:"✍️",text:<><strong>Maya R.</strong> submitted Frost Barbershop script</>,     time:"1 hr ago",  unread:true },
-  {id:4,icon:"📸",text:<>Instagram published for <strong>Desert Sun Realty</strong></>,      time:"2 hr ago",  unread:false},
-  {id:5,icon:"💰",text:<><strong>Tempe Taqueria</strong> payment received — $600</>,         time:"3 hr ago",  unread:false},
+  {id:1,icon:"▶",text:<><strong>Jordan T.</strong> uploaded Patient Transformation #4</>,  time:"11 min ago",unread:true, action:{view:"pipeline"} },
+  {id:2,icon:"◎",text:<><strong>Carlos V.</strong> moved Chandler Law → Demo Scheduled</>, time:"34 min ago",unread:true, action:{view:"dashboard",role:"sales"} },
+  {id:3,icon:"▤",text:<><strong>Maya R.</strong> submitted Frost Barbershop script</>,     time:"1 hr ago",  unread:true, action:{view:"pipeline"} },
+  {id:4,icon:"◎",text:<>Instagram published for <strong>Desert Sun Realty</strong></>,      time:"2 hr ago",  unread:false, action:{view:"clients"} },
+  {id:5,icon:"$",text:<><strong>Tempe Taqueria</strong> payment received — $1,500</>,         time:"3 hr ago",  unread:false, action:{view:"revenue"} },
+  {id:6,icon:"▶",text:<><strong>Mar 20 Shoot</strong> confirmed — Desert Sun Realty</>,   time:"4 hr ago",  unread:false, action:{view:"shoots"} },
+  {id:7,icon:"◉",text:<><strong>Sky Harbor Dental</strong> strategy call tomorrow 1 PM</>, time:"5 hr ago",  unread:false, action:{view:"coaching"} },
 ];
 
 const INIT_THREADS = [
@@ -1441,19 +1447,23 @@ Keep it punchy, specific to Arizona when relevant, under 50 seconds total. No ha
 }
 
 // ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
-function NotificationsPanel({ notifs, onClear, onRead }) {
+function NotificationsPanel({ notifs, onClear, onRead, onNavigate }) {
   return (
-    <div className="full-panel-scroll" style={{paddingBottom:"calc(var(--bnav) + 14px)"}}>
+    <div className="full-panel-scroll">
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
         <div style={{fontFamily:"var(--fd)",fontSize:16,fontWeight:800}}>Notifications</div>
         <span style={{fontSize:12,color:"var(--accent)",cursor:"pointer"}} onClick={onClear}>Clear all</span>
       </div>
-      {notifs.length===0 && <div className="empty"><div className="empty-icon">🔔</div><div className="empty-title">All caught up</div></div>}
+      {notifs.length===0 && <div className="empty"><div className="empty-icon">◇</div><div className="empty-title">All caught up</div></div>}
       {notifs.map(n => (
-        <div key={n.id} className={`notif-item ${n.unread?"unread":""}`} onClick={()=>onRead(n.id)}>
+        <div key={n.id} className={`notif-item ${n.unread?"unread":""}`} onClick={()=>{onRead(n.id);if(n.action&&onNavigate)onNavigate(n.action.view);}}>
           <div className="notif-icon">{n.icon}</div>
-          <div style={{flex:1}}><div className="notif-text">{n.text}</div><div className="notif-time">{n.time}</div></div>
+          <div style={{flex:1}}>
+            <div className="notif-text">{n.text}</div>
+            <div className="notif-time">{n.time}</div>
+          </div>
           {n.unread && <div className="notif-unread-dot"/>}
+          {n.action && <span style={{color:'var(--text3)',fontSize:14}}>›</span>}
         </div>
       ))}
     </div>
@@ -1928,6 +1938,16 @@ function AdminExpenses({ expenses, setExpenses, showToast }) {
         </div>
       </div>
 
+      {/* QuickBooks Sync */}
+      <div style={{...glass,padding:'14px 20px',marginBottom:16,display:'flex',alignItems:'center',gap:12,cursor:'pointer'}} onClick={()=>showToast("✓","QuickBooks synced","Last sync: just now — 7 transactions imported")}>
+        <div style={{font:'600 16px var(--fd)',color:'var(--green)'}}>$</div>
+        <div style={{flex:1}}>
+          <div style={{font:'500 13px var(--fd)',color:'var(--text)'}}>QuickBooks Connected</div>
+          <div style={{font:'400 11px var(--fb)',color:'var(--text3)'}}>Last synced: 2 hours ago · Tap to sync now</div>
+        </div>
+        <Badge type="green">Connected</Badge>
+      </div>
+
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))',gap:12,marginBottom:20}}>
         <div className="dash-card-hover" style={{...glass,padding:'18px 16px'}}><div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:6}}>Recurring</div><div style={{font:'600 24px var(--fd)',color:'var(--text)'}}>${expenses.filter(e=>e.recurring).reduce((s,e)=>s+e.amount,0).toLocaleString()}</div></div>
         <div className="dash-card-hover" style={{...glass,padding:'18px 16px'}}><div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:6}}>One-Time</div><div style={{font:'600 24px var(--fd)',color:'var(--text)'}}>${expenses.filter(e=>!e.recurring).reduce((s,e)=>s+e.amount,0).toLocaleString()}</div></div>
@@ -1994,7 +2014,7 @@ function AdminExpenses({ expenses, setExpenses, showToast }) {
 
 function AdminSettings({ showToast, darkMode, setDarkMode }) {
   const [integrations, setIntegrations] = useState([
-    {name:"Zoom",connected:true,icon:"🎥"},{name:"Stripe Billing",connected:false,icon:"💳"},{name:"Twilio SMS",connected:false,icon:"💬"}
+    {name:"Zoom",connected:true,icon:"◉"},{name:"QuickBooks",connected:true,icon:"$"},{name:"Stripe Billing",connected:false,icon:"◎"},{name:"Twilio SMS",connected:false,icon:"◉"},{name:"Google Ads API",connected:true,icon:"◐"}
   ]);
   const toggleIntegration = (name) => {
     setIntegrations(p=>p.map(i=>i.name===name?{...i,connected:!i.connected}:i));
@@ -4468,7 +4488,7 @@ export default function App() {
           {/* FULL SCREEN PANELS */}
           {panel==="notifs" && (
             <div className="content">
-              <NotificationsPanel notifs={notifs} onClear={()=>setNotifs(p=>p.map(n=>({...n,unread:false})))} onRead={(id)=>setNotifs(p=>p.map(n=>n.id===id?{...n,unread:false}:n))}/>
+              <NotificationsPanel notifs={notifs} onClear={()=>setNotifs(p=>p.map(n=>({...n,unread:false})))} onRead={(id)=>setNotifs(p=>p.map(n=>n.id===id?{...n,unread:false}:n))} onNavigate={(v)=>{navTo(v);closePanel();}}/>
             </div>
           )}
           {panel==="messages" && <MessagingPanel threads={threads} onSend={sendMessage}/>}
