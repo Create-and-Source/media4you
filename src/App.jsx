@@ -1836,9 +1836,9 @@ function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAuto
     const c = selectedClient;
     const teamMembers = [{name:"Maya R.",role:"Script Writer",color:"#A855F7",tasks:3,status:"Active"},{name:"Jordan T.",role:"Video Editor",color:"#22C55E",tasks:2,status:"Active"},{name:"Carlos V.",role:"Account Manager",color:"#3B82F6",tasks:1,status:"Available"}];
     const pipeline = [
-      {id:1,title:"Day in the Life",status:"Scripting",progress:20,icon:"✍️",assigned:"Maya R.",due:"Mar 22",script:"HOOK (0–3 sec)\nEver wonder what a day at "+c.name+" looks like?\n\nSETUP (3–10 sec)\nWe spent a full morning with the team and captured everything...",notes:"Client wants to highlight the morning rush. Keep it authentic."},
-      {id:2,title:"Listing Showcase",status:"Editing",progress:60,icon:"🎬",assigned:"Jordan T.",due:"Mar 20",script:"Shot list complete. B-roll captured on site. Editing 4K footage with color grade.",notes:"Drone shots approved. Need to add text overlays for property specs."},
-      {id:3,title:"Testimonial Reel",status:"Review",progress:85,icon:"👁️",assigned:"Jordan T.",due:"Mar 19",script:"Final cut ready. Awaiting client review for brand tone and CTA.",notes:"Client mentioned they want a stronger call-to-action at the end."},
+      {id:1,title:"Day in the Life",status:"Scripting",progress:20,icon:"✍️",assigned:"Maya R.",due:"Mar 22",script:"HOOK (0–3 sec)\nEver wonder what a day at "+c.name+" looks like?\n\nSETUP (3–10 sec)\nWe spent a full morning with the team and captured everything. The energy before the doors open is unreal.\n\nBODY (10–40 sec)\nWatch as "+c.name+" takes on a packed morning. Every detail is dialed in — the craft, the hustle, the passion. This is what sets them apart from everyone else in the Valley. You can feel the energy through the screen.\n\nCTA (40–50 sec)\nFollow "+c.name+" for more behind-the-scenes content. Tap the link in bio to book yours today.",notes:"Client wants to highlight the morning rush. Keep it authentic."},
+      {id:2,title:"Listing Showcase",status:"Editing",progress:60,icon:"🎬",assigned:"Jordan T.",due:"Mar 20",script:"HOOK (0–3 sec)\nThis Scottsdale listing just hit the market and it is STUNNING.\n\nSETUP (3–10 sec)\nLocated in the heart of Old Town, this 4-bed, 3-bath beauty features mountain views and a backyard oasis you have to see to believe.\n\nBODY (10–40 sec)\nWalk through the open-concept living area with floor-to-ceiling windows. The chef's kitchen has quartz counters and a massive island. The primary suite includes a spa-like bathroom with dual vanities. And the real showstopper? That heated pool with an unobstructed view of Camelback Mountain.\n\nCTA (40–50 sec)\nDM us or tap the link in bio to schedule a private showing before this one is gone. Homes like this do not last in Scottsdale.",notes:"Drone shots approved. Need to add text overlays for property specs."},
+      {id:3,title:"Testimonial Reel",status:"Review",progress:85,icon:"👁️",assigned:"Jordan T.",due:"Mar 19",script:"HOOK (0–3 sec)\nThis client drove 45 minutes just for "+c.name+". Here is why.\n\nSETUP (3–10 sec)\nWe sat down with a real customer to hear their experience working with "+c.name+". No scripts, no prompts — just their honest words.\n\nBODY (10–40 sec)\nThey talk about the problem they had, how they found "+c.name+", and what happened next. The transformation speaks for itself. You can see the genuine emotion and satisfaction in every word.\n\nCTA (40–50 sec)\nIf you want results like this, follow "+c.name+" and tap the link in bio. Your turn is next.",notes:"Client mentioned they want a stronger call-to-action at the end."},
     ];
     const activity = [
       {action:"Script submitted",item:"Testimonial Reel",by:"Maya R.",time:"2 hours ago",dot:"var(--blue)"},
@@ -2013,7 +2013,7 @@ function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAuto
                     {p.script && (
                       <div style={{marginTop:8}}>
                         <div style={{font:'600 10px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text3)',marginBottom:6}}>Script / Details</div>
-                        <div style={{background:'rgba(255,255,255,0.7)',border:'1px solid var(--border)',borderRadius:10,padding:'12px 14px',font:'400 11px var(--fb)',color:'var(--text2)',lineHeight:1.7,whiteSpace:'pre-wrap',maxHeight:150,overflowY:'auto'}}>{p.script}</div>
+                        <div style={{background:'rgba(255,255,255,0.7)',border:'1px solid var(--border)',borderRadius:10,padding:'12px 14px',font:'400 11px var(--fb)',color:'var(--text2)',lineHeight:1.7,whiteSpace:'pre-wrap',maxHeight:'none'}}>{p.script}</div>
                       </div>
                     )}
                     <div style={{display:'flex',gap:6,marginTop:10}}>
@@ -2671,42 +2671,198 @@ function SalesDashboard({ leads, onOpenOutreach, showToast }) {
 }
 
 function SalesCalls({ showToast }) {
+  const [commTab, setCommTab] = useState("calls");
   const [joinedCalls, setJoinedCalls] = useState({});
-  const [expandedCall, setExpandedCall] = useState(null);
+  const [expandedItem, setExpandedItem] = useState(null);
+  const [composeEmail, setComposeEmail] = useState(false);
+  const [emailForm, setEmailForm] = useState({to:"",subject:"",body:""});
+  const [textConvo, setTextConvo] = useState(null);
+  const [textInput, setTextInput] = useState("");
+
   const handleJoin = (i) => {
     setJoinedCalls(p=>({...p,[i]:"joining"}));
     setTimeout(()=>setJoinedCalls(p=>({...p,[i]:"joined"})),1500);
   };
-  const callData = [{name:"Chandler Law Group",rep:"Jade",time:"2:00 PM",day:"Today",type:"Demo",status:"Confirmed",agenda:"Demo walkthrough of content strategy and pricing packages",notes:"CEO interested in Instagram Reels for brand awareness. Has 2 locations."},{name:"Scottsdale Med Spa",rep:"Carlos",time:"4:30 PM",day:"Today",type:"Discovery",status:"Confirmed",agenda:"Initial discovery call to understand their content needs",notes:"Referred by existing client. Currently not doing any video content."},{name:"Sun Devil Gym",rep:"Jade",time:"10:00 AM",day:"Mar 19",type:"Proposal",status:"Pending",agenda:"Present Growth plan proposal and review content samples",notes:"Wants to focus on member transformation stories and workout highlights."}];
+
+  const callData = [
+    {name:"Chandler Law Group",rep:"Jade",time:"2:00 PM",day:"Today",type:"Demo",status:"Confirmed",duration:"—",agenda:"Demo walkthrough of content strategy and pricing packages",notes:"CEO interested in Instagram Reels for brand awareness. Has 2 locations."},
+    {name:"Scottsdale Med Spa",rep:"Carlos",time:"4:30 PM",day:"Today",type:"Discovery",status:"Confirmed",duration:"—",agenda:"Initial discovery call to understand their content needs",notes:"Referred by existing client. Currently not doing any video content."},
+    {name:"Sun Devil Gym",rep:"Jade",time:"10:00 AM",day:"Mar 19",type:"Proposal",status:"Pending",duration:"—",agenda:"Present Gold plan proposal and review content samples",notes:"Wants to focus on member transformation stories and workout highlights."},
+  ];
+  const callLog = [
+    {name:"Mesa Flooring Co",rep:"Carlos",time:"11:30 AM",day:"Mar 17",type:"Discovery",duration:"18 min",outcome:"Interested — sending proposal",status:"Completed"},
+    {name:"Phoenix Plumbing",rep:"Jade",time:"3:00 PM",day:"Mar 16",type:"Follow-up",duration:"8 min",outcome:"Not ready yet — revisit in 30 days",status:"Completed"},
+    {name:"AZ Pool Pros",rep:"Carlos",time:"10:00 AM",day:"Mar 15",type:"Demo",duration:"32 min",outcome:"Signed Gold plan",status:"Won"},
+  ];
+  const textThreads = [
+    {id:1,name:"Chandler Law Group",phone:"(480) 555-0142",lastMsg:"Looking forward to the demo today!",time:"1h ago",unread:1,messages:[
+      {from:"them",text:"Hey, is the demo still at 2pm today?",time:"2h ago"},
+      {from:"me",text:"Yes! I'll send you the Zoom link 10 min before. Any specific questions you want covered?",time:"1.5h ago"},
+      {from:"them",text:"Looking forward to the demo today!",time:"1h ago"},
+    ]},
+    {id:2,name:"Sun Devil Gym",phone:"(480) 555-0198",lastMsg:"Can we push to Friday?",time:"3h ago",unread:0,messages:[
+      {from:"me",text:"Hi! Just confirming our call tomorrow at 10am to go over the proposal.",time:"Yesterday"},
+      {from:"them",text:"Can we push to Friday?",time:"3h ago"},
+    ]},
+    {id:3,name:"Mesa Flooring Co",phone:"(480) 555-0231",lastMsg:"Sent! Check your email for the Gold plan breakdown.",time:"Yesterday",unread:0,messages:[
+      {from:"them",text:"Hey Carlos, can you send over that proposal we discussed?",time:"Mar 17"},
+      {from:"me",text:"Sent! Check your email for the Gold plan breakdown.",time:"Yesterday"},
+    ]},
+  ];
+  const emailLog = [
+    {id:1,to:"Chandler Law Group",subject:"Media4You Demo — Agenda + Link",time:"Today 1:30 PM",status:"Sent",preview:"Hi! Here's the Zoom link for our 2pm demo today..."},
+    {id:2,to:"Mesa Flooring Co",subject:"Gold Plan Proposal — Mesa Flooring Co",time:"Yesterday",status:"Opened",preview:"Thanks for the great call! As discussed, here's the Gold plan breakdown..."},
+    {id:3,to:"Sun Devil Gym",subject:"Content Strategy Ideas for Sun Devil Gym",time:"Mar 16",status:"Sent",preview:"Hey! I put together some content ideas based on what we discussed..."},
+    {id:4,to:"Scottsdale Med Spa",subject:"Intro — Media4You Content Services",time:"Mar 15",status:"Opened",preview:"Hi there! I came across your business and was really impressed..."},
+  ];
+
+  const tabs = [{key:"calls",label:"Calls",icon:"📞"},{key:"texts",label:"Texts",icon:"💬"},{key:"emails",label:"Emails",icon:"📧"}];
+
+  if (textConvo !== null) {
+    const t = textThreads[textConvo];
+    return (
+      <div>
+        <button className="btn back" onClick={()=>setTextConvo(null)}>← All Texts</button>
+        <div style={{font:'600 16px var(--fd)',color:'var(--text)',marginBottom:4}}>{t.name}</div>
+        <div style={{font:'400 12px var(--fb)',color:'var(--text3)',marginBottom:16}}>{t.phone}</div>
+        <div style={{display:'flex',flexDirection:'column',gap:10,marginBottom:16}}>
+          {t.messages.map((m,i)=>(
+            <div key={i} style={{display:'flex',justifyContent:m.from==="me"?'flex-end':'flex-start'}}>
+              <div style={{
+                maxWidth:'75%',padding:'10px 14px',borderRadius:m.from==="me"?'16px 4px 16px 16px':'4px 16px 16px 16px',
+                background:m.from==="me"?'linear-gradient(135deg,var(--accent),var(--accent2))':'var(--surface)',
+                color:m.from==="me"?'white':'var(--text)',
+                border:m.from==="me"?'none':'1px solid var(--border)',
+                font:'400 13px var(--fb)',lineHeight:1.5,
+                boxShadow:m.from==="me"?'0 4px 14px rgba(252,198,18,0.3)':'var(--shadow-sm)',
+              }}>
+                {m.text}
+                <div style={{font:'400 9px var(--fb)',color:m.from==="me"?'rgba(255,255,255,0.7)':'var(--text3)',marginTop:4,textAlign:'right'}}>{m.time}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{display:'flex',gap:8}}>
+          <input className="form-input" style={{flex:1,borderRadius:22,padding:'10px 16px'}} placeholder="Type a message..." value={textInput} onChange={e=>setTextInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&textInput.trim()){showToast("💬","Text sent",t.name);setTextInput("");}}}/>
+          <button className="chat-send-btn" onClick={()=>{if(textInput.trim()){showToast("💬","Text sent",t.name);setTextInput("");}}}>→</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="card">
-      <div className="card-title">Scheduled Calls</div>
-      {callData.map((c,i)=>(
-        <div key={i}>
-          <div className="call-item" style={{cursor:"pointer"}} onClick={()=>setExpandedCall(expandedCall===i?null:i)}>
-            <div className="call-time-block"><div className="call-time">{c.time}</div><div className="call-day">{c.day}</div></div>
-            <div className="row-main"><div className="row-title">{c.name}</div><div className="row-sub">{c.type} · {c.rep}</div></div>
-            <div style={{display:"flex",flexDirection:"column",gap:4,alignItems:"flex-end"}}>
-              <Badge type={c.status==="Confirmed"?"green":"amber"}>{c.status}</Badge>
-              {joinedCalls[i]==="joined" ? (
-                <button className="action-btn green" disabled>In Call</button>
-              ) : joinedCalls[i]==="joining" ? (
-                <button className="action-btn" disabled style={{opacity:0.7}}>Joining...</button>
-              ) : (
-                <button className="action-btn accent" onClick={(e)=>{e.stopPropagation();handleJoin(i);}}>Join</button>
+    <div>
+      {/* Comm Tabs */}
+      <div style={{display:'flex',gap:4,marginBottom:16,borderBottom:'1px solid var(--border)'}}>
+        {tabs.map(t=>(
+          <button key={t.key} onClick={()=>setCommTab(t.key)} style={{
+            padding:'10px 16px',border:'none',background:'none',cursor:'pointer',
+            font:`${commTab===t.key?600:400} 12px var(--fd)`,
+            color:commTab===t.key?'var(--accent)':'var(--text3)',
+            borderBottom:commTab===t.key?'2px solid var(--accent)':'2px solid transparent',
+          }}>{t.icon} {t.label}</button>
+        ))}
+      </div>
+
+      {commTab==="calls" && (<>
+        <div className="card">
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:12}}>
+            <div className="card-title" style={{margin:0}}>Upcoming Calls</div>
+          </div>
+          {callData.map((c,i)=>(
+            <div key={i}>
+              <div className="call-item" style={{cursor:"pointer"}} onClick={()=>setExpandedItem(expandedItem===`call-${i}`?null:`call-${i}`)}>
+                <div className="call-time-block"><div className="call-time">{c.time}</div><div className="call-day">{c.day}</div></div>
+                <div className="row-main"><div className="row-title">{c.name}</div><div className="row-sub">{c.type} · {c.rep}</div></div>
+                <div style={{display:"flex",flexDirection:"column",gap:4,alignItems:"flex-end"}}>
+                  <Badge type={c.status==="Confirmed"?"green":"amber"}>{c.status}</Badge>
+                  {joinedCalls[i]==="joined"?<button className="action-btn green" disabled>In Call</button>:joinedCalls[i]==="joining"?<button className="action-btn" disabled>Joining...</button>:<button className="action-btn accent" onClick={e=>{e.stopPropagation();handleJoin(i);}}>Join</button>}
+                </div>
+              </div>
+              {expandedItem===`call-${i}` && (
+                <div style={{padding:"8px 0 12px 66px",borderBottom:"1px solid var(--border)"}}>
+                  <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:4}}>Agenda</div>
+                  <div style={{fontSize:12,color:"var(--text2)",lineHeight:1.5,marginBottom:10}}>{c.agenda}</div>
+                  <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:4}}>Prep Notes</div>
+                  <div style={{fontSize:12,color:"var(--text2)",lineHeight:1.5,marginBottom:10}}>{c.notes}</div>
+                  <div style={{display:'flex',gap:6}}>
+                    <button className="btn primary" style={{flex:1,fontSize:11,padding:'8px 12px'}} onClick={()=>showToast("📞","Calling...",c.name)}>Call Now</button>
+                    <button className="btn" style={{fontSize:11,padding:'8px 12px'}} onClick={()=>{setCommTab("texts");showToast("💬","Opening texts",c.name);}}>Text</button>
+                    <button className="btn" style={{fontSize:11,padding:'8px 12px'}} onClick={()=>{setComposeEmail(true);setEmailForm({to:c.name,subject:`Follow-up: ${c.type} Call`,body:""});setCommTab("emails");}}>Email</button>
+                  </div>
+                </div>
               )}
             </div>
-          </div>
-          {expandedCall===i && (
-            <div style={{padding:"8px 0 12px 66px",borderBottom:"1px solid var(--border)"}}>
-              <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:4}}>Agenda</div>
-              <div style={{fontSize:12,color:"var(--text2)",lineHeight:1.5,marginBottom:10}}>{c.agenda}</div>
-              <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:4}}>Prep Notes</div>
-              <div style={{fontSize:12,color:"var(--text2)",lineHeight:1.5}}>{c.notes}</div>
-            </div>
-          )}
+          ))}
         </div>
-      ))}
+        <div className="card">
+          <div className="card-title">Call History</div>
+          {callLog.map((c,i)=>(
+            <div key={i} className="call-item" style={{cursor:'pointer'}} onClick={()=>setExpandedItem(expandedItem===`log-${i}`?null:`log-${i}`)}>
+              <div className="call-time-block"><div className="call-time">{c.duration}</div><div className="call-day">{c.day}</div></div>
+              <div className="row-main">
+                <div className="row-title">{c.name}</div>
+                <div className="row-sub">{c.type} · {c.rep}</div>
+                {expandedItem===`log-${i}` && <div style={{font:'400 11px var(--fb)',color:'var(--text2)',marginTop:6,lineHeight:1.5}}>Outcome: {c.outcome}</div>}
+              </div>
+              <Badge type={c.status==="Won"?"green":"gray"}>{c.status}</Badge>
+            </div>
+          ))}
+        </div>
+      </>)}
+
+      {commTab==="texts" && (<>
+        <div className="card">
+          <div className="card-title">Text Conversations</div>
+          {textThreads.map((t,i)=>(
+            <div key={t.id} className="row-item" style={{cursor:'pointer'}} onClick={()=>setTextConvo(i)}>
+              <div className="row-avatar" style={{background:'var(--accent-dim)',color:'var(--accent)'}}>{t.name[0]}</div>
+              <div className="row-main">
+                <div className="row-title">{t.name}</div>
+                <div className="row-sub" style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{t.lastMsg}</div>
+              </div>
+              <div style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:4}}>
+                <span style={{font:'400 10px var(--fb)',color:'var(--text3)'}}>{t.time}</span>
+                {t.unread>0&&<div style={{background:'var(--accent)',color:'white',font:'700 9px var(--fd)',padding:'1px 6px',borderRadius:8}}>{t.unread}</div>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </>)}
+
+      {commTab==="emails" && (<>
+        <div style={{marginBottom:12}}>
+          <button className="btn primary" onClick={()=>setComposeEmail(!composeEmail)}>{composeEmail?"Cancel":"+ Compose Email"}</button>
+        </div>
+        {composeEmail && (
+          <div className="card" style={{marginBottom:12}}>
+            <div className="card-title">New Email</div>
+            <div className="form-group"><label className="form-label">To</label><input className="form-input" placeholder="Lead name or email" value={emailForm.to} onChange={e=>setEmailForm(p=>({...p,to:e.target.value}))}/></div>
+            <div className="form-group"><label className="form-label">Subject</label><input className="form-input" placeholder="Subject line" value={emailForm.subject} onChange={e=>setEmailForm(p=>({...p,subject:e.target.value}))}/></div>
+            <div className="form-group"><label className="form-label">Body</label><textarea className="form-textarea" style={{minHeight:120}} placeholder="Write your email..." value={emailForm.body} onChange={e=>setEmailForm(p=>({...p,body:e.target.value}))}/></div>
+            <div style={{display:'flex',gap:8}}>
+              <button className="btn primary" style={{flex:1}} onClick={()=>{setComposeEmail(false);showToast("📧","Email sent",emailForm.to);setEmailForm({to:"",subject:"",body:""});}}>Send Email</button>
+              <button className="btn" onClick={()=>{showToast("✨","AI Draft","Generating personalized email...");}}>✨ AI Write</button>
+            </div>
+          </div>
+        )}
+        <div className="card">
+          <div className="card-title">Sent Emails</div>
+          {emailLog.map(e=>(
+            <div key={e.id} className="row-item" style={{cursor:'pointer'}} onClick={()=>setExpandedItem(expandedItem===`email-${e.id}`?null:`email-${e.id}`)}>
+              <div style={{fontSize:16,flexShrink:0}}>{e.status==="Opened"?"📬":"📧"}</div>
+              <div className="row-main">
+                <div className="row-title">{e.subject}</div>
+                <div className="row-sub">To: {e.to} · {e.time}</div>
+                {expandedItem===`email-${e.id}` && (
+                  <div style={{font:'400 12px var(--fb)',color:'var(--text2)',marginTop:8,lineHeight:1.6,padding:'10px 12px',background:'var(--surface2)',borderRadius:8,border:'1px solid var(--border)'}}>{e.preview}</div>
+                )}
+              </div>
+              <Badge type={e.status==="Opened"?"green":"gray"}>{e.status}</Badge>
+            </div>
+          ))}
+        </div>
+      </>)}
     </div>
   );
 }
