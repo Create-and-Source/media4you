@@ -511,23 +511,46 @@ const VIDEO_DATA = [
   {month:"Jan",videos:18},{month:"Feb",videos:20},{month:"Mar",videos:23},
 ];
 
+const PLAN_DETAILS = {
+  Copper: {videos:4,shoots:"1×3hr/mo",fbAds:true,googleAds:false,coaching:false,strategy:false,socialMgmt:true,scriptwriting:false,photos:0,price:"$1,500"},
+  Gold:   {videos:8,shoots:"4×2hr/mo",fbAds:true,googleAds:false,coaching:true,strategy:false,socialMgmt:true,scriptwriting:true,photos:0,price:"$3,000"},
+  Platinum:{videos:20,shoots:"8×3hr/mo",fbAds:true,googleAds:true,coaching:true,strategy:true,socialMgmt:true,scriptwriting:true,photos:8,price:"$5,000"},
+};
+
+const INIT_SHOOTS = [
+  {id:1,client:"Frost Barbershop",date:"Mar 19",time:"10:00 AM",duration:"2hr",location:"Frost Barbershop — Scottsdale",status:"Confirmed",crew:"Jordan T., Carlos V.",notes:"Saturday morning rush content. Capture haircuts, banter, energy."},
+  {id:2,client:"Desert Sun Realty",date:"Mar 20",time:"9:00 AM",duration:"3hr",location:"4821 Cactus Rd, Scottsdale",status:"Confirmed",crew:"Jordan T.",notes:"Listing showcase. Bring drone. Shoot interior + backyard at golden hour."},
+  {id:3,client:"Desert Sun Realty",date:"Mar 22",time:"2:00 PM",duration:"2hr",location:"Desert Sun Office",status:"Pending",crew:"Jordan T., Maya R.",notes:"Agent intro + testimonial reel. 2 agents, 1 client interview."},
+  {id:4,client:"Sky Harbor Dental",date:"Mar 24",time:"11:00 AM",duration:"3hr",location:"Sky Harbor Dental — Phoenix",status:"Confirmed",crew:"Jordan T.",notes:"Patient transformation + meet the team. Need signed media releases."},
+  {id:5,client:"Mesa Auto Detailing",date:"Mar 25",time:"8:00 AM",duration:"2hr",location:"Mesa Auto Detailing",status:"Pending",crew:"Jordan T., Carlos V.",notes:"Tesla ceramic coating process. Full detail start to finish."},
+  {id:6,client:"Cactus CrossFit",date:"Mar 27",time:"6:00 AM",duration:"3hr",location:"Cactus CrossFit — Tempe",status:"Confirmed",crew:"Jordan T.",notes:"Open gym workout. Capture member energy, coaching, community."},
+];
+
+const INIT_COACHING = [
+  {id:1,client:"Desert Sun Realty",type:"Strategy Call",date:"Mar 20",time:"3:00 PM",duration:"30min",status:"Upcoming",notes:"Monthly strategy review. Discuss Q2 content calendar and ad performance."},
+  {id:2,client:"Sky Harbor Dental",type:"Strategy Call",date:"Mar 21",time:"1:00 PM",duration:"30min",status:"Upcoming",notes:"Review patient acquisition funnel. Google Ads performance deep-dive."},
+  {id:3,client:"Mesa Auto Detailing",type:"Camera Coaching",date:"Mar 18",time:"4:00 PM",duration:"45min",status:"Completed",notes:"Taught team how to film BTS clips on iPhone. Covered lighting + audio."},
+  {id:4,client:"Frost Barbershop",type:"Camera Coaching",date:"Mar 15",time:"11:00 AM",duration:"30min",status:"Completed",notes:"Showed barbers how to capture client reactions. Quick phone filming tips."},
+  {id:5,client:"Cactus CrossFit",type:"Sales Coaching",date:"Mar 28",time:"10:00 AM",duration:"45min",status:"Upcoming",notes:"Help gym convert IG followers to memberships. DM strategy + landing page review."},
+];
+
 const INIT_CLIENTS = [
-  {id:1,name:"Frost Barbershop",    industry:"barbershop",    plan:"Growth",  status:"active",     stage:"Production", nextPost:"Mar 19",color:"#3B82F6",videos:4, mrr:1200,
+  {id:1,name:"Frost Barbershop",    industry:"barbershop",    plan:"Gold",  status:"active",     stage:"Production", nextPost:"Mar 19",color:"#3B82F6",videos:4, mrr:3000,
     brandKit:{colors:["#1A1A2E","#E0E0E0","#C4A35A"],tone:"Masculine, confident, clean",hashtags:["#FrostBarbershop","#AZBarber","#ScottsdaleBarber","#FreshCut"],audience:"Men 18-45, Scottsdale area",ig:"@frostbarbershop"},
     metrics:{followers:2840,gained:312,avgViews:4200,avgLikes:280,engRate:6.7,topPost:"Spring Lineup Styles"}},
-  {id:2,name:"Desert Sun Realty",   industry:"real estate",   plan:"Pro",     status:"active",     stage:"Publishing", nextPost:"Mar 20",color:"#A855F7",videos:8, mrr:2400,
+  {id:2,name:"Desert Sun Realty",   industry:"real estate",   plan:"Platinum",     status:"active",     stage:"Publishing", nextPost:"Mar 20",color:"#A855F7",videos:8, mrr:5000,
     brandKit:{colors:["#2D1B69","#F5F0EB","#D4A574"],tone:"Professional, aspirational, local expert",hashtags:["#DesertSunRealty","#ScottsdaleHomes","#AZRealEstate","#PhoenixRealtor"],audience:"Home buyers/sellers 28-55",ig:"@desertsunrealty"},
     metrics:{followers:5120,gained:842,avgViews:8400,avgLikes:520,engRate:6.2,topPost:"Listing @ 4821 Cactus Rd"}},
-  {id:3,name:"Cactus CrossFit",     industry:"gym/fitness",   plan:"Starter", status:"active",     stage:"Scripting",  nextPost:"Mar 22",color:"#22C55E",videos:2, mrr:600,
+  {id:3,name:"Cactus CrossFit",     industry:"gym/fitness",   plan:"Copper", status:"active",     stage:"Scripting",  nextPost:"Mar 22",color:"#22C55E",videos:2, mrr:1500,
     brandKit:{colors:["#1B4332","#F0F0F0","#FF6B35"],tone:"Energetic, motivating, community-driven",hashtags:["#CactusCrossFit","#AZFitness","#CrossFitAZ","#DesertStrong"],audience:"Fitness enthusiasts 22-40",ig:"@cactuscrossfit"},
     metrics:{followers:1650,gained:180,avgViews:3100,avgLikes:210,engRate:6.8,topPost:"Member Transformation Story"}},
-  {id:4,name:"Mesa Auto Detailing", industry:"auto detailing",plan:"Growth",  status:"review",     stage:"Editing",    nextPost:"Mar 18",color:"#FFB800",videos:6, mrr:1200,
+  {id:4,name:"Mesa Auto Detailing", industry:"auto detailing",plan:"Gold",  status:"review",     stage:"Editing",    nextPost:"Mar 18",color:"#FFB800",videos:6, mrr:3000,
     brandKit:{colors:["#0D0D0D","#FFB800","#FFFFFF"],tone:"Satisfying, premium, before/after focused",hashtags:["#MesaAutoDetail","#AZDetailing","#CeramicCoating","#CarCare"],audience:"Car enthusiasts, luxury vehicle owners 25-50",ig:"@mesaautodetail"},
     metrics:{followers:3200,gained:410,avgViews:6800,avgLikes:450,engRate:6.6,topPost:"Black Tesla Model S Detail"}},
-  {id:5,name:"Sky Harbor Dental",   industry:"dental",        plan:"Pro",     status:"active",     stage:"Approved",   nextPost:"Mar 21",color:"#FF5C00",videos:10,mrr:2400,
+  {id:5,name:"Sky Harbor Dental",   industry:"dental",        plan:"Platinum",     status:"active",     stage:"Approved",   nextPost:"Mar 21",color:"#FF5C00",videos:10,mrr:5000,
     brandKit:{colors:["#0077B6","#FFFFFF","#90E0EF"],tone:"Friendly, reassuring, results-driven",hashtags:["#SkyHarborDental","#AZDentist","#SmileTransformation","#PhoenixDentist"],audience:"Adults 25-60 needing dental care",ig:"@skyharbordental"},
     metrics:{followers:1890,gained:220,avgViews:3500,avgLikes:190,engRate:5.4,topPost:"Teeth Whitening Before/After"}},
-  {id:6,name:"Tempe Taqueria",      industry:"restaurant",    plan:"Starter", status:"onboarding", stage:"Onboarding", nextPost:"—",     color:"#9999A8",videos:0, mrr:600,
+  {id:6,name:"Tempe Taqueria",      industry:"restaurant",    plan:"Copper", status:"onboarding", stage:"Onboarding", nextPost:"—",     color:"#9999A8",videos:0, mrr:1500,
     brandKit:{colors:["#D62828","#FFF8E7","#F77F00"],tone:"Fun, authentic, mouth-watering, local flavor",hashtags:["#TempeTaqueria","#AZFood","#TacoTuesday","#PhoenixEats"],audience:"Foodies 18-40, Tempe/Phoenix area",ig:"@tempetaqueria"},
     metrics:{followers:0,gained:0,avgViews:0,avgLikes:0,engRate:0,topPost:"—"}},
 ];
@@ -593,6 +616,8 @@ const AD_CAMPAIGNS = [
   {id:2,client:"Desert Sun Realty",name:"New Listing Ads",platform:"Both",budget:1200,impressions:68000,clicks:1904,ctr:"2.8%",conversions:124,status:"Running",roas:"4.8x"},
   {id:3,client:"Tempe Taqueria",name:"Grand Opening",platform:"Facebook",budget:600,impressions:28000,clicks:1148,ctr:"4.1%",conversions:42,status:"Scheduled",roas:"—"},
   {id:4,client:"Cactus CrossFit",name:"Membership Drive",platform:"Instagram",budget:400,impressions:18000,clicks:630,ctr:"3.5%",conversions:29,status:"Paused",roas:"2.1x"},
+  {id:5,client:"Sky Harbor Dental",name:"Invisalign Leads",platform:"Google Ads",budget:1500,impressions:52000,clicks:2340,ctr:"4.5%",conversions:156,status:"Running",roas:"5.2x"},
+  {id:6,client:"Desert Sun Realty",name:"Scottsdale Buyers",platform:"Google Ads",budget:2000,impressions:74000,clicks:3108,ctr:"4.2%",conversions:89,status:"Running",roas:"6.1x"},
 ];
 
 const CLIENT_AD_DATA = [
@@ -858,7 +883,7 @@ function ContentCalendar({ clients, onClose, showToast }) {
     try {
       const result = await callClaude(
         `Create a social media content calendar for April 2025 for these Arizona businesses managed by a marketing agency:
-${targetClients.map(c=>`- ${c.name} (${c.industry}, ${c.plan} plan: ${c.plan==="Starter"?2:c.plan==="Growth"?4:8} posts/mo)`).join("\n")}
+${targetClients.map(c=>`- ${c.name} (${c.industry}, ${c.plan} plan: ${c.plan==="Copper"?4:c.plan==="Gold"?8:20} posts/mo)`).join("\n")}
 
 Return ONLY a JSON array (no markdown):
 [{"date":"Apr X","client":"...","title":"...","type":"...","description":"2-3 sentence description of the video concept","platform":"Instagram Reel","time":"9:00 AM"}]
@@ -1490,7 +1515,7 @@ function AdminDashboard({ clients, onNav, onOpenIdeas, onOpenCalendar, onOpenCli
                 </div>
                 <div style={{textAlign:'right',flexShrink:0}}>
                   <div style={{font:'600 13px var(--fd)',color:'var(--text)',marginBottom:2}}>${c.mrr.toLocaleString()}</div>
-                  <Badge type={c.plan==="Pro"?"purple":c.plan==="Growth"?"blue":"gray"}>{c.plan}</Badge>
+                  <Badge type={c.plan==="Platinum"?"purple":c.plan==="Gold"?"blue":"gray"}>{c.plan}</Badge>
                 </div>
                 <span style={{fontSize:16,color:"var(--accent)",cursor:"pointer",flexShrink:0}} onClick={(e)=>{e.stopPropagation();onOpenIdeas(c);}}>💡</span>
               </div>
@@ -1726,7 +1751,7 @@ function AdminClients({ clients, showToast, onOpenIdeas }) {
             </div>
           </div>
           <div style={{display:"flex",gap:8,marginTop:14,flexWrap:"wrap"}}>
-            <Badge type={c.plan==="Pro"?"purple":c.plan==="Growth"?"blue":"gray"}>{c.plan} Plan — ${c.mrr}/mo</Badge>
+            <Badge type={c.plan==="Platinum"?"purple":c.plan==="Gold"?"blue":"gray"}>{c.plan} Plan — ${c.mrr}/mo</Badge>
             <Badge type={c.status==="active"?"green":c.status==="onboarding"?"amber":"red"}>{c.status}</Badge>
           </div>
         </div>
@@ -1907,7 +1932,7 @@ function AdminClients({ clients, showToast, onOpenIdeas }) {
               <div className="row-sub">{c.industry} · {c.stage}</div>
             </div>
             <div className="row-right">
-              <Badge type={c.plan==="Pro"?"purple":c.plan==="Growth"?"blue":"gray"}>{c.plan}</Badge>
+              <Badge type={c.plan==="Platinum"?"purple":c.plan==="Gold"?"blue":"gray"}>{c.plan}</Badge>
               {onOpenIdeas && <span style={{fontSize:16,color:"var(--accent)",cursor:"pointer"}} onClick={(e)=>{e.stopPropagation();onOpenIdeas(c);}}>💡</span>}
             </div>
           </div>
@@ -1981,13 +2006,18 @@ function AdminAds({ showToast }) {
           <div style={{display:"flex",gap:12}}>
             <div style={{flex:1,textAlign:"center",padding:14,background:"linear-gradient(135deg,rgba(252,198,18,0.06),rgba(253,128,64,0.04))",borderRadius:12,border:"1px solid rgba(252,198,18,0.15)"}}>
               <div style={{fontSize:20,marginBottom:4}}>📸</div>
-              <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:700}}>62%</div>
+              <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:700}}>38%</div>
               <div style={{fontSize:10,color:"var(--text3)"}}>Instagram</div>
             </div>
             <div style={{flex:1,textAlign:"center",padding:14,background:"rgba(59,130,246,0.06)",borderRadius:12,border:"1px solid rgba(59,130,246,0.15)"}}>
               <div style={{fontSize:20,marginBottom:4}}>📘</div>
-              <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:700}}>38%</div>
+              <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:700}}>24%</div>
               <div style={{fontSize:10,color:"var(--text3)"}}>Facebook</div>
+            </div>
+            <div style={{flex:1,textAlign:"center",padding:14,background:"rgba(34,197,94,0.06)",borderRadius:12,border:"1px solid rgba(34,197,94,0.15)"}}>
+              <div style={{fontSize:20,marginBottom:4}}>🔍</div>
+              <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:700}}>38%</div>
+              <div style={{fontSize:10,color:"var(--text3)"}}>Google Ads</div>
             </div>
           </div>
         </div>
@@ -2065,7 +2095,7 @@ function AdminAds({ showToast }) {
             </div>
             <div className="form-group"><label className="form-label">Platform</label>
               <select className="form-select" value={newCampaignForm.platform} onChange={e=>setNewCampaignForm(p=>({...p,platform:e.target.value}))}>
-                <option>Instagram</option><option>Facebook</option><option>Both</option>
+                <option>Instagram</option><option>Facebook</option><option>Google Ads</option><option>Meta (FB + IG)</option><option>All Platforms</option>
               </select>
             </div>
             <div className="form-group"><label className="form-label">Objective</label>
@@ -2632,6 +2662,184 @@ function EditorCompleted({ videos }) {
 }
 
 // ─── CLIENT VIEWS ─────────────────────────────────────────────────────────────
+// ─── SHOOT CALENDAR ──────────────────────────────────────────────────────────
+function ShootCalendar({ shoots, showToast }) {
+  const [selectedShoot, setSelectedShoot] = useState(null);
+  const [showNewShoot, setShowNewShoot] = useState(false);
+
+  const glass = {
+    background:'rgba(255,255,255,0.6)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',
+    border:'1px solid rgba(255,255,255,0.65)',borderRadius:18,
+    boxShadow:'0 4px 24px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)',
+  };
+
+  const upcoming = shoots.filter(s=>s.status!=="Completed").length;
+  const thisWeek = shoots.filter(s=>s.date>="Mar 18"&&s.date<="Mar 24").length;
+
+  return (
+    <div>
+      <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <div>
+            <h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Shoot Calendar</h1>
+            <p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Schedule and track filming sessions</p>
+          </div>
+          <button className="top-action-btn" onClick={()=>setShowNewShoot(true)}>+ Schedule Shoot</button>
+        </div>
+      </div>
+
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))',gap:12,marginBottom:20}}>
+        {[{label:"Upcoming",val:upcoming,color:"var(--accent)"},{label:"This Week",val:thisWeek,color:"var(--blue)"},{label:"Total Scheduled",val:shoots.length,color:"var(--text)"}].map((s,i)=>(
+          <div key={s.label} className="dash-card-hover" style={{...glass,padding:'18px 16px',animation:`dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) ${i*60}ms backwards`}}>
+            <div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:6}}>{s.label}</div>
+            <div style={{font:'600 28px var(--fd)',color:s.color}}>{s.val}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{...glass,overflow:'hidden',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) 200ms backwards'}}>
+        <div style={{padding:'18px 22px',borderBottom:'1px solid rgba(0,0,0,0.04)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <span style={{font:'600 15px var(--fd)',color:'var(--text)'}}>Scheduled Shoots</span>
+        </div>
+        {shoots.map((s,idx)=>(
+          <div key={s.id} className="dash-card-hover" style={{
+            margin:'6px 10px',padding:'16px 18px',borderRadius:14,
+            background:s.status==="Confirmed"?'rgba(45,154,106,0.04)':'rgba(255,255,255,0.4)',
+            border:s.status==="Confirmed"?'1px solid rgba(45,154,106,0.15)':'1px solid rgba(0,0,0,0.02)',
+            cursor:'pointer',animation:`dashFadeInUp 0.4s cubic-bezier(0.16,1,0.3,1) ${300+idx*50}ms backwards`,
+          }} onClick={()=>setSelectedShoot(selectedShoot===s.id?null:s.id)}>
+            <div style={{display:'flex',alignItems:'center',gap:14}}>
+              <div style={{width:48,height:48,borderRadius:12,background:s.status==="Confirmed"?'var(--green)':'var(--amber)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',flexShrink:0,boxShadow:`0 4px 12px ${s.status==="Confirmed"?'rgba(45,154,106,0.3)':'rgba(212,150,11,0.3)'}`}}>
+                <div style={{font:'600 14px var(--fd)',color:'white',lineHeight:1}}>{s.date.split(" ")[1]}</div>
+                <div style={{font:'500 9px var(--fd)',color:'rgba(255,255,255,0.8)',textTransform:'uppercase'}}>{s.date.split(" ")[0]}</div>
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{font:'500 14px var(--fd)',color:'var(--text)'}}>{s.client}</div>
+                <div style={{font:'400 12px var(--fb)',color:'var(--text2)'}}>{s.time} · {s.duration} · {s.location}</div>
+              </div>
+              <Badge type={s.status==="Confirmed"?"green":"amber"}>{s.status}</Badge>
+            </div>
+            {selectedShoot===s.id && (
+              <div style={{marginTop:14,paddingTop:14,borderTop:'1px solid var(--border)'}}>
+                <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Crew</div><div className="row-sub">{s.crew}</div></div></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Location</div><div className="row-sub">{s.location}</div></div></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Notes</div><div className="row-sub">{s.notes}</div></div></div>
+                <div style={{display:'flex',gap:8,marginTop:10}}>
+                  {s.status==="Pending" && <button className="btn success" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("✅","Confirmed",s.client+" shoot confirmed");}}>Confirm</button>}
+                  <button className="btn" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("📝","Reschedule","Reschedule request sent");}}>Reschedule</button>
+                  <button className="btn" onClick={(e)=>{e.stopPropagation();showToast("💬","Message","Notification sent to crew");}}>Message Crew</button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {showNewShoot && (
+        <div className="overlay" onClick={()=>setShowNewShoot(false)}>
+          <div className="sheet" onClick={e=>e.stopPropagation()}>
+            <div className="sheet-handle"/>
+            <div className="sheet-title">Schedule New Shoot</div>
+            <div className="form-group"><label className="form-label">Client</label><select className="form-select">{INIT_CLIENTS.map(c=><option key={c.id}>{c.name}</option>)}</select></div>
+            <div className="form-group"><label className="form-label">Date</label><input className="form-input" type="date"/></div>
+            <div className="form-group"><label className="form-label">Time</label><select className="form-select">{["6:00 AM","7:00 AM","8:00 AM","9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM"].map(t=><option key={t}>{t}</option>)}</select></div>
+            <div className="form-group"><label className="form-label">Duration</label><select className="form-select"><option>2hr</option><option>3hr</option><option>4hr</option></select></div>
+            <div className="form-group"><label className="form-label">Location</label><input className="form-input" placeholder="Shoot location"/></div>
+            <div className="form-group"><label className="form-label">Crew</label><input className="form-input" placeholder="e.g. Jordan T., Carlos V."/></div>
+            <div className="form-group"><label className="form-label">Notes</label><textarea className="form-textarea" placeholder="What to capture, equipment needed, etc."/></div>
+            <div className="form-actions">
+              <button className="btn" onClick={()=>setShowNewShoot(false)}>Cancel</button>
+              <button className="btn primary" onClick={()=>{setShowNewShoot(false);showToast("📸","Shoot Scheduled","New shoot added to calendar");}}>Schedule Shoot</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── COACHING & STRATEGY CALLS ──────────────────────────────────────────────
+function CoachingTracker({ sessions, showToast }) {
+  const [selectedSession, setSelectedSession] = useState(null);
+
+  const glass = {
+    background:'rgba(255,255,255,0.6)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',
+    border:'1px solid rgba(255,255,255,0.65)',borderRadius:18,
+    boxShadow:'0 4px 24px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)',
+  };
+
+  const upcoming = sessions.filter(s=>s.status==="Upcoming").length;
+  const completed = sessions.filter(s=>s.status==="Completed").length;
+  const typeIcons = {"Strategy Call":"📊","Camera Coaching":"📷","Sales Coaching":"💰"};
+
+  return (
+    <div>
+      <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
+        <h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Coaching & Strategy</h1>
+        <p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Camera coaching, strategy calls, and sales coaching sessions</p>
+      </div>
+
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))',gap:12,marginBottom:20}}>
+        <div className="dash-card-hover" style={{...glass,padding:'18px 16px'}}><div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:6}}>Upcoming</div><div style={{font:'600 28px var(--fd)',color:'var(--accent)'}}>{upcoming}</div></div>
+        <div className="dash-card-hover" style={{...glass,padding:'18px 16px'}}><div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:6}}>Completed</div><div style={{font:'600 28px var(--fd)',color:'var(--green)'}}>{completed}</div></div>
+        <div className="dash-card-hover" style={{...glass,padding:'18px 16px'}}><div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:6}}>Total</div><div style={{font:'600 28px var(--fd)',color:'var(--text)'}}>{sessions.length}</div></div>
+      </div>
+
+      {/* Upcoming */}
+      {upcoming > 0 && (
+        <div style={{...glass,overflow:'hidden',marginBottom:20}}>
+          <div style={{padding:'18px 22px',borderBottom:'1px solid rgba(0,0,0,0.04)'}}><span style={{font:'600 15px var(--fd)',color:'var(--text)'}}>Upcoming Sessions</span></div>
+          {sessions.filter(s=>s.status==="Upcoming").map((s,idx)=>(
+            <div key={s.id} className="dash-card-hover" style={{margin:'6px 10px',padding:'16px 18px',borderRadius:14,background:'rgba(252,198,18,0.04)',border:'1px solid rgba(252,198,18,0.12)',cursor:'pointer'}}
+              onClick={()=>setSelectedSession(selectedSession===s.id?null:s.id)}>
+              <div style={{display:'flex',alignItems:'center',gap:14}}>
+                <div style={{fontSize:24,flexShrink:0}}>{typeIcons[s.type]||"📞"}</div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{font:'500 14px var(--fd)',color:'var(--text)'}}>{s.type}</div>
+                  <div style={{font:'400 12px var(--fb)',color:'var(--text2)'}}>{s.client} · {s.date} at {s.time} · {s.duration}</div>
+                </div>
+                <Badge type="amber">Upcoming</Badge>
+              </div>
+              {selectedSession===s.id && (
+                <div style={{marginTop:12,paddingTop:12,borderTop:'1px solid var(--border)'}}>
+                  <div style={{font:'400 12px var(--fb)',color:'var(--text2)',lineHeight:1.6,marginBottom:10}}>{s.notes}</div>
+                  <div style={{display:'flex',gap:8}}>
+                    <button className="btn success" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("✅","Confirmed","Session confirmed with "+s.client);}}>Confirm</button>
+                    <button className="btn" onClick={(e)=>{e.stopPropagation();showToast("📅","Reschedule","Request sent");}}>Reschedule</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Completed */}
+      <div style={{...glass,overflow:'hidden'}}>
+        <div style={{padding:'18px 22px',borderBottom:'1px solid rgba(0,0,0,0.04)'}}><span style={{font:'600 15px var(--fd)',color:'var(--text)'}}>Completed Sessions</span></div>
+        {sessions.filter(s=>s.status==="Completed").map(s=>(
+          <div key={s.id} style={{margin:'6px 10px',padding:'14px 18px',borderRadius:14,background:'rgba(255,255,255,0.4)',border:'1px solid rgba(0,0,0,0.02)',cursor:'pointer'}}
+            onClick={()=>setSelectedSession(selectedSession===s.id?null:s.id)}>
+            <div style={{display:'flex',alignItems:'center',gap:14}}>
+              <div style={{fontSize:24,flexShrink:0}}>{typeIcons[s.type]||"📞"}</div>
+              <div style={{flex:1}}>
+                <div style={{font:'500 13px var(--fd)',color:'var(--text)'}}>{s.type} — {s.client}</div>
+                <div style={{font:'400 11px var(--fb)',color:'var(--text3)'}}>{s.date} · {s.duration}</div>
+              </div>
+              <Badge type="green">Done</Badge>
+            </div>
+            {selectedSession===s.id && (
+              <div style={{marginTop:10,paddingTop:10,borderTop:'1px solid var(--border)'}}>
+                <div style={{font:'400 12px var(--fb)',color:'var(--text2)',lineHeight:1.6}}>{s.notes}</div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── TEAM WORKLOAD ───────────────────────────────────────────────────────────
 function TeamWorkload({ scripts, videos }) {
   const team = [
@@ -3148,7 +3356,7 @@ function ClientTeam({ showToast, onOpenMessages }) {
 // ─── MODALS ───────────────────────────────────────────────────────────────────
 function AddClientModal({ onClose, onAdd }) {
   const [step, setStep] = useState(1);
-  const [form, setForm] = useState({name:"",industry:"",plan:"Starter",ig:"",tone:"",audience:"",hashtags:"",colors:["#000000","#FFFFFF","#FFB800"]});
+  const [form, setForm] = useState({name:"",industry:"",plan:"Copper",ig:"",tone:"",audience:"",hashtags:"",colors:["#000000","#FFFFFF","#FFB800"]});
   const colors = ["#3B82F6","#A855F7","#22C55E","#FFB800","#FF5C00","#EF4444"];
   const steps = [{num:1,label:"Business Info"},{num:2,label:"Plan & Socials"},{num:3,label:"Brand Kit"}];
 
@@ -3158,7 +3366,7 @@ function AddClientModal({ onClose, onAdd }) {
     onAdd({
       id:Date.now(), name:form.name, industry:form.industry||"general", plan:form.plan,
       status:"onboarding", stage:"Onboarding", nextPost:"—", color:brandColor, videos:0,
-      mrr:{Starter:600,Growth:1200,Pro:2400}[form.plan],
+      mrr:{Copper:1500,Gold:3000,Platinum:5000}[form.plan],
       brandKit:{colors:form.colors,tone:form.tone||"Professional and engaging",hashtags:(form.hashtags||"").split(",").map(h=>h.trim()).filter(Boolean),audience:form.audience||"General",ig:form.ig||"—"},
       metrics:{followers:0,gained:0,avgViews:0,avgLikes:0,engRate:0,topPost:"—"},
     });
@@ -3193,10 +3401,10 @@ function AddClientModal({ onClose, onAdd }) {
         {step===2 && (<>
           <div className="form-group"><label className="form-label">Plan</label>
             <div style={{display:'flex',gap:8}}>
-              {["Starter","Growth","Pro"].map(p=>(
+              {["Copper","Gold","Platinum"].map(p=>(
                 <button key={p} className={`action-btn ${form.plan===p?"accent":""}`} style={{flex:1,padding:'12px 8px',fontSize:12,fontWeight:600}} onClick={()=>setForm(f=>({...f,plan:p}))}>
                   <div>{p}</div>
-                  <div style={{font:'400 10px var(--fb)',marginTop:2,color:'var(--text3)'}}>{p==="Starter"?"2 vids/mo":p==="Growth"?"4 vids/mo":"8 vids/mo"}</div>
+                  <div style={{font:'400 10px var(--fb)',marginTop:2,color:'var(--text3)'}}>{p==="Copper"?"4 vids/mo":p==="Gold"?"8 vids/mo":"20 vids/mo"}</div>
                 </button>
               ))}
             </div>
@@ -3259,7 +3467,7 @@ const ROLES = [
   {key:"client",      label:"Client",       name:"Desert Sun Realty",color:"#FFB800",initial:"C"},
 ];
 const NAV_CONFIG = {
-  admin:        [{label:"Dashboard",icon:"⬛",view:"dashboard"},{label:"Pipeline",icon:"🔄",view:"pipeline"},{label:"Team",icon:"👤",view:"team"},{label:"Clients",icon:"👥",view:"clients"},{label:"Revenue",icon:"💰",view:"revenue"},{label:"Ads",icon:"📢",view:"ads"},{label:"Settings",icon:"⚙️",view:"settings"}],
+  admin:        [{label:"Dashboard",icon:"⬛",view:"dashboard"},{label:"Pipeline",icon:"🔄",view:"pipeline"},{label:"Shoots",icon:"🎥",view:"shoots"},{label:"Calls",icon:"📞",view:"coaching"},{label:"Team",icon:"👤",view:"team"},{label:"Clients",icon:"👥",view:"clients"},{label:"Revenue",icon:"💰",view:"revenue"},{label:"Ads",icon:"📢",view:"ads"},{label:"Settings",icon:"⚙️",view:"settings"}],
   sales:        [{label:"Pipeline",icon:"📊",view:"dashboard",badge:3},{label:"Calls",icon:"🎥",view:"calls"},{label:"Leads",icon:"🎯",view:"leads"},{label:"Activity",icon:"📋",view:"activity"}],
   scriptwriter: [{label:"Queue",icon:"✍️",view:"dashboard",badge:2},{label:"Done",icon:"✅",view:"completed"}],
   editor:       [{label:"Production",icon:"🎬",view:"dashboard",badge:2},{label:"Upload",icon:"📤",view:"upload"},{label:"Done",icon:"✅",view:"completed"}],
@@ -3331,6 +3539,8 @@ export default function App() {
     if(role==="admin"){
       if(view==="dashboard") return <AdminDashboard clients={clients} onNav={navTo} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} onOpenClientDetail={(c)=>openPanel("client-detail",c)} showToast={showToast}/>;
       if(view==="pipeline")  return <ContentPipeline scripts={scripts} videos={videos} onAdvanceVideo={advanceVideo} onUpdateScript={updateScript} showToast={showToast}/>;
+      if(view==="shoots")    return <ShootCalendar shoots={INIT_SHOOTS} showToast={showToast}/>;
+      if(view==="coaching")  return <CoachingTracker sessions={INIT_COACHING} showToast={showToast}/>;
       if(view==="team")      return <TeamWorkload scripts={scripts} videos={videos}/>;
       if(view==="clients")   return <AdminClients clients={clients} showToast={showToast} onOpenIdeas={(c)=>openPanel("ideas",c)}/>;
       if(view==="revenue")   return <AdminRevenue clients={clients}/>;
@@ -3484,7 +3694,7 @@ export default function App() {
               </div>
               <div className="full-panel-scroll">
                 <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
-                  <Badge type={panelData.plan==="Pro"?"purple":panelData.plan==="Growth"?"blue":"gray"}>{panelData.plan} Plan</Badge>
+                  <Badge type={panelData.plan==="Platinum"?"purple":panelData.plan==="Gold"?"blue":"gray"}>{panelData.plan} Plan</Badge>
                   <Badge type={panelData.status==="active"?"green":panelData.status==="onboarding"?"amber":"red"}>{panelData.status}</Badge>
                 </div>
                 <div className="stats-grid">
