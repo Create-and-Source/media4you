@@ -627,14 +627,48 @@ const INIT_NOTIFS = [
   {id:7,icon:"◉",text:<><strong>Sky Harbor Dental</strong> strategy call tomorrow 1 PM</>, time:"5 hr ago",  unread:false, action:{view:"coaching"} },
 ];
 
-const INIT_THREADS = [
-  {id:1,name:"Carlos V.",role:"Account Manager",color:"#3B82F6",last:"The listing showcase is going into editing today.",time:"11 min",unread:2,
-   messages:[{id:1,from:"Carlos V.",mine:false,text:"Hey! Your March content plan for @Desert Sun Realty is looking great. 8 videos lined up.",time:"11 min ago"},{id:2,from:"Carlos V.",mine:false,text:"The @Listing Showcase for 4821 Cactus is going into editing today. @Jordan T. is on it.",time:"10 min ago"}]},
-  {id:2,name:"Maya R.",role:"Script Writer",color:"#A855F7",last:"Drafted the neighborhood spotlight script!",time:"1 hr",unread:1,
-   messages:[{id:1,from:"Maya R.",mine:false,text:"I've drafted the script for @Neighborhood Spotlight — take a look when you get a chance!",time:"1 hr ago"},{id:2,from:"Maya R.",mine:false,text:"Also working on the @Day in the Life script for @Frost Barbershop next.",time:"45 min ago"}]},
-  {id:3,name:"Jordan T.",role:"Video Editor",color:"#22C55E",last:"Sold! Desert View is ready for approval.",time:"2 hr",unread:0,
-   messages:[{id:1,from:"Jordan T.",mine:false,text:"The @Testimonial Reel for @Desert Sun Realty is ready for your review.",time:"2 hr ago"},{id:2,from:"Me",mine:true,text:"Looks amazing! Approved. Can you also prep for the @Mar 20 Shoot — Desert Sun session?",time:"1 hr ago"},{id:3,from:"Jordan T.",mine:false,text:"Already on it. I'll have the shot list ready by tonight.",time:"58 min ago"}]},
-];
+const THREADS_BY_ROLE = {
+  admin: [
+    {id:1,name:"Carlos V.",role:"Account Manager",color:"#3B82F6",last:"The listing showcase is going into editing today.",time:"11 min",unread:2,
+     messages:[{id:1,from:"Carlos V.",mine:false,text:"Hey! Your March content plan for @Desert Sun Realty is looking great. 8 videos lined up.",time:"11 min ago"},{id:2,from:"Carlos V.",mine:false,text:"The @Listing Showcase for 4821 Cactus is going into editing today. @Jordan T. is on it.",time:"10 min ago"}]},
+    {id:2,name:"Maya R.",role:"Script Writer",color:"#A855F7",last:"Drafted the neighborhood spotlight script!",time:"1 hr",unread:1,
+     messages:[{id:1,from:"Maya R.",mine:false,text:"I've drafted the script for @Neighborhood Spotlight — take a look when you get a chance!",time:"1 hr ago"},{id:2,from:"Maya R.",mine:false,text:"Also working on the @Day in the Life script for @Frost Barbershop next.",time:"45 min ago"}]},
+    {id:3,name:"Jordan T.",role:"Video Editor",color:"#22C55E",last:"Shot list ready for tomorrow.",time:"2 hr",unread:0,
+     messages:[{id:1,from:"Jordan T.",mine:false,text:"The @Testimonial Reel for @Desert Sun Realty is ready for your review.",time:"2 hr ago"},{id:2,from:"Me",mine:true,text:"Looks amazing! Approved. Can you also prep for the @Mar 20 Shoot — Desert Sun session?",time:"1 hr ago"},{id:3,from:"Jordan T.",mine:false,text:"Already on it. I'll have the shot list ready by tonight.",time:"58 min ago"}]},
+  ],
+  sales: [
+    {id:10,name:"Sabrina",role:"Owner",color:"#FF5C00",last:"How did the Chandler Law demo go?",time:"20 min",unread:1,
+     messages:[{id:1,from:"Sabrina",mine:false,text:"How did the Chandler Law demo go? They seemed interested on the intro call.",time:"20 min ago"}]},
+    {id:11,name:"Jade",role:"Sales Rep",color:"#A855F7",last:"I've got 3 follow-ups to do today.",time:"1 hr",unread:0,
+     messages:[{id:1,from:"Jade",mine:false,text:"I've got 3 follow-ups to do today. Sun Devil Gym wants to reschedule to Friday.",time:"1 hr ago"},{id:2,from:"Me",mine:true,text:"That's fine. Make sure to send them the @Content Strategy Ideas email before the call.",time:"45 min ago"}]},
+    {id:12,name:"Alex M.",role:"Admin",color:"#FF5C00",last:"New lead came in from the website.",time:"3 hr",unread:1,
+     messages:[{id:1,from:"Alex M.",mine:false,text:"New lead just came in from the website — Phoenix Plumbing. They want a Gold plan. Can you reach out today?",time:"3 hr ago"}]},
+  ],
+  scriptwriter: [
+    {id:20,name:"Sabrina",role:"Owner",color:"#FF5C00",last:"Make sure the Frost script has energy.",time:"30 min",unread:1,
+     messages:[{id:1,from:"Sabrina",mine:false,text:"Make sure the @Frost Barbershop script has a lot of energy. They want that Saturday rush vibe.",time:"30 min ago"}]},
+    {id:21,name:"Jordan T.",role:"Video Editor",color:"#22C55E",last:"Can you write the voiceover for the dental vid?",time:"2 hr",unread:0,
+     messages:[{id:1,from:"Jordan T.",mine:false,text:"Hey Maya, can you write the voiceover text for the @Sky Harbor Dental transformation video? I need it by Thursday.",time:"2 hr ago"},{id:2,from:"Me",mine:true,text:"On it. I'll have it to you by end of day tomorrow.",time:"1 hr ago"}]},
+    {id:22,name:"Carlos V.",role:"Account Manager",color:"#3B82F6",last:"Client wants more humor in the scripts.",time:"4 hr",unread:0,
+     messages:[{id:1,from:"Carlos V.",mine:false,text:"@Mesa Auto Detailing client said they want more humor in the scripts. Less corporate, more personality.",time:"4 hr ago"},{id:2,from:"Me",mine:true,text:"Got it. I'll adjust the tone for the next batch.",time:"3 hr ago"}]},
+  ],
+  editor: [
+    {id:30,name:"Sabrina",role:"Owner",color:"#FF5C00",last:"The dental video needs to be 4K.",time:"15 min",unread:1,
+     messages:[{id:1,from:"Sabrina",mine:false,text:"The @Sky Harbor Dental video needs to be exported in 4K. They're using it for their website too.",time:"15 min ago"}]},
+    {id:31,name:"Maya R.",role:"Script Writer",color:"#A855F7",last:"Script is done for the CrossFit reel.",time:"1 hr",unread:1,
+     messages:[{id:1,from:"Maya R.",mine:false,text:"Script is finalized for the @Cactus CrossFit workout reel. Ready for you to start editing whenever.",time:"1 hr ago"}]},
+    {id:32,name:"Carlos V.",role:"Account Manager",color:"#3B82F6",last:"Client approved the listing video.",time:"3 hr",unread:0,
+     messages:[{id:1,from:"Carlos V.",mine:false,text:"@Desert Sun Realty approved the listing video. You can schedule it for posting now.",time:"3 hr ago"},{id:2,from:"Me",mine:true,text:"Scheduling it for tomorrow at 10 AM. Looks clean.",time:"2 hr ago"}]},
+  ],
+  client: [
+    {id:40,name:"Carlos V.",role:"Your Account Manager",color:"#3B82F6",last:"Your content plan for March is set!",time:"11 min",unread:2,
+     messages:[{id:1,from:"Carlos V.",mine:false,text:"Hey! Your March content plan is finalized. 8 videos scheduled across Instagram and TikTok.",time:"11 min ago"},{id:2,from:"Carlos V.",mine:false,text:"The listing showcase for 4821 Cactus Rd goes into editing today. Should be ready for your review by Thursday.",time:"10 min ago"}]},
+    {id:41,name:"Jordan T.",role:"Your Video Editor",color:"#22C55E",last:"Your new video is ready for review!",time:"2 hr",unread:1,
+     messages:[{id:1,from:"Jordan T.",mine:false,text:"Your Sold! 3901 Desert View video is ready for review. Let me know if you want any changes!",time:"2 hr ago"}]},
+    {id:42,name:"Media4You Team",role:"Support",color:"#fcc612",last:"Welcome to Media4You!",time:"1 day",unread:0,
+     messages:[{id:1,from:"Media4You Team",mine:false,text:"Welcome to Media4You! This is your content dashboard. You can review scripts, approve videos, and track everything from here.",time:"1 day ago"},{id:2,from:"Me",mine:true,text:"Thanks! Excited to get started.",time:"1 day ago"}]},
+  ],
+};
 
 const AD_SPEND_DATA = [
   {month:"Oct",spend:2800},{month:"Nov",spend:3200},{month:"Dec",spend:3600},
@@ -3376,6 +3410,145 @@ function SalesCalls({ showToast }) {
   );
 }
 
+// ─── LEAD FINDER ─────────────────────────────────────────────────────────────
+function LeadFinder({ onAddLead, showToast }) {
+  const [scanning, setScanning] = useState(false);
+  const [scanned, setScanned] = useState(false);
+  const [filter, setFilter] = useState("all");
+  const [addedIds, setAddedIds] = useState({});
+  const [expandedId, setExpandedId] = useState(null);
+
+  const prospects = [
+    {id:1,name:"Chandler Chiropractic",industry:"Healthcare",location:"Chandler, AZ",ig:"@chandlerchiro",followers:340,lastPost:"6 weeks ago",website:true,googleBiz:true,score:92,issues:["No video content","Last IG post 6 weeks ago","No TikTok presence","Google listing has no photos"]},
+    {id:2,name:"Prestige Auto Spa",industry:"Auto Detailing",location:"Scottsdale, AZ",ig:"—",followers:0,lastPost:"Never",website:true,googleBiz:true,score:96,issues:["No Instagram account","No social media at all","5-star Google reviews but no content","High-ticket service perfect for video"]},
+    {id:3,name:"Roots Kitchen & Bar",industry:"Restaurant",location:"Tempe, AZ",ig:"@rootskitchenaz",followers:820,lastPost:"3 weeks ago",website:true,googleBiz:true,score:78,issues:["Low posting frequency","No Reels or video content","Good food photography potential","Active Google reviews"]},
+    {id:4,name:"AZ Smile Dental",industry:"Dental",location:"Mesa, AZ",ig:"@azsmile_dental",followers:180,lastPost:"2 months ago",website:true,googleBiz:false,score:88,issues:["Almost no social activity","Before/after potential is huge","Competitors are posting weekly","No Google Business listing"]},
+    {id:5,name:"Peak Performance PT",industry:"Physical Therapy",location:"Scottsdale, AZ",ig:"@peakpt_az",followers:520,lastPost:"1 week ago",website:true,googleBiz:true,score:65,issues:["Posts but no video","All static images","Transformation stories would crush","Has a following to build on"]},
+    {id:6,name:"Desert Bloom Florist",industry:"Florist",location:"Phoenix, AZ",ig:"—",followers:0,lastPost:"Never",website:false,googleBiz:true,score:94,issues:["No website","No social media","Visual product perfect for IG/TikTok","Competitor florists are growing fast"]},
+    {id:7,name:"Iron Temple Gym",industry:"Gym/Fitness",location:"Gilbert, AZ",ig:"@irontemple_az",followers:1200,lastPost:"4 days ago",website:true,googleBiz:true,score:52,issues:["Posts regularly but low engagement","No professional video content","Member transformation potential","Could 3x engagement with Reels"]},
+    {id:8,name:"Valley View Law",industry:"Law Firm",location:"Phoenix, AZ",ig:"—",followers:0,lastPost:"Never",website:true,googleBiz:true,score:90,issues:["No social presence at all","Every competitor has Instagram","Educational content would build trust","High-value client acquisition"]},
+  ];
+
+  const filtered = filter==="all" ? prospects : prospects.filter(p=>p.industry.toLowerCase()===filter.toLowerCase());
+  const scoreColor = (s) => s >= 85 ? "var(--red)" : s >= 65 ? "var(--amber)" : "var(--green)";
+  const scoreLabel = (s) => s >= 85 ? "Hot" : s >= 65 ? "Warm" : "Cool";
+
+  const startScan = () => {
+    setScanning(true);
+    setTimeout(()=>{setScanning(false);setScanned(true);},2500);
+  };
+
+  const glass = {
+    background:'rgba(255,255,255,0.6)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',
+    border:'1px solid rgba(255,255,255,0.65)',borderRadius:18,
+    boxShadow:'0 4px 24px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)',
+  };
+
+  return (
+    <div>
+      <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:16}}>
+          <div>
+            <h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Lead Finder</h1>
+            <p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Discover Arizona businesses that need your services</p>
+          </div>
+          {!scanning && <button className="top-action-btn" onClick={startScan}>{scanned?"Scan Again":"Scan Arizona Businesses"}</button>}
+        </div>
+      </div>
+
+      {!scanned && !scanning && (
+        <div style={{textAlign:'center',padding:60}}>
+          <div style={{font:'600 40px var(--fd)',color:'var(--text3)',marginBottom:12,opacity:0.4}}>◇</div>
+          <div style={{font:'500 16px var(--fd)',color:'var(--text2)',marginBottom:8}}>Find businesses that need content</div>
+          <div style={{font:'400 13px var(--fb)',color:'var(--text3)',maxWidth:400,margin:'0 auto',lineHeight:1.6}}>We scan Google Maps, Instagram, TikTok, and business directories to find Arizona businesses with weak or no social media presence.</div>
+        </div>
+      )}
+
+      {scanning && (
+        <div style={{textAlign:'center',padding:40}}>
+          <div className="ai-spinner" style={{width:32,height:32,margin:'0 auto 16px',borderWidth:3}}/>
+          <div style={{font:'500 14px var(--fd)',color:'var(--accent)',marginBottom:4}}>Scanning Arizona businesses...</div>
+          <div style={{font:'400 12px var(--fb)',color:'var(--text3)'}}>Checking Google Maps, Instagram, TikTok, and websites</div>
+        </div>
+      )}
+
+      {scanned && !scanning && (<>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))',gap:12,marginBottom:20}}>
+          <div className="dash-card-hover" style={{...glass,padding:'18px 16px'}}><div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:6}}>Found</div><div style={{font:'600 28px var(--fd)',color:'var(--text)'}}>{prospects.length}</div></div>
+          <div className="dash-card-hover" style={{...glass,padding:'18px 16px'}}><div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:6}}>Hot Leads</div><div style={{font:'600 28px var(--fd)',color:'var(--red)'}}>{prospects.filter(p=>p.score>=85).length}</div></div>
+          <div className="dash-card-hover" style={{...glass,padding:'18px 16px'}}><div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:6}}>No IG</div><div style={{font:'600 28px var(--fd)',color:'var(--amber)'}}>{prospects.filter(p=>p.followers===0).length}</div></div>
+        </div>
+
+        <div style={{display:'flex',gap:6,marginBottom:16,flexWrap:'wrap'}}>
+          {["all","Healthcare","Auto Detailing","Restaurant","Dental","Gym/Fitness","Law Firm"].map(f=>(
+            <button key={f} className={`action-btn ${filter===f?"accent":""}`} onClick={()=>setFilter(f)} style={{textTransform:'capitalize'}}>{f}</button>
+          ))}
+        </div>
+
+        <div style={{...glass,overflow:'hidden'}}>
+          <div style={{padding:'18px 22px',borderBottom:'1px solid rgba(0,0,0,0.04)'}}>
+            <span style={{font:'600 15px var(--fd)',color:'var(--text)'}}>Prospects</span>
+          </div>
+          {filtered.map((p,idx)=>(
+            <div key={p.id} className="dash-card-hover" style={{
+              margin:'6px 10px',padding:'16px 18px',borderRadius:14,
+              background:addedIds[p.id]?'rgba(45,154,106,0.04)':'rgba(255,255,255,0.4)',
+              border:addedIds[p.id]?'1px solid rgba(45,154,106,0.15)':'1px solid rgba(0,0,0,0.02)',
+              cursor:'pointer',animation:`dashFadeInUp 0.3s cubic-bezier(0.16,1,0.3,1) ${idx*40}ms backwards`,
+            }} onClick={()=>setExpandedId(expandedId===p.id?null:p.id)}>
+              <div style={{display:'flex',alignItems:'center',gap:14}}>
+                {/* Score circle */}
+                <div style={{width:48,height:48,borderRadius:'50%',border:`3px solid ${scoreColor(p.score)}`,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                  <div style={{font:'700 16px var(--fd)',color:scoreColor(p.score),lineHeight:1}}>{p.score}</div>
+                  <div style={{font:'600 7px var(--fd)',color:scoreColor(p.score),textTransform:'uppercase'}}>{scoreLabel(p.score)}</div>
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{font:'600 14px var(--fd)',color:'var(--text)'}}>{p.name}</div>
+                  <div style={{font:'400 11px var(--fb)',color:'var(--text2)',marginTop:2}}>{p.industry} · {p.location}</div>
+                  <div style={{display:'flex',gap:6,marginTop:4,flexWrap:'wrap'}}>
+                    {p.followers===0 ? <Badge type="red">No Instagram</Badge> : <Badge type="gray">{p.followers} followers</Badge>}
+                    {p.lastPost==="Never" ? <Badge type="red">No posts</Badge> : <Badge type="amber">Last: {p.lastPost}</Badge>}
+                  </div>
+                </div>
+                <div style={{flexShrink:0}}>
+                  {addedIds[p.id] ? <Badge type="green">Added</Badge> : <span style={{color:'var(--text3)',fontSize:14}}>›</span>}
+                </div>
+              </div>
+
+              {expandedId===p.id && (
+                <div style={{marginTop:14,paddingTop:14,borderTop:'1px solid var(--border)'}}>
+                  <div style={{font:'600 10px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text3)',marginBottom:8}}>Why they need Media4You</div>
+                  {p.issues.map((issue,i)=>(
+                    <div key={i} style={{display:'flex',alignItems:'center',gap:8,padding:'4px 0',font:'400 12px var(--fb)',color:'var(--text2)'}}>
+                      <span style={{color:'var(--red)',fontSize:10}}>●</span>{issue}
+                    </div>
+                  ))}
+                  <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginTop:12}}>
+                    <div style={{padding:'8px 10px',background:'var(--surface2)',borderRadius:8,border:'1px solid var(--border)'}}>
+                      <div style={{font:'400 9px var(--fd)',color:'var(--text3)',textTransform:'uppercase',marginBottom:2}}>Instagram</div>
+                      <div style={{font:'500 12px var(--fb)',color:'var(--text)'}}>{p.ig}</div>
+                    </div>
+                    <div style={{padding:'8px 10px',background:'var(--surface2)',borderRadius:8,border:'1px solid var(--border)'}}>
+                      <div style={{font:'400 9px var(--fd)',color:'var(--text3)',textTransform:'uppercase',marginBottom:2}}>Website</div>
+                      <div style={{font:'500 12px var(--fb)',color:p.website?'var(--green)':'var(--red)'}}>{p.website?"Has website":"No website"}</div>
+                    </div>
+                  </div>
+                  {!addedIds[p.id] && (
+                    <div style={{display:'flex',gap:8,marginTop:12}}>
+                      <button className="btn primary" style={{flex:1}} onClick={(e)=>{e.stopPropagation();setAddedIds(prev=>({...prev,[p.id]:true}));onAddLead({id:Date.now(),name:p.name,industry:p.industry,value:`$${p.score>=85?3000:1500}/mo`,source:"Lead Finder",rep:"Carlos"});showToast("✓","Added to pipeline",p.name);fireConfetti();}}>Add to Pipeline</button>
+                      <button className="btn" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("◉","Outreach draft","Opening AI outreach writer...");}}>Draft Outreach</button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </>)}
+    </div>
+  );
+}
+
 // ─── SALES LEADS LIST ──────────────────────────────────────────────────────
 function SalesLeadsList({ leads, showToast }) {
   const [selectedLead, setSelectedLead] = useState(null);
@@ -4504,7 +4677,7 @@ const ROLES = [
 ];
 const NAV_CONFIG = {
   admin:        [{label:"Dashboard",icon:"◆",view:"dashboard"},{label:"Pipeline",icon:"◎",view:"pipeline"},{label:"Shoots",icon:"▶",view:"shoots"},{label:"Calls",icon:"◉",view:"coaching"},{label:"Team",icon:"◈",view:"team"},{label:"Clients",icon:"▣",view:"clients"},{label:"Revenue",icon:"$",view:"revenue"},{label:"Expenses",icon:"−",view:"expenses"},{label:"Ads",icon:"◐",view:"ads"},{label:"Settings",icon:"⟐",view:"settings"}],
-  sales:        [{label:"Pipeline",icon:"◎",view:"dashboard",badge:3},{label:"Comms",icon:"◉",view:"calls"},{label:"Leads",icon:"◆",view:"leads"},{label:"Activity",icon:"▤",view:"activity"}],
+  sales:        [{label:"Pipeline",icon:"◎",view:"dashboard",badge:3},{label:"Comms",icon:"◉",view:"calls"},{label:"Lead Finder",icon:"◇",view:"finder"},{label:"Leads",icon:"◆",view:"leads"},{label:"Activity",icon:"▤",view:"activity"}],
   scriptwriter: [{label:"Queue",icon:"▤",view:"dashboard",badge:2},{label:"Done",icon:"✓",view:"completed"}],
   editor:       [{label:"Production",icon:"▶",view:"dashboard",badge:2},{label:"Upload",icon:"△",view:"upload"},{label:"Done",icon:"✓",view:"completed"}],
   client:       [{label:"Content",icon:"▶",view:"dashboard"},{label:"Instagram",icon:"◎",view:"instagram"},{label:"Ads",icon:"◐",view:"ads"},{label:"Invoices",icon:"▤",view:"invoices"},{label:"Team",icon:"◈",view:"team"}],
@@ -4541,14 +4714,14 @@ export default function App() {
   const [videos, setVideos]       = useState(INIT_VIDEOS);
   const [igPosts, setIgPosts]     = useState(INIT_IG);
   const [notifs, setNotifs]       = useState(INIT_NOTIFS);
-  const [threads, setThreads]     = useState(INIT_THREADS);
+  const [threads, setThreads]     = useState(THREADS_BY_ROLE.admin);
 
   const roleInfo = ROLES.find(r=>r.key===role);
   const unreadNotifs = notifs.filter(n=>n.unread).length;
   const unreadMsgs = threads.reduce((s,t)=>s+t.unread,0);
 
   const showToast = (icon,text,sub="") => { setToast({icon,text,sub}); setTimeout(()=>setToast(null),2500); };
-  const switchRole = (r) => { setRole(r);setView("dashboard");setPanel(null);setPanelData(null);setSubView(null);setSelScript(null);setSheet(false); };
+  const switchRole = (r) => { setRole(r);setView("dashboard");setPanel(null);setPanelData(null);setSubView(null);setSelScript(null);setSheet(false);setThreads(THREADS_BY_ROLE[r]||THREADS_BY_ROLE.admin); };
   const navTo = (v) => { setView(v);setPanel(null);setSubView(null);setSelScript(null); };
   const openPanel = (p,data=null) => { setPanel(p);setPanelData(data); };
   const closePanel = () => { setPanel(null);setPanelData(null); };
@@ -4597,6 +4770,7 @@ export default function App() {
     if(role==="sales"){
       if(view==="dashboard") return <SalesDashboard leads={leads} onOpenOutreach={()=>openPanel("outreach")} showToast={showToast}/>;
       if(view==="calls")     return <SalesCalls showToast={showToast}/>;
+      if(view==="finder")    return <LeadFinder onAddLead={addLead} showToast={showToast}/>;
       if(view==="leads")     return <SalesLeadsList leads={leads} showToast={showToast}/>;
       if(view==="activity")  return <SalesActivity/>;
     }
