@@ -2345,6 +2345,44 @@ function AdminSettings({ showToast, darkMode, setDarkMode }) {
           </div>
         </div>
       </div>
+      <div className="card">
+        <div className="card-title">Branding</div>
+        <div className="row-item" style={{paddingTop:0}}>
+          <div className="row-main">
+            <div className="row-title">Business Name</div>
+            <div className="row-sub"><InlineEdit value="Media4You" onSave={v=>showToast("✓","Updated","Business name changed to "+v)}/></div>
+          </div>
+        </div>
+        <div className="row-item">
+          <div className="row-main">
+            <div className="row-title">Tagline</div>
+            <div className="row-sub"><InlineEdit value="A Complete Growth Engine" onSave={v=>showToast("✓","Updated","Tagline updated")}/></div>
+          </div>
+        </div>
+        <div className="row-item">
+          <div className="row-main">
+            <div className="row-title">Primary Color</div>
+            <div style={{display:'flex',alignItems:'center',gap:8,marginTop:4}}>
+              <input type="color" defaultValue="#fcc612" style={{width:32,height:32,borderRadius:8,border:'1px solid var(--border2)',cursor:'pointer',padding:2}} onChange={()=>showToast("✓","Color updated","Refresh to see changes")}/>
+              <span style={{font:'400 11px monospace',color:'var(--text3)'}}>#fcc612</span>
+            </div>
+          </div>
+        </div>
+        <div className="row-item">
+          <div className="row-main">
+            <div className="row-title">Logo</div>
+            <div className="row-sub">Current: MEDIA4YOU text logo</div>
+          </div>
+          <button className="action-btn" onClick={()=>showToast("✓","Upload","Logo upload dialog opened")}>Upload</button>
+        </div>
+        <div className="row-item" style={{borderBottom:'none'}}>
+          <div className="row-main">
+            <div className="row-title">Client Portal URL</div>
+            <div className="row-sub">app.media4you.agency</div>
+          </div>
+          <button className="action-btn" onClick={()=>{navigator.clipboard?.writeText("app.media4you.agency");showToast("✓","Copied","URL copied");}}>Copy</button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -3831,6 +3869,160 @@ function EditorCompleted({ videos }) {
 }
 
 // ─── CLIENT VIEWS ─────────────────────────────────────────────────────────────
+// ─── CLIENT REPORT GENERATOR ─────────────────────────────────────────────────
+function ClientReportGenerator({ clients, showToast }) {
+  const [selectedClient, setSelectedClient] = useState(null);
+  const [generating, setGenerating] = useState(false);
+  const [generated, setGenerated] = useState(null);
+
+  const generateReport = (client) => {
+    setGenerating(true);
+    setSelectedClient(client);
+    setTimeout(()=>{
+      setGenerating(false);
+      setGenerated(client);
+    },2000);
+  };
+
+  const glass = {background:'rgba(255,255,255,0.6)',backdropFilter:'blur(20px)',border:'1px solid rgba(255,255,255,0.65)',borderRadius:18,boxShadow:'0 4px 24px rgba(0,0,0,0.04)'};
+
+  if (generated) {
+    const c = generated;
+    const m = c.metrics||{followers:0,gained:0,avgViews:0,avgLikes:0,engRate:0,topPost:"—"};
+    const planInfo = PLAN_DETAILS[c.plan]||PLAN_DETAILS.Copper;
+    const adCamps = AD_CAMPAIGNS.filter(a=>a.client===c.name);
+    const adSpend = adCamps.reduce((s,a)=>s+a.budget,0);
+    const adConversions = adCamps.reduce((s,a)=>s+a.conversions,0);
+
+    return (
+      <div>
+        <button className="btn back" onClick={()=>{setGenerated(null);setSelectedClient(null);}}>← All Clients</button>
+
+        {/* Report Header */}
+        <div style={{...glass,padding:'32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(252,198,18,0.06) 100%)',borderLeft:'3px solid var(--accent)'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:16}}>
+            <div>
+              <div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.5,color:'var(--accent)',marginBottom:8}}>Monthly Performance Report</div>
+              <h1 style={{font:'700 28px var(--fd)',color:'var(--text)',marginBottom:4}}>{c.name}</h1>
+              <p style={{font:'400 14px var(--fb)',color:'var(--text2)',margin:0}}>March 2025 · {c.plan} Plan</p>
+            </div>
+            <div style={{display:'flex',gap:8}}>
+              <button className="btn" onClick={()=>{showToast("✓","Downloaded","PDF report saved");fireConfetti();}}>Download PDF</button>
+              <button className="btn" onClick={()=>showToast("✓","Shared","Report link copied to clipboard")}>Share Link</button>
+              <button className="btn" onClick={()=>showToast("✓","Sent","Report emailed to client")}>Email to Client</button>
+            </div>
+          </div>
+        </div>
+
+        {/* KPIs */}
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))',gap:14,marginBottom:24}}>
+          {[
+            {label:"Videos Delivered",value:c.videos,sub:`of ${planInfo.videos} included`,color:"var(--text)"},
+            {label:"Followers Gained",value:`+${m.gained}`,sub:`Total: ${m.followers.toLocaleString()}`,color:"var(--green)"},
+            {label:"Avg Views / Video",value:m.avgViews.toLocaleString(),sub:"Across all platforms",color:"var(--blue)"},
+            {label:"Engagement Rate",value:`${m.engRate}%`,sub:m.engRate>5?"Above average":"Average",color:m.engRate>5?"var(--green)":"var(--amber)"},
+            {label:"Ad Spend",value:`$${adSpend.toLocaleString()}`,sub:`${adCamps.length} campaigns`,color:"var(--text)"},
+            {label:"Ad Conversions",value:adConversions,sub:adSpend>0?`$${Math.round(adSpend/Math.max(adConversions,1))} per conversion`:"No ads",color:"var(--green)"},
+          ].map((k,i)=>(
+            <div key={k.label} className="dash-card-hover" style={{...glass,padding:'22px 20px',animation:`dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) ${i*60}ms backwards`}}>
+              <div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:8}}>{k.label}</div>
+              <div style={{font:'600 28px var(--fd)',color:k.color,letterSpacing:'-0.5px'}}>{k.value}</div>
+              <div style={{font:'400 11px var(--fb)',color:'var(--text2)',marginTop:4}}>{k.sub}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Content Summary */}
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20,marginBottom:24}}>
+          <div style={{...glass,padding:'22px'}}>
+            <div style={{font:'600 15px var(--fd)',color:'var(--text)',marginBottom:14}}>Content Delivered</div>
+            {[
+              {item:`${c.videos} HD short-form videos`,done:true},
+              {item:`${planInfo.shoots} shoot sessions`,done:true},
+              {item:"Scriptwriting for all videos",done:planInfo.scriptwriting},
+              {item:"Scheduled posting + captions",done:true},
+              {item:"Facebook Ad management",done:planInfo.fbAds},
+              {item:"Google Ad management",done:planInfo.googleAds},
+              {item:"Camera coaching session",done:planInfo.coaching},
+              {item:"Monthly strategy call",done:planInfo.strategy},
+            ].filter(i=>i.done).map((item,i)=>(
+              <div key={i} style={{display:'flex',alignItems:'center',gap:8,padding:'5px 0',font:'400 12px var(--fb)',color:'var(--text)'}}>
+                <span style={{color:'var(--green)',fontSize:12}}>✓</span>{item.item}
+              </div>
+            ))}
+          </div>
+          <div style={{...glass,padding:'22px'}}>
+            <div style={{font:'600 15px var(--fd)',color:'var(--text)',marginBottom:14}}>Top Performing Content</div>
+            <div style={{padding:'16px',background:'var(--surface2)',borderRadius:12,border:'1px solid var(--border)',textAlign:'center',marginBottom:12}}>
+              <div style={{font:'600 14px var(--fd)',color:'var(--text)',marginBottom:4}}>{m.topPost}</div>
+              <div style={{font:'400 11px var(--fb)',color:'var(--text3)'}}>Highest engagement this month</div>
+            </div>
+            <div style={{font:'600 15px var(--fd)',color:'var(--text)',marginBottom:10,marginTop:16}}>Platform Breakdown</div>
+            {["Instagram","TikTok","Facebook"].map(p=>(
+              <div key={p} style={{display:'flex',alignItems:'center',gap:10,padding:'6px 0'}}>
+                <div style={{flex:1}}><div style={{font:'500 12px var(--fb)',color:'var(--text)'}}>{p}</div></div>
+                <Badge type={p==="Instagram"?"purple":p==="TikTok"?"blue":"blue"}>{p==="Instagram"?"Primary":p==="TikTok"?"Growing":"Active"}</Badge>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ROI Summary */}
+        <div style={{...glass,padding:'24px',marginBottom:24}}>
+          <div style={{font:'600 15px var(--fd)',color:'var(--text)',marginBottom:14}}>Return on Investment</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:16}}>
+            <div style={{textAlign:'center',padding:'16px',background:'rgba(45,154,106,0.06)',borderRadius:12,border:'1px solid rgba(45,154,106,0.15)'}}>
+              <div style={{font:'600 24px var(--fd)',color:'var(--green)'}}>{m.gained>0?Math.round(c.mrr/m.gained):"—"}</div>
+              <div style={{font:'400 11px var(--fb)',color:'var(--text3)',marginTop:4}}>Cost per follower</div>
+            </div>
+            <div style={{textAlign:'center',padding:'16px',background:'rgba(45,154,106,0.06)',borderRadius:12,border:'1px solid rgba(45,154,106,0.15)'}}>
+              <div style={{font:'600 24px var(--fd)',color:'var(--green)'}}>{(m.avgViews*c.videos).toLocaleString()}</div>
+              <div style={{font:'400 11px var(--fb)',color:'var(--text3)',marginTop:4}}>Total estimated views</div>
+            </div>
+            <div style={{textAlign:'center',padding:'16px',background:'rgba(45,154,106,0.06)',borderRadius:12,border:'1px solid rgba(45,154,106,0.15)'}}>
+              <div style={{font:'600 24px var(--fd)',color:'var(--green)'}}>Strong</div>
+              <div style={{font:'400 11px var(--fb)',color:'var(--text3)',marginTop:4}}>Overall ROI score</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
+        <h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Client Reports</h1>
+        <p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Generate monthly performance reports for clients</p>
+      </div>
+      {generating && (
+        <div style={{textAlign:'center',padding:40}}>
+          <div className="ai-spinner" style={{width:32,height:32,margin:'0 auto 16px',borderWidth:3}}/>
+          <div style={{font:'500 14px var(--fd)',color:'var(--accent)',marginBottom:4}}>Generating report for {selectedClient?.name}...</div>
+          <div style={{font:'400 12px var(--fb)',color:'var(--text3)'}}>Pulling analytics, content stats, and ROI data</div>
+        </div>
+      )}
+      {!generating && (
+        <div style={{...glass,overflow:'hidden'}}>
+          <div style={{padding:'18px 22px',borderBottom:'1px solid rgba(0,0,0,0.04)'}}><span style={{font:'600 15px var(--fd)',color:'var(--text)'}}>Select a Client</span></div>
+          {clients.filter(c=>c.status==="active"&&c.metrics?.followers>0).map((c,idx)=>(
+            <div key={c.id} className="dash-card-hover" style={{margin:'6px 10px',padding:'16px 18px',borderRadius:14,background:'rgba(255,255,255,0.4)',border:'1px solid rgba(0,0,0,0.02)',cursor:'pointer',animation:`dashFadeInUp 0.3s ease ${idx*40}ms backwards`}} onClick={()=>generateReport(c)}>
+              <div style={{display:'flex',alignItems:'center',gap:14}}>
+                <div style={{width:40,height:40,borderRadius:10,background:`${c.color}15`,display:'flex',alignItems:'center',justifyContent:'center',font:'600 15px var(--fd)',color:c.color}}>{c.name[0]}</div>
+                <div style={{flex:1}}>
+                  <div style={{font:'500 14px var(--fd)',color:'var(--text)'}}>{c.name}</div>
+                  <div style={{font:'400 11px var(--fb)',color:'var(--text2)'}}>{c.plan} Plan · {c.videos} videos · {c.metrics?.followers.toLocaleString()} followers</div>
+                </div>
+                <button className="top-action-btn" style={{fontSize:10,padding:'0 12px',height:28}}>Generate Report</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── CONTENT LIBRARY ─────────────────────────────────────────────────────────
 function ContentLibrary({ showToast }) {
   const [filter, setFilter] = useState("all");
@@ -4949,7 +5141,7 @@ const ROLES = [
   {key:"client",      label:"Client",       name:"Desert Sun Realty",color:"#FFB800",initial:"C"},
 ];
 const NAV_CONFIG = {
-  admin:        [{label:"Dashboard",icon:"◆",view:"dashboard"},{label:"Pipeline",icon:"◎",view:"pipeline"},{label:"Library",icon:"▦",view:"library"},{label:"Scheduler",icon:"◫",view:"scheduler"},{label:"Shoots",icon:"▶",view:"shoots"},{label:"Calls",icon:"◉",view:"coaching"},{label:"Team",icon:"◈",view:"team"},{label:"Clients",icon:"▣",view:"clients"},{label:"Revenue",icon:"$",view:"revenue"},{label:"Expenses",icon:"−",view:"expenses"},{label:"Ads",icon:"◐",view:"ads"},{label:"Settings",icon:"⟐",view:"settings"}],
+  admin:        [{label:"Dashboard",icon:"◆",view:"dashboard"},{label:"Pipeline",icon:"◎",view:"pipeline"},{label:"Library",icon:"▦",view:"library"},{label:"Scheduler",icon:"◫",view:"scheduler"},{label:"Shoots",icon:"▶",view:"shoots"},{label:"Calls",icon:"◉",view:"coaching"},{label:"Team",icon:"◈",view:"team"},{label:"Clients",icon:"▣",view:"clients"},{label:"Revenue",icon:"$",view:"revenue"},{label:"Expenses",icon:"−",view:"expenses"},{label:"Reports",icon:"▤",view:"reports"},{label:"Ads",icon:"◐",view:"ads"},{label:"Settings",icon:"⟐",view:"settings"}],
   sales:        [{label:"Pipeline",icon:"◎",view:"dashboard",badge:3},{label:"Comms",icon:"◉",view:"calls"},{label:"Lead Finder",icon:"◇",view:"finder"},{label:"Proposals",icon:"◫",view:"proposals"},{label:"Leads",icon:"◆",view:"leads"},{label:"Activity",icon:"▤",view:"activity"}],
   scriptwriter: [{label:"Queue",icon:"▤",view:"dashboard",badge:2},{label:"Templates",icon:"◫",view:"templates"},{label:"Done",icon:"✓",view:"completed"}],
   editor:       [{label:"Production",icon:"▶",view:"dashboard",badge:2},{label:"Upload",icon:"△",view:"upload"},{label:"Done",icon:"✓",view:"completed"}],
@@ -5039,6 +5231,7 @@ export default function App() {
       if(view==="clients")   return <AdminClients clients={clients} showToast={showToast} onOpenIdeas={(c)=>openPanel("ideas",c)} autoSelect={autoSelectClient} onClearAutoSelect={()=>setAutoSelectClient(null)} onUpdateClient={(id,updates)=>setClients(p=>p.map(c=>c.id===id?{...c,...updates}:c))} onOpenMessages={()=>openPanel("messages")}/>;
       if(view==="revenue")   return <AdminRevenue clients={clients} expenses={expenses}/>;
       if(view==="expenses")  return <AdminExpenses expenses={expenses} setExpenses={setExpenses} showToast={showToast}/>;
+      if(view==="reports")   return <ClientReportGenerator clients={clients} showToast={showToast}/>;
       if(view==="ads")       return <AdminAds showToast={showToast}/>;
       if(view==="settings")  return <AdminSettings showToast={showToast} darkMode={darkMode} setDarkMode={setDarkMode}/>;
     }
