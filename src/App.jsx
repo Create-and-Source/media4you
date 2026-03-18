@@ -5515,12 +5515,27 @@ function HelpChatbot({ currentView, currentRole }) {
 
 // ─── APP ──────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [role, setRole]           = useState("admin");
-  const [view, setView]           = useState("dashboard");
+  // Hash-based routing: #role/view (e.g. #admin/pipeline)
+  const parseHash = () => {
+    const h = window.location.hash.replace("#","").split("/");
+    return { role: h[0] || "admin", view: h[1] || "dashboard" };
+  };
+  const initHash = parseHash();
+  const [role, setRole]           = useState(initHash.role);
+  const [view, setView]           = useState(initHash.view);
   const [panel, setPanel]         = useState(null);
   const [panelData, setPanelData] = useState(null);
   const [sheetOpen, setSheet]     = useState(false);
   const [darkMode, setDarkMode]   = useState(false);
+
+  // Sync hash on view/role change
+  useEffect(() => { window.location.hash = `${role}/${view}`; }, [role, view]);
+  // Listen for back/forward
+  useEffect(() => {
+    const onHash = () => { const h = parseHash(); setRole(h.role); setView(h.view); setPanel(null); };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
   const [autoSelectClient, setAutoSelectClient] = useState(null);
   const [expenses, setExpenses] = useState([
     {id:1,category:"Team Payroll",amount:8500,recurring:true,note:"Maya, Jordan, Carlos — monthly salaries"},
@@ -5543,7 +5558,7 @@ export default function App() {
   const [videos, setVideos]       = useState(INIT_VIDEOS);
   const [igPosts, setIgPosts]     = useState(INIT_IG);
   const [notifs, setNotifs]       = useState(INIT_NOTIFS);
-  const [threads, setThreads]     = useState(THREADS_BY_ROLE.admin);
+  const [threads, setThreads]     = useState(THREADS_BY_ROLE[initHash.role]||THREADS_BY_ROLE.admin);
 
   const roleInfo = ROLES.find(r=>r.key===role);
   const unreadNotifs = notifs.filter(n=>n.unread).length;
