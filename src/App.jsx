@@ -1110,30 +1110,76 @@ function PageTour({ steps = [] }) {
 // Tour steps for each page
 const TOUR_STEPS = {
   dashboard: [
-    {target:'.dash-hero',title:'Welcome Hero',text:'Your daily greeting with the total MRR at a glance. This updates in real-time as clients are added or plans change.'},
-    {target:'.dash-card-hover',title:'KPI Cards',text:'Key metrics for your agency. Click any card to dive deeper. Hover for a lift effect.'},
-    {target:'.dash-main-grid',title:'Main Content',text:'Left side shows your clients with MRR. Right side shows the revenue trend, content performance, and quick actions.'},
+    {target:'.dash-hero',title:'Welcome Hero',text:'Your daily greeting with the total MRR at a glance. Updates in real-time as clients are added or plans change.'},
+    {target:'.dash-card-hover',title:'KPI Cards',text:'Key metrics for your agency — active clients, revenue, videos produced, posts scheduled. Click any card to dive deeper.'},
+    {target:'.dash-main-grid',title:'Clients & Performance',text:'Left shows your clients with MRR. Right shows the revenue trend and content performance by client. Everything is clickable.'},
   ],
   pipeline: [
-    {target:'.kanban-scroll',title:'Kanban Board',text:'Drag cards between columns to change their status. Or click a card to see details and change status with the dropdown.'},
+    {target:'.kanban-scroll',title:'Drag-and-Drop Kanban',text:'Drag cards between columns to change their status. 6 stages: Scripting → Editing → Review → Approved → Scheduled → Published.'},
+    {target:'.action-btn',title:'Filter by Client',text:'Click any client name to filter the board. Shows only that client\'s content items.'},
   ],
   library: [
-    {target:'.dash-card-hover',title:'Asset Cards',text:'Every video, photo, and raw footage file. Click to see specs, download, share, or reuse in new content.'},
+    {target:'.action-btn',title:'Filter Assets',text:'Filter by Videos, Raw Footage, or Photos. Click any asset to see full specs and download options.'},
   ],
   scheduler: [
-    {target:'.top-action-btn',title:'Schedule a Post',text:'Create a new scheduled post across Instagram, TikTok, or Facebook.'},
+    {target:'.top-action-btn',title:'Schedule Posts',text:'See all upcoming posts across Instagram, TikTok, and Facebook. Peak time posts are highlighted. Click to publish or reschedule.'},
   ],
   shoots: [
-    {target:'.top-action-btn',title:'Schedule a Shoot',text:'Book a new filming session. Set the client, date, time, location, and crew.'},
+    {target:'.top-action-btn',title:'Schedule a Shoot',text:'Book filming sessions with date, time, location, crew, and notes. Message crew directly from the shoot detail.'},
+  ],
+  coaching: [
+    {title:'Coaching & Strategy',text:'Track all coaching sessions — camera coaching, strategy calls, sales coaching, and weekly team 1:1s. Upcoming and completed sessions at a glance.'},
+  ],
+  team: [
+    {title:'Team Workload',text:'See each team member\'s active tasks, overdue count, and capacity. Color-coded load indicators show who\'s available and who\'s overloaded.'},
   ],
   clients: [
-    {target:'.form-input',title:'Search Clients',text:'Type to filter clients by name. Click any client to see their full 6-tab detail page.'},
+    {target:'.form-input',title:'Search & Filter',text:'Search clients by name. Filter by status (Active, Onboarding, Review). Click any client for their full 6-tab detail page.'},
   ],
   revenue: [
-    {target:'.dash-card-hover',title:'Financial Overview',text:'Your agency financials at a glance. Revenue, expenses, profit margin, and ARR.'},
+    {title:'Revenue Dashboard',text:'Full agency financials — MRR by client, profit/loss, plan distribution, expenses overview. Click any client row to see their plan breakdown.'},
+  ],
+  expenses: [
+    {target:'.btn.primary',title:'Add Expenses',text:'Add new expenses with category, amount, and notes. Click any dollar amount to edit inline. QuickBooks syncs automatically.'},
   ],
   reports: [
-    {target:'.top-action-btn',title:'Generate Report',text:'Select a client and generate their monthly performance report with one click. Download as PDF or email directly.'},
+    {title:'Client Reports',text:'Select any active client to generate a monthly performance report. Shows videos delivered, follower growth, engagement, ad ROI. Download as PDF or email to client.'},
+  ],
+  ads: [
+    {title:'Ad Campaigns',text:'Track all Facebook, Instagram, and Google Ads campaigns. See spend, impressions, clicks, CTR, conversions, and ROAS. Click any campaign for audience breakdowns.'},
+  ],
+  settings: [
+    {title:'Settings',text:'Connect accounts (IG, FB, TikTok, Google Ads), manage integrations (QuickBooks, Zoom, Stripe), customize branding, and toggle dark mode.'},
+  ],
+  salesPipeline: [
+    {target:'.kanban-scroll',title:'Sales Pipeline',text:'Track leads from New → Contacted → Demo → Proposal → Won. Click any lead to see details, call, email, or text them directly.'},
+  ],
+  comms: [
+    {title:'Communication Hub',text:'Three tabs: Calls (upcoming + history), Texts (threaded conversations), Emails (compose with AI writer + sent log with open tracking). All communication in one place.'},
+  ],
+  finder: [
+    {target:'.top-action-btn',title:'Scan for Leads',text:'Discover Arizona businesses with weak social media. Score-based prospects — click to see why they need your services. One-click add to pipeline.'},
+  ],
+  proposals: [
+    {target:'.top-action-btn',title:'Create Proposals',text:'Generate proposals with plan selection (Copper/Gold/Platinum). Track sent, draft, and accepted status with open tracking.'},
+  ],
+  scriptQueue: [
+    {title:'Script Queue',text:'All scripts assigned to you with priority indicators and due dates. Use AI tools to generate content ideas per client, or open the content calendar.'},
+  ],
+  templates: [
+    {title:'Script Templates',text:'Reusable scripts by industry — Barbershop BTS, Real Estate Listing, Before/After, Testimonial. Copy and customize for any client.'},
+  ],
+  editor: [
+    {title:'Video Editor',text:'Production queue with file specs (4K, codec, FPS). Edit checklist, session timer, and notes per video. Start editing to begin tracking your time.'},
+  ],
+  clientContent: [
+    {title:'Your Content',text:'Review scripts, approve or request changes, and browse your finished video gallery. Items awaiting your approval are highlighted at the top.'},
+  ],
+  clientSocial: [
+    {title:'Social Media',text:'Browse your published content across Instagram and TikTok. Video gallery cards with view counts and engagement. Filter by platform.'},
+  ],
+  clientInvoices: [
+    {title:'Invoices',text:'See your plan details, pay invoices, download receipts, or email invoices to your records. Full payment history with line items.'},
   ],
 };
 
@@ -2149,6 +2195,7 @@ function AdminRevenue({ clients, expenses }) {
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.revenue}/>
       <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:16}}>
           <div>
@@ -2304,6 +2351,7 @@ function AdminExpenses({ expenses, setExpenses, showToast }) {
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.expenses}/>
       <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(217,79,92,0.06) 100%)',borderLeft:'3px solid var(--red)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:16}}>
           <div>
@@ -2413,6 +2461,7 @@ function AdminSettings({ showToast, darkMode, setDarkMode }) {
   };
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.settings}/>
       <div className="card">
         <div className="card-title">Connected Accounts</div>
         {accounts.map(a=>(
@@ -2921,6 +2970,7 @@ function AdminAds({ showToast }) {
     const c = selectedCampaign;
     return (
       <div>
+      <PageTour steps={TOUR_STEPS.ads}/>
         <button className="btn back" onClick={()=>setSelectedCampaign(null)}>← All Campaigns</button>
         <div className="client-hero">
           <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:800}}>{c.name}</div>
@@ -3330,6 +3380,7 @@ function SalesDashboard({ leads, onOpenOutreach, showToast, onOpenComms }) {
   const won = (leads["Won ✓"]||[]).length;
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.salesPipeline}/>
       <div className="stats-grid">
         <div className="stat-card"><div className="stat-label">Open Leads</div><div className="stat-value">{total-won}</div><div className="stat-sub">3 need follow-up</div></div>
         <div className="stat-card"><div className="stat-label">Demos</div><div className="stat-value">3</div><div className="stat-sub">1 today @ 2pm</div></div>
@@ -3421,6 +3472,7 @@ function SalesCalls({ showToast }) {
     const t = textThreads[textConvo];
     return (
       <div>
+      <PageTour steps={TOUR_STEPS.comms}/>
         <button className="btn back" onClick={()=>setTextConvo(null)}>← All Texts</button>
         <div style={{font:'600 16px var(--fd)',color:'var(--text)',marginBottom:4}}>{t.name}</div>
         <div style={{font:'400 12px var(--fb)',color:'var(--text3)',marginBottom:16}}>{t.phone}</div>
@@ -3602,6 +3654,7 @@ function LeadFinder({ onAddLead, showToast, onOpenOutreach }) {
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.finder}/>
       <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:16}}>
           <div>
@@ -3733,6 +3786,7 @@ function ScriptQueue({ scripts, onSelect, onOpenIdeas, onOpenCalendar, clients, 
   const filtered = clientFilter==="all" ? scripts : scripts.filter(s=>s.client===clientFilter);
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.scriptQueue}/>
       <div className="stats-grid" style={{marginBottom:12}}>
         <div className="stat-card"><div className="stat-label">In Queue</div><div className="stat-value">{scripts.length}</div><div className="stat-sub">2 due this week</div></div>
         <div className="stat-card"><div className="stat-label">Urgent</div><div className="stat-value">{scripts.filter(s=>s.priority==="high").length}</div><div className="stat-sub">High priority</div></div>
@@ -3873,6 +3927,7 @@ function EditorProduction({ videos, onAdvance, showToast }) {
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.editor}/>
       {/* Active Edit Timer */}
       {activeTimer!==null && (
         <div style={{...glass,padding:'16px 22px',marginBottom:16,background:'linear-gradient(135deg,rgba(45,154,106,0.08),rgba(45,154,106,0.04))',borderLeft:'3px solid var(--green)',display:'flex',alignItems:'center',gap:14}}>
@@ -4014,6 +4069,7 @@ function ClientReportGenerator({ clients, showToast }) {
 
     return (
       <div>
+      <PageTour steps={TOUR_STEPS.reports}/>
         <button className="btn back" onClick={()=>{setGenerated(null);setSelectedClient(null);}}>← All Clients</button>
 
         {/* Report Header */}
@@ -4161,6 +4217,7 @@ function ContentLibrary({ showToast }) {
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.library}/>
       <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
         <h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Content Library</h1>
         <p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>All videos, photos, and raw footage in one place</p>
@@ -4227,6 +4284,7 @@ function PlatformScheduler({ showToast }) {
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.scheduler}/>
       <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
         <h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Post Scheduler</h1>
         <p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Schedule content across Instagram, TikTok, and Facebook</p>
@@ -4286,6 +4344,7 @@ function ProposalGenerator({ showToast }) {
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.proposals}/>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:20}}>
         <div><h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Proposals</h1><p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Create and track client proposals</p></div>
         <button className="top-action-btn" onClick={()=>setShowNew(!showNew)}>+ New Proposal</button>
@@ -4334,6 +4393,7 @@ function ScriptTemplates({ showToast }) {
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.templates}/>
       <div style={{marginBottom:20}}><h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Script Templates</h1><p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Reusable scripts by industry — customize and use</p></div>
       <div className="card">
         {templates.map(t=>(
@@ -4378,6 +4438,7 @@ function ShootCalendar({ shoots, showToast, onOpenMessages }) {
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.shoots}/>
       <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
           <div>
@@ -4475,6 +4536,7 @@ function CoachingTracker({ sessions, showToast }) {
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.coaching}/>
       <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
         <h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Coaching & Strategy</h1>
         <p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Camera coaching, strategy calls, and sales coaching sessions</p>
@@ -4572,6 +4634,7 @@ function TeamWorkload({ scripts, videos }) {
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.team}/>
       <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
         <h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Team Workload</h1>
         <p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Who's working on what right now</p>
@@ -4721,6 +4784,7 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.pipeline}/>
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))',gap:12,marginBottom:20}}>
         {[{label:"Scripting",val:inScripting,color:"var(--text3)"},{label:"Editing",val:inEditing,color:"var(--blue)"},{label:"In Review",val:inReview,color:"var(--amber)"},{label:"Completed",val:completed,color:"var(--green)"}].map((s,i)=>(
           <div key={s.label} className="dash-card-hover" style={{...glass,padding:'18px 16px',animation:`dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) ${i*60}ms backwards`}}>
@@ -4900,6 +4964,7 @@ function ClientContent({ showToast }) {
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.clientContent}/>
       <div className="client-hero">
         <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:800}}>Desert Sun Realty</div>
         <div style={{fontSize:12,color:"var(--text2)",marginTop:3}}>Your content dashboard</div>
@@ -5044,6 +5109,7 @@ function ClientIG({ igPosts }) {
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.clientSocial}/>
       {/* Platform tabs */}
       <div style={{display:'flex',gap:4,marginBottom:16,borderBottom:'1px solid var(--border)'}}>
         {platforms.map(p=>(
@@ -5118,6 +5184,7 @@ function ClientInvoices({ showToast }) {
   };
   return (
     <div className="card">
+      <PageTour steps={TOUR_STEPS.clientInvoices}/>
       <div className="card-title">Invoices</div>
       {invoices.map(inv=>(
         <div key={inv.id}>
