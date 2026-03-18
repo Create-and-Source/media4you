@@ -1689,7 +1689,7 @@ function AdminDashboard({ clients, onNav, onOpenIdeas, onOpenCalendar, onOpenCli
   );
 }
 
-function AdminRevenue({ clients }) {
+function AdminRevenue({ clients, expenses }) {
   const [expandedRow, setExpandedRow] = useState(null);
   const mrr = clients.reduce((s,c)=>s+c.mrr,0);
   const adRevenue = AD_CAMPAIGNS.reduce((s,c)=>s+c.budget,0);
@@ -1697,8 +1697,7 @@ function AdminRevenue({ clients }) {
   const copperClients = clients.filter(c=>c.plan==="Copper").length;
   const goldClients = clients.filter(c=>c.plan==="Gold").length;
   const platClients = clients.filter(c=>c.plan==="Platinum").length;
-  const expenses = {payroll:8500,software:420,equipment:300,adSpend:adRevenue*0.7,misc:200};
-  const totalExpenses = Object.values(expenses).reduce((s,v)=>s+v,0);
+  const totalExpenses = expenses.reduce((s,e)=>s+e.amount,0);
   const profit = totalRevenue - totalExpenses;
 
   const glass = {
@@ -1783,17 +1782,10 @@ function AdminRevenue({ clients }) {
         <div>
           <div className="card">
             <div className="card-title">Monthly Expenses</div>
-            {[
-              {label:"Team Payroll",val:expenses.payroll,icon:"👥"},
-              {label:"Ad Spend (pass-through)",val:expenses.adSpend,icon:"📢"},
-              {label:"Software & Tools",val:expenses.software,icon:"💻"},
-              {label:"Equipment & Gear",val:expenses.equipment,icon:"🎬"},
-              {label:"Miscellaneous",val:expenses.misc,icon:"📋"},
-            ].map(e=>(
-              <div key={e.label} className="row-item" style={{cursor:'pointer'}} onClick={()=>setExpandedRow(expandedRow===e.label?null:e.label)}>
-                <div style={{fontSize:16,width:24,textAlign:'center',flexShrink:0}}>{e.icon}</div>
-                <div className="row-main"><div className="row-title">{e.label}</div></div>
-                <div style={{font:'600 13px var(--fd)',color:'var(--red)'}}>${e.val.toLocaleString()}</div>
+            {expenses.slice(0,5).map(e=>(
+              <div key={e.id} className="row-item">
+                <div className="row-main"><div className="row-title">{e.category}</div></div>
+                <div style={{font:'600 13px var(--fd)',color:'var(--red)'}}>${e.amount.toLocaleString()}</div>
               </div>
             ))}
             <div style={{borderTop:'1px solid var(--border)',paddingTop:10,marginTop:4,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
@@ -1830,6 +1822,120 @@ function AdminRevenue({ clients }) {
       </div>
 
       <style>{"@media(max-width:860px){.card:has(.card-title){margin-bottom:12px}}"}</style>
+    </div>
+  );
+}
+
+// ─── EXPENSES ────────────────────────────────────────────────────────────────
+function AdminExpenses({ expenses, setExpenses, showToast }) {
+  const [editingId, setEditingId] = useState(null);
+  const [editVal, setEditVal] = useState("");
+  const [showAdd, setShowAdd] = useState(false);
+  const [newExpense, setNewExpense] = useState({category:"",amount:"",recurring:true,note:""});
+
+  const totalExpenses = expenses.reduce((s,e)=>s+e.amount,0);
+
+  const glass = {
+    background:'rgba(255,255,255,0.6)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',
+    border:'1px solid rgba(255,255,255,0.65)',borderRadius:18,
+    boxShadow:'0 4px 24px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)',
+  };
+
+  const saveEdit = (id) => {
+    const num = parseInt(editVal) || 0;
+    setExpenses(p=>p.map(e=>e.id===id?{...e,amount:num}:e));
+    setEditingId(null);
+    showToast("✓","Updated","Expense amount saved");
+  };
+
+  const deleteExpense = (id) => {
+    setExpenses(p=>p.filter(e=>e.id!==id));
+    showToast("✓","Removed","Expense deleted");
+  };
+
+  const addExpense = () => {
+    if(!newExpense.category.trim()) return;
+    setExpenses(p=>[...p,{id:Date.now(),category:newExpense.category,amount:parseInt(newExpense.amount)||0,recurring:newExpense.recurring,note:newExpense.note}]);
+    setNewExpense({category:"",amount:"",recurring:true,note:""});
+    setShowAdd(false);
+    showToast("✓","Added","New expense added");
+  };
+
+  return (
+    <div>
+      <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(217,79,92,0.06) 100%)',borderLeft:'3px solid var(--red)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:16}}>
+          <div>
+            <h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Expenses</h1>
+            <p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Track and manage all agency costs</p>
+          </div>
+          <div style={{textAlign:'right'}}>
+            <div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.5,color:'var(--text3)',marginBottom:2}}>Total Monthly</div>
+            <div style={{font:'600 24px var(--fd)',color:'var(--red)'}}>${totalExpenses.toLocaleString()}</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))',gap:12,marginBottom:20}}>
+        <div className="dash-card-hover" style={{...glass,padding:'18px 16px'}}><div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:6}}>Recurring</div><div style={{font:'600 24px var(--fd)',color:'var(--text)'}}>${expenses.filter(e=>e.recurring).reduce((s,e)=>s+e.amount,0).toLocaleString()}</div></div>
+        <div className="dash-card-hover" style={{...glass,padding:'18px 16px'}}><div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:6}}>One-Time</div><div style={{font:'600 24px var(--fd)',color:'var(--text)'}}>${expenses.filter(e=>!e.recurring).reduce((s,e)=>s+e.amount,0).toLocaleString()}</div></div>
+        <div className="dash-card-hover" style={{...glass,padding:'18px 16px'}}><div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:6}}>Line Items</div><div style={{font:'600 24px var(--fd)',color:'var(--text)'}}>{expenses.length}</div></div>
+      </div>
+
+      <div style={{marginBottom:12}}>
+        <button className="btn primary" onClick={()=>setShowAdd(!showAdd)}>{showAdd?"Cancel":"+ Add Expense"}</button>
+      </div>
+
+      {showAdd && (
+        <div className="card" style={{marginBottom:12}}>
+          <div className="card-title">New Expense</div>
+          <div className="form-group"><label className="form-label">Category</label><input className="form-input" placeholder="e.g. New Camera Lens" value={newExpense.category} onChange={e=>setNewExpense(p=>({...p,category:e.target.value}))}/></div>
+          <div className="form-group"><label className="form-label">Amount ($)</label><input className="form-input" type="number" placeholder="0" value={newExpense.amount} onChange={e=>setNewExpense(p=>({...p,amount:e.target.value}))}/></div>
+          <div className="form-group"><label className="form-label">Note</label><input className="form-input" placeholder="Description or details" value={newExpense.note} onChange={e=>setNewExpense(p=>({...p,note:e.target.value}))}/></div>
+          <div className="form-group">
+            <label style={{display:'flex',alignItems:'center',gap:8,font:'400 13px var(--fb)',color:'var(--text)',cursor:'pointer'}}>
+              <input type="checkbox" checked={newExpense.recurring} onChange={e=>setNewExpense(p=>({...p,recurring:e.target.checked}))} style={{accentColor:'var(--accent)',width:16,height:16}}/>
+              Recurring monthly expense
+            </label>
+          </div>
+          <button className="btn primary full" onClick={addExpense}>Add Expense</button>
+        </div>
+      )}
+
+      <div style={{...glass,overflow:'hidden'}}>
+        <div style={{padding:'18px 22px',borderBottom:'1px solid rgba(0,0,0,0.04)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <span style={{font:'600 15px var(--fd)',color:'var(--text)'}}>All Expenses</span>
+        </div>
+        {expenses.map((e,idx)=>(
+          <div key={e.id} className="dash-card-hover" style={{
+            margin:'6px 10px',padding:'16px 18px',borderRadius:14,
+            background:'rgba(255,255,255,0.4)',border:'1px solid rgba(0,0,0,0.02)',
+            animation:`dashFadeInUp 0.4s cubic-bezier(0.16,1,0.3,1) ${idx*40}ms backwards`,
+          }}>
+            <div style={{display:'flex',alignItems:'center',gap:14}}>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{font:'500 14px var(--fd)',color:'var(--text)'}}>{e.category}</div>
+                <div style={{font:'400 11px var(--fb)',color:'var(--text3)',marginTop:2}}>{e.note}</div>
+                <div style={{marginTop:4}}>
+                  <Badge type={e.recurring?"blue":"gray"}>{e.recurring?"Recurring":"One-time"}</Badge>
+                </div>
+              </div>
+              <div style={{display:'flex',alignItems:'center',gap:8,flexShrink:0}}>
+                {editingId===e.id ? (
+                  <div style={{display:'flex',gap:4,alignItems:'center'}}>
+                    <span style={{font:'400 13px var(--fb)',color:'var(--text3)'}}>$</span>
+                    <input className="form-input" type="number" style={{width:100,padding:'6px 10px'}} value={editVal} onChange={ev=>setEditVal(ev.target.value)} onKeyDown={ev=>{if(ev.key==="Enter")saveEdit(e.id);}} autoFocus/>
+                    <button className="action-btn accent" onClick={()=>saveEdit(e.id)}>Save</button>
+                  </div>
+                ) : (
+                  <div style={{font:'600 18px var(--fd)',color:'var(--red)',cursor:'pointer'}} onClick={()=>{setEditingId(e.id);setEditVal(e.amount.toString());}}>${e.amount.toLocaleString()}</div>
+                )}
+                <button style={{background:'none',border:'none',color:'var(--text3)',cursor:'pointer',fontSize:14}} onClick={()=>deleteExpense(e.id)}>✕</button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -4095,7 +4201,7 @@ const ROLES = [
   {key:"client",      label:"Client",       name:"Desert Sun Realty",color:"#FFB800",initial:"C"},
 ];
 const NAV_CONFIG = {
-  admin:        [{label:"Dashboard",icon:"◆",view:"dashboard"},{label:"Pipeline",icon:"◎",view:"pipeline"},{label:"Shoots",icon:"▶",view:"shoots"},{label:"Calls",icon:"◉",view:"coaching"},{label:"Team",icon:"◈",view:"team"},{label:"Clients",icon:"▣",view:"clients"},{label:"Revenue",icon:"$",view:"revenue"},{label:"Ads",icon:"◐",view:"ads"},{label:"Settings",icon:"⟐",view:"settings"}],
+  admin:        [{label:"Dashboard",icon:"◆",view:"dashboard"},{label:"Pipeline",icon:"◎",view:"pipeline"},{label:"Shoots",icon:"▶",view:"shoots"},{label:"Calls",icon:"◉",view:"coaching"},{label:"Team",icon:"◈",view:"team"},{label:"Clients",icon:"▣",view:"clients"},{label:"Revenue",icon:"$",view:"revenue"},{label:"Expenses",icon:"−",view:"expenses"},{label:"Ads",icon:"◐",view:"ads"},{label:"Settings",icon:"⟐",view:"settings"}],
   sales:        [{label:"Pipeline",icon:"◎",view:"dashboard",badge:3},{label:"Comms",icon:"◉",view:"calls"},{label:"Leads",icon:"◆",view:"leads"},{label:"Activity",icon:"▤",view:"activity"}],
   scriptwriter: [{label:"Queue",icon:"▤",view:"dashboard",badge:2},{label:"Done",icon:"✓",view:"completed"}],
   editor:       [{label:"Production",icon:"▶",view:"dashboard",badge:2},{label:"Upload",icon:"△",view:"upload"},{label:"Done",icon:"✓",view:"completed"}],
@@ -4112,6 +4218,15 @@ export default function App() {
   const [sheetOpen, setSheet]     = useState(false);
   const [darkMode, setDarkMode]   = useState(false);
   const [autoSelectClient, setAutoSelectClient] = useState(null);
+  const [expenses, setExpenses] = useState([
+    {id:1,category:"Team Payroll",amount:8500,recurring:true,note:"Maya, Jordan, Carlos — monthly salaries"},
+    {id:2,category:"Ad Spend (pass-through)",amount:Math.round(AD_CAMPAIGNS.reduce((s,c)=>s+c.budget,0)*0.7),recurring:true,note:"Client ad budgets managed by M4Y"},
+    {id:3,category:"Software & Tools",amount:420,recurring:true,note:"Adobe Creative Cloud, Canva Pro, Later, Metricool"},
+    {id:4,category:"Equipment & Gear",amount:300,recurring:false,note:"Camera rentals, drone maintenance, lighting"},
+    {id:5,category:"Office & Misc",amount:200,recurring:true,note:"Coworking space, supplies, misc"},
+    {id:6,category:"Zoom Pro",amount:15,recurring:true,note:"Video call platform for client meetings"},
+    {id:7,category:"Cloud Storage",amount:50,recurring:true,note:"Google Drive + Dropbox for raw footage"},
+  ]);
 
   useEffect(() => { document.documentElement.classList.toggle("dark", darkMode); }, [darkMode]);
   const [modal, setModal]         = useState(null);
@@ -4172,7 +4287,8 @@ export default function App() {
       if(view==="coaching")  return <CoachingTracker sessions={INIT_COACHING} showToast={showToast}/>;
       if(view==="team")      return <TeamWorkload scripts={scripts} videos={videos}/>;
       if(view==="clients")   return <AdminClients clients={clients} showToast={showToast} onOpenIdeas={(c)=>openPanel("ideas",c)} autoSelect={autoSelectClient} onClearAutoSelect={()=>setAutoSelectClient(null)}/>;
-      if(view==="revenue")   return <AdminRevenue clients={clients}/>;
+      if(view==="revenue")   return <AdminRevenue clients={clients} expenses={expenses}/>;
+      if(view==="expenses")  return <AdminExpenses expenses={expenses} setExpenses={setExpenses} showToast={showToast}/>;
       if(view==="ads")       return <AdminAds showToast={showToast}/>;
       if(view==="settings")  return <AdminSettings showToast={showToast} darkMode={darkMode} setDarkMode={setDarkMode}/>;
     }
