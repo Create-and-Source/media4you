@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn Your System — Media4You Platform Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Lato:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg: #F5F3EF;
+  --accent: #fcc612;
+  --accent2: #fd8040;
+  --text: #1A1A1A;
+  --text2: #5A5A6A;
+  --text3: #9A9AAA;
+  --fd: 'Montserrat', sans-serif;
+  --fb: 'Lato', sans-serif;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--fb); }
+
+/* NAV */
+.guide-nav {
+  position: fixed; top:0; left:0; right:0; z-index:100;
+  background: rgba(245,243,239,0.85); backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding: 0 32px; height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.guide-nav-logo { font: 700 18px var(--fd); color: var(--text); }
+.guide-nav-logo span { color: var(--accent); }
+.guide-nav-links { display: flex; gap: 24px; }
+.guide-nav-links a { text-decoration: none; font: 500 12px var(--fd); color: var(--text3); transition: color 0.2s; }
+.guide-nav-links a:hover { color: var(--accent); }
+.guide-cta { background: linear-gradient(135deg, var(--accent), var(--accent2)); border:none; color:white; font: 600 12px var(--fb); padding: 8px 20px; border-radius: 100px; cursor: pointer; text-decoration: none; }
+
+/* HERO */
+.hero {
+  min-height: 90vh; display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 120px 32px 80px;
+  background: linear-gradient(180deg, rgba(252,198,18,0.06) 0%, transparent 60%);
+}
+.hero h1 { font: 800 52px var(--fd); color: var(--text); line-height: 1.15; margin-bottom: 16px; letter-spacing: -1px; }
+.hero h1 span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero p { font: 400 18px var(--fb); color: var(--text2); max-width: 600px; margin: 0 auto 32px; line-height: 1.6; }
+.hero-roles { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.hero-role { padding: 8px 20px; border-radius: 100px; font: 500 13px var(--fd); border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.7); backdrop-filter: blur(8px); color: var(--text2); }
+
+/* SECTIONS */
+.section { padding: 80px 32px; max-width: 1200px; margin: 0 auto; }
+.section-header { text-align: center; margin-bottom: 48px; }
+.section-label { font: 600 11px var(--fd); text-transform: uppercase; letter-spacing: 2px; color: var(--accent); margin-bottom: 12px; }
+.section-title { font: 700 36px var(--fd); color: var(--text); margin-bottom: 12px; }
+.section-sub { font: 400 15px var(--fb); color: var(--text2); max-width: 500px; margin: 0 auto; }
+
+/* FEATURE GRID */
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+.feature-card {
+  background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 18px; padding: 28px; backdrop-filter: blur(16px);
+  transition: all 0.3s cubic-bezier(0.16,1,0.3,1); cursor: default;
+}
+.feature-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.08); }
+.feature-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font: 700 18px var(--fd); margin-bottom: 16px; }
+.feature-name { font: 600 16px var(--fd); color: var(--text); margin-bottom: 8px; }
+.feature-desc { font: 400 13px var(--fb); color: var(--text2); line-height: 1.6; }
+.feature-tag { display: inline-block; font: 500 10px var(--fd); text-transform: uppercase; letter-spacing: 0.5px; padding: 3px 10px; border-radius: 100px; margin-top: 12px; }
+
+/* ROLE SECTIONS */
+.role-section { padding: 60px 32px; max-width: 1200px; margin: 0 auto; }
+.role-header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+.role-badge { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font: 700 18px var(--fd); color: white; }
+.role-name { font: 700 28px var(--fd); color: var(--text); }
+.role-sub { font: 400 13px var(--fb); color: var(--text2); }
+
+/* STEP LIST */
+.step-list { display: flex; flex-direction: column; gap: 16px; }
+.step {
+  display: flex; gap: 20px; padding: 20px 24px;
+  background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 14px; backdrop-filter: blur(8px); cursor: pointer;
+  transition: all 0.2s;
+}
+.step:hover { border-color: var(--accent); background: rgba(252,198,18,0.04); }
+.step-num { font: 700 20px var(--fd); color: var(--accent); min-width: 32px; }
+.step-title { font: 600 14px var(--fd); color: var(--text); margin-bottom: 4px; }
+.step-desc { font: 400 12px var(--fb); color: var(--text2); line-height: 1.5; }
+.step-detail {
+  display: none; margin-top: 10px; padding: 12px 16px;
+  background: rgba(252,198,18,0.06); border-radius: 10px; border: 1px solid rgba(252,198,18,0.15);
+  font: 400 12px var(--fb); color: var(--text); line-height: 1.6;
+}
+.step.open .step-detail { display: block; }
+
+/* DIVIDER */
+.divider { height: 1px; background: rgba(0,0,0,0.06); max-width: 1200px; margin: 0 auto; }
+
+/* FOOTER */
+.guide-footer { text-align: center; padding: 60px 32px; }
+.guide-footer p { font: 400 13px var(--fb); color: var(--text3); }
+
+/* ACCORDION */
+.accordion { max-width: 800px; margin: 0 auto; }
+.acc-item { border-bottom: 1px solid rgba(0,0,0,0.06); }
+.acc-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 0; cursor: pointer; font: 600 15px var(--fd); color: var(--text);
+}
+.acc-header:hover { color: var(--accent); }
+.acc-arrow { font-size: 14px; color: var(--text3); transition: transform 0.2s; }
+.acc-body { padding: 0 0 18px; font: 400 13px var(--fb); color: var(--text2); line-height: 1.7; display: none; }
+.acc-item.open .acc-body { display: block; }
+.acc-item.open .acc-arrow { transform: rotate(180deg); }
+
+@media (max-width: 768px) {
+  .hero h1 { font-size: 32px; }
+  .guide-nav-links { display: none; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .section { padding: 48px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="guide-nav">
+  <div class="guide-nav-logo">MEDIA<span>4</span>YOU</div>
+  <div class="guide-nav-links">
+    <a href="#roles">Roles</a>
+    <a href="#features">Features</a>
+    <a href="#admin">Admin</a>
+    <a href="#sales">Sales</a>
+    <a href="#production">Production</a>
+    <a href="#client">Client</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <a href="/" class="guide-cta">Open Platform →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <h1>Learn Your <span>System</span></h1>
+    <p>Everything you need to know about the Media4You platform. An interactive guide to every feature, role, and workflow.</p>
+    <div class="hero-roles">
+      <div class="hero-role">Admin / Owner</div>
+      <div class="hero-role">Sales Rep</div>
+      <div class="hero-role">Script Writer</div>
+      <div class="hero-role">Video Editor</div>
+      <div class="hero-role">Client</div>
+    </div>
+  </div>
+</section>
+
+<!-- OVERVIEW -->
+<section class="section" id="features">
+  <div class="section-header">
+    <div class="section-label">Platform Overview</div>
+    <div class="section-title">Everything In One Place</div>
+    <div class="section-sub">No more spreadsheets. Every part of your content agency lives here.</div>
+  </div>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(252,198,18,0.1);color:#B8960C;">◆</div>
+      <div class="feature-name">Dashboard</div>
+      <div class="feature-desc">Real-time overview of your agency. MRR, active clients, content performance, and quick actions — all at a glance.</div>
+      <div class="feature-tag" style="background:rgba(252,198,18,0.1);color:#B8960C;">Every Role</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(59,125,216,0.1);color:#3B7DD8;">◎</div>
+      <div class="feature-name">Content Pipeline</div>
+      <div class="feature-desc">Drag-and-drop Kanban board. Track every piece of content from scripting to published. Filter by client, see overdue items.</div>
+      <div class="feature-tag" style="background:rgba(59,125,216,0.1);color:#3B7DD8;">Admin</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(34,197,94,0.1);color:#16A34A;">▶</div>
+      <div class="feature-name">Shoot Calendar</div>
+      <div class="feature-desc">Schedule filming sessions with crew, location, and notes. Confirm shoots, message crew, track upcoming sessions.</div>
+      <div class="feature-tag" style="background:rgba(34,197,94,0.1);color:#16A34A;">Admin</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(168,85,247,0.1);color:#A855F7;">◉</div>
+      <div class="feature-name">Communication Hub</div>
+      <div class="feature-desc">Calls, texts, and emails — all in one place. Full conversation threads, call history with outcomes, email compose with AI writer.</div>
+      <div class="feature-tag" style="background:rgba(168,85,247,0.1);color:#A855F7;">Sales</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(255,92,0,0.1);color:#FF5C00;">◇</div>
+      <div class="feature-name">Lead Finder</div>
+      <div class="feature-desc">Scan Arizona businesses to find those with weak social media. Score-based prospects with one-click add to pipeline.</div>
+      <div class="feature-tag" style="background:rgba(255,92,0,0.1);color:#FF5C00;">Sales</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(252,198,18,0.1);color:#B8960C;">▤</div>
+      <div class="feature-name">Script Templates</div>
+      <div class="feature-desc">Reusable scripts by industry. Barbershop BTS, real estate listing tours, before/after reveals, testimonials — copy and customize.</div>
+      <div class="feature-tag" style="background:rgba(252,198,18,0.1);color:#B8960C;">Script Writer</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(59,125,216,0.1);color:#3B7DD8;">▶</div>
+      <div class="feature-name">Video Editor Suite</div>
+      <div class="feature-desc">File specs (4K, codec, fps), edit checklist, session timer, editor notes. Everything a video editor needs to deliver quality.</div>
+      <div class="feature-tag" style="background:rgba(59,125,216,0.1);color:#3B7DD8;">Editor</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(34,197,94,0.1);color:#16A34A;">✓</div>
+      <div class="feature-name">Client Approval</div>
+      <div class="feature-desc">Clients review scripts, approve content, or request revisions with notes. Full approval history and revision tracking.</div>
+      <div class="feature-tag" style="background:rgba(34,197,94,0.1);color:#16A34A;">Client</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(252,198,18,0.1);color:#B8960C;">▦</div>
+      <div class="feature-name">Content Library</div>
+      <div class="feature-desc">All finished videos, raw footage, and photos in one browsable library. Download, share links, or reuse in new content.</div>
+      <div class="feature-tag" style="background:rgba(252,198,18,0.1);color:#B8960C;">Admin</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(168,85,247,0.1);color:#A855F7;">◫</div>
+      <div class="feature-name">Post Scheduler</div>
+      <div class="feature-desc">Schedule content across Instagram, TikTok, and Facebook. Peak time indicators, platform-specific badges, publish or draft.</div>
+      <div class="feature-tag" style="background:rgba(168,85,247,0.1);color:#A855F7;">Admin</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(255,92,0,0.1);color:#FF5C00;">$</div>
+      <div class="feature-name">Revenue & Expenses</div>
+      <div class="feature-desc">Full agency financials. MRR by client, profit/loss, plan distribution. Expenses with QuickBooks sync, add/edit/delete.</div>
+      <div class="feature-tag" style="background:rgba(255,92,0,0.1);color:#FF5C00;">Admin</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(34,197,94,0.1);color:#16A34A;">▤</div>
+      <div class="feature-name">Client Reports</div>
+      <div class="feature-desc">One-click monthly performance reports. Videos delivered, follower growth, engagement, ad ROI. Download PDF or email to client.</div>
+      <div class="feature-tag" style="background:rgba(34,197,94,0.1);color:#16A34A;">Admin</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROLES -->
+<section class="section" id="roles">
+  <div class="section-header">
+    <div class="section-label">Role-Based Access</div>
+    <div class="section-title">5 Roles, One Platform</div>
+    <div class="section-sub">Each team member sees exactly what they need. Switch roles in the sidebar to explore.</div>
+  </div>
+</section>
+
+<!-- ADMIN -->
+<section class="role-section" id="admin">
+  <div class="role-header">
+    <div class="role-badge" style="background:#FF5C00;">A</div>
+    <div><div class="role-name">Admin / Owner</div><div class="role-sub">Full access to everything. Run the agency.</div></div>
+  </div>
+  <div class="step-list">
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">01</div>
+      <div><div class="step-title">Dashboard — Your Command Center</div><div class="step-desc">See MRR, active clients, content performance, and quick actions at a glance.</div>
+        <div class="step-detail">The dashboard shows a welcome hero with your greeting and total MRR. Below that, 4 KPI cards (clients, revenue, videos, scheduled posts) with hover animations. The right column shows content performance by client and a quick actions grid. Everything is clickable — KPIs link to their respective pages.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">02</div>
+      <div><div class="step-title">Pipeline — Drag-and-Drop Content Tracking</div><div class="step-desc">All scripts and videos across all clients in one Kanban board.</div>
+        <div class="step-detail">6 columns: Scripting → Editing → Review → Approved → Scheduled → Published. Drag any card between columns to change its status. Click a card to see details, change status via dropdown, or leave comments. Filter by client at the top. Overdue items show in red. High-priority items have a red bar.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">03</div>
+      <div><div class="step-title">Content Library — All Your Assets</div><div class="step-desc">Browse finished videos, raw footage, and photos. Download, share, or reuse.</div>
+        <div class="step-detail">Filter by type (Video, Raw Footage, Photos). Each asset shows format, file size, duration, and publishing status. Click to expand and see full specs. Download files, copy share links, or add to the content calendar for reuse.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">04</div>
+      <div><div class="step-title">Post Scheduler — Multi-Platform Publishing</div><div class="step-desc">Schedule posts across Instagram, TikTok, and Facebook with peak time optimization.</div>
+        <div class="step-detail">See all upcoming posts with color-coded platform pills. Peak time posts are highlighted. Click any post to publish immediately, reschedule, or preview. Stats at the top show scheduled count, drafts, and this week's posts.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">05</div>
+      <div><div class="step-title">Clients — Deep Detail on Every Account</div><div class="step-desc">6-tab client detail: Overview, Content, Ads, Shoots, Analytics, Brand Kit.</div>
+        <div class="step-detail">Click any client to see their full profile. Overview shows plan deliverables, connected accounts (IG, FB, TikTok, Google), team assignments, and activity timeline. Content tab shows their pipeline with clickable items. Analytics shows follower growth, engagement, and ROI. Brand Kit shows colors, tone, hashtags, and audience.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">06</div>
+      <div><div class="step-title">Revenue & Expenses — Agency Financials</div><div class="step-desc">Track MRR, profit/loss, expenses, and plan distribution.</div>
+        <div class="step-detail">Revenue page shows total revenue, MRR by client (expandable), profit margin, and ARR. Plan distribution shows Copper/Gold/Platinum client counts with revenue per tier. Expenses page has QuickBooks sync, add/edit/delete expenses, recurring vs one-time breakdown. Click any expense amount to edit inline.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">07</div>
+      <div><div class="step-title">Reports — Client Performance Reports</div><div class="step-desc">Generate monthly reports with one click. Download PDF or email to clients.</div>
+        <div class="step-detail">Select a client and generate their monthly report. Shows videos delivered, followers gained, avg views, engagement rate, ad spend, conversions, content delivered checklist, top performing content, platform breakdown, and ROI summary. Download as PDF, share link, or email directly to the client.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">08</div>
+      <div><div class="step-title">Settings — Branding & Integrations</div><div class="step-desc">Connect accounts, manage integrations, customize branding, toggle dark mode.</div>
+        <div class="step-detail">Connected accounts: Instagram, Facebook, Meta Ads, TikTok. Integrations: Zoom, QuickBooks, Stripe, Twilio, Google Ads API. Branding: edit business name, tagline, primary color, upload logo, client portal URL. Appearance: dark mode toggle.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SALES -->
+<section class="role-section" id="sales">
+  <div class="role-header">
+    <div class="role-badge" style="background:#3B82F6;">S</div>
+    <div><div class="role-name">Sales Rep</div><div class="role-sub">Close deals, manage leads, communicate with prospects.</div></div>
+  </div>
+  <div class="step-list">
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">01</div>
+      <div><div class="step-title">Pipeline — Sales Kanban</div><div class="step-desc">Track leads from New → Contacted → Demo → Proposal → Won.</div>
+        <div class="step-detail">Horizontal Kanban with all leads organized by stage. Click any lead to see full details: deal value, source, assigned rep, industry. Action buttons: Call, Email, Text (all open the Comms hub), and Advance to next stage with confetti on wins.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">02</div>
+      <div><div class="step-title">Communication Hub — Calls, Texts, Emails</div><div class="step-desc">Every conversation in one place. No more switching apps.</div>
+        <div class="step-detail">3 tabs: Calls (upcoming with join button, call history with outcomes), Texts (threaded SMS conversations with send inline), Emails (compose with AI writer, sent log with open tracking). Call Now triggers join animation. Each call expands to show agenda and prep notes with quick actions to text or email.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">03</div>
+      <div><div class="step-title">Lead Finder — Discover New Prospects</div><div class="step-desc">Scan Arizona businesses and find those who need your services.</div>
+        <div class="step-detail">Hit "Scan Arizona Businesses" to discover prospects. Each has a score (Hot/Warm/Cool) based on social media weakness. Expand to see why they need Media4You (no Instagram, dead posting, no video content). One-click "Add to Pipeline" with confetti. Filter by industry.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">04</div>
+      <div><div class="step-title">Proposals — Close the Deal</div><div class="step-desc">Create and track proposals with plan selection and open tracking.</div>
+        <div class="step-detail">Create proposals with client name and recommended plan (Copper/Gold/Platinum with pricing). Track sent, draft, and accepted status. See if the prospect opened the proposal.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRODUCTION -->
+<section class="role-section" id="production">
+  <div class="role-header">
+    <div class="role-badge" style="background:#A855F7;">W</div>
+    <div><div class="role-name">Script Writer & Video Editor</div><div class="role-sub">Create content. Write scripts. Edit videos. Deliver quality.</div></div>
+  </div>
+  <div class="step-list">
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">01</div>
+      <div><div class="step-title">Script Queue — AI-Powered Writing</div><div class="step-desc">See all scripts in queue. Generate ideas with AI per client. Use templates.</div>
+        <div class="step-detail">Queue shows all assigned scripts with priority indicators and due dates. AI Tools section lets you generate content ideas for any active client. Click any script to open the editor with AI-powered generation (HOOK/SETUP/BODY/CTA format). Templates page has 6 reusable industry templates you can copy and customize.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">02</div>
+      <div><div class="step-title">Video Editor — Professional Workflow</div><div class="step-desc">File specs, edit checklist, session timer, and notes per video.</div>
+        <div class="step-detail">Production queue shows all videos with status. Click any video to see file specs (resolution, FPS, codec, duration, file size, color profile). Edit checklist: color grade, audio sync, text overlays, transitions, thumbnail, export. Session timer tracks how long you've been editing. Editor notes per video. Actions: Start Editing, Send to Review, Mark Approved.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">03</div>
+      <div><div class="step-title">Content Calendar — Plan and Schedule</div><div class="step-desc">Month grid view, AI generation, manual post creation, script and caption editing.</div>
+        <div class="step-detail">Toggle between Grid and List view. Month grid shows April with dots on days that have posts. Add posts manually with full form (client, type, title, description, date, time) or generate with AI. Click any post for full detail: edit script, generate AI captions, assign team members, change status, leave comments.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CLIENT -->
+<section class="role-section" id="client">
+  <div class="role-header">
+    <div class="role-badge" style="background:#FFB800;">C</div>
+    <div><div class="role-name">Client Portal</div><div class="role-sub">Review content, approve videos, track performance.</div></div>
+  </div>
+  <div class="step-list">
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">01</div>
+      <div><div class="step-title">Content Dashboard — See Your Videos</div><div class="step-desc">Review content, approve or request changes, see your video gallery.</div>
+        <div class="step-detail">Dashboard shows your plan, stats, and items awaiting your review highlighted at the top. Expand any item to read the full script and either Approve (with confetti!) or Request Changes with notes. Published videos appear as gallery cards with play buttons. All content shows progress bars and status.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">02</div>
+      <div><div class="step-title">Social Media — Instagram + TikTok</div><div class="step-desc">Browse your published content across platforms with engagement stats.</div>
+        <div class="step-detail">Filter by All, Instagram, or TikTok. Video gallery cards show platform badge, view counts, and status. Expand to see full caption and copy it. Performance section shows avg reach, TikTok views, engagement rate, and followers gained across platforms.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">03</div>
+      <div><div class="step-title">Invoices — Payments and Receipts</div><div class="step-desc">See your plan, pay invoices, download receipts.</div>
+        <div class="step-detail">Each invoice shows line items (plan name, included services). Pay Now button with processing animation. Download receipt PDF for paid invoices. Email invoice to your records. Full payment history.</div>
+      </div>
+    </div>
+    <div class="step" onclick="this.classList.toggle('open')">
+      <div class="step-num">04</div>
+      <div><div class="step-title">Messages — Talk to Your Team</div><div class="step-desc">Message your account manager, editor, and the Media4You support team.</div>
+        <div class="step-detail">Threaded conversations with your dedicated team. @ tag projects, shoots, or team members in messages. Rich previews show when you tag content items. Type @ to see all taggable items. Your messages are specific to your role — you see your account manager, video editor, and support team.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- GLOBAL FEATURES -->
+<section class="section">
+  <div class="section-header">
+    <div class="section-label">Platform-Wide</div>
+    <div class="section-title">Available Everywhere</div>
+  </div>
+  <div class="feature-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+    <div class="feature-card"><div class="feature-name">Global Search (⌘K)</div><div class="feature-desc">Search across clients, scripts, videos, and leads from anywhere. Keyboard shortcut Cmd+K.</div></div>
+    <div class="feature-card"><div class="feature-name">@ Tagging</div><div class="feature-desc">Tag people, projects, shoots, and campaigns in messages and comments. Rich preview cards show inline.</div></div>
+    <div class="feature-card"><div class="feature-name">Comments Everywhere</div><div class="feature-desc">Leave comments on pipeline items, videos, shoots, and calendar posts. Tag team members with @.</div></div>
+    <div class="feature-card"><div class="feature-name">Dark Mode</div><div class="feature-desc">Toggle dark mode in Settings for late-night editing sessions.</div></div>
+    <div class="feature-card"><div class="feature-name">Inline Editing</div><div class="feature-desc">Click any client name, MRR, or expense amount to edit it inline. Changes save instantly.</div></div>
+    <div class="feature-card"><div class="feature-name">Clickable Status Badges</div><div class="feature-desc">Click any status badge to change it via dropdown. No need to open a detail view.</div></div>
+    <div class="feature-card"><div class="feature-name">Confetti Celebrations</div><div class="feature-desc">Approve content or win a deal and confetti rains down. Small things matter.</div></div>
+    <div class="feature-card"><div class="feature-name">Notifications</div><div class="feature-desc">Clickable notifications that navigate to the relevant item. Bell icon shows unread count.</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="section-header">
+    <div class="section-label">FAQ</div>
+    <div class="section-title">Common Questions</div>
+  </div>
+  <div class="accordion">
+    <div class="acc-item" onclick="this.classList.toggle('open')">
+      <div class="acc-header">What are the plan tiers? <span class="acc-arrow">▾</span></div>
+      <div class="acc-body">Copper ($1,500/mo): 4 HD videos, 1x3hr shoot, FB ads, social management. Gold ($3,000/mo): 8 videos, 4x2hr shoots, scriptwriting, camera coaching, FB ads. Platinum ($5,000/mo): 20 videos, 8 shoots/mo, photos, Google + FB ads, strategy calls, full social management.</div>
+    </div>
+    <div class="acc-item" onclick="this.classList.toggle('open')">
+      <div class="acc-header">How do I switch between roles? <span class="acc-arrow">▾</span></div>
+      <div class="acc-body">Click the role button at the bottom of the sidebar (or open the hamburger menu on mobile). Select any role to see the platform from that perspective. Each role has its own navigation, dashboard, and messages.</div>
+    </div>
+    <div class="acc-item" onclick="this.classList.toggle('open')">
+      <div class="acc-header">How does the content approval workflow work? <span class="acc-arrow">▾</span></div>
+      <div class="acc-body">Content moves through the pipeline: Scripting → Editing → Review → Approved → Scheduled → Published. When content reaches "Review", the client sees it in their portal with the full script. They can Approve (sends it to production) or Request Changes (with notes explaining what to fix). All decisions are logged in the approval history.</div>
+    </div>
+    <div class="acc-item" onclick="this.classList.toggle('open')">
+      <div class="acc-header">What integrations are supported? <span class="acc-arrow">▾</span></div>
+      <div class="acc-body">QuickBooks (for expenses), Zoom (for calls), Google Ads API, Meta Ads Manager, Instagram, Facebook, and TikTok. Stripe and Twilio are available to connect. All managed from Settings.</div>
+    </div>
+    <div class="acc-item" onclick="this.classList.toggle('open')">
+      <div class="acc-header">Can I use this on mobile? <span class="acc-arrow">▾</span></div>
+      <div class="acc-body">Yes. The sidebar collapses into a hamburger menu on mobile. All modals and sheets are centered and responsive. The role switcher is accessible from the mobile sidebar.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="guide-footer">
+  <p style="font: 700 16px var(--fd); color: var(--text); margin-bottom: 12px;">Ready to use the platform?</p>
+  <a href="/" class="guide-cta" style="display:inline-block; padding: 12px 32px; font-size: 14px;">Open Media4You →</a>
+  <p style="margin-top: 24px;">Built by Get Stoa LLC</p>
+</div>
+
+</body>
+</html>

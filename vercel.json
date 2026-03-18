@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/learnyoursystem", "destination": "/learnyoursystem.html" },
+    { "source": "/((?!learnyoursystem).*)", "destination": "/" }
+  ]
+}
