@@ -2442,14 +2442,168 @@ function EditorCompleted({ videos }) {
 }
 
 // ─── CLIENT VIEWS ─────────────────────────────────────────────────────────────
+// ─── UNIFIED CONTENT PIPELINE (KANBAN) ────────────────────────────────────────
+function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, showToast }) {
+  const [clientFilter, setClientFilter] = useState("all");
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const PIPELINE_STAGES = ["Scripting","Editing","Review","Approved","Scheduled","Published"];
+  const STAGE_COLORS = {Scripting:"gray",Editing:"blue",Review:"amber",Approved:"green",Scheduled:"purple",Published:"green"};
+  const STAGE_ICONS = {Scripting:"✍️",Editing:"🎬",Review:"👁️",Approved:"✅",Scheduled:"📸",Published:"🎉"};
+
+  // Merge scripts + videos into unified items
+  const allItems = [
+    ...scripts.map(s => ({
+      id:`s-${s.id}`, sourceId:s.id, type:"script", client:s.client, title:s.type,
+      status: s.status==="Assigned"||s.status==="In Progress"||s.status==="Needs Revision" ? "Scripting" : s.status==="Submitted" ? "Review" : "Scripting",
+      due:s.due, priority:s.priority, thumb:"✍️", source:s,
+    })),
+    ...videos.map(v => ({
+      id:`v-${v.id}`, sourceId:v.id, type:"video", client:v.client, title:v.title,
+      status: v.status==="Raw Footage" ? "Editing" : v.status,
+      due:v.due, priority:"med", thumb:v.thumb, source:v,
+    })),
+  ];
+
+  const allClients = [...new Set(allItems.map(i=>i.client))];
+  const filtered = clientFilter==="all" ? allItems : allItems.filter(i=>i.client===clientFilter);
+
+  const glass = {
+    background:'rgba(255,255,255,0.6)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',
+    border:'1px solid rgba(255,255,255,0.65)',borderRadius:18,
+    boxShadow:'0 4px 24px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)',
+  };
+
+  const advanceItem = (item) => {
+    const stageIdx = PIPELINE_STAGES.indexOf(item.status);
+    if (stageIdx < PIPELINE_STAGES.length - 1) {
+      const nextStage = PIPELINE_STAGES[stageIdx + 1];
+      if (item.type === "video") {
+        onAdvanceVideo(item.sourceId);
+      } else {
+        onUpdateScript(item.sourceId, nextStage === "Review" ? "Submitted" : "In Progress", item.source.draft);
+      }
+      showToast(STAGE_ICONS[nextStage], "Moved to " + nextStage, item.title);
+    }
+    setSelectedItem(null);
+  };
+
+  // Stats
+  const inScripting = filtered.filter(i=>i.status==="Scripting").length;
+  const inEditing = filtered.filter(i=>i.status==="Editing").length;
+  const inReview = filtered.filter(i=>i.status==="Review").length;
+  const completed = filtered.filter(i=>i.status==="Published"||i.status==="Scheduled").length;
+
+  return (
+    <div>
+      {/* Stats */}
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))',gap:12,marginBottom:20}}>
+        {[{label:"Scripting",val:inScripting,color:"var(--text3)"},{label:"Editing",val:inEditing,color:"var(--blue)"},{label:"In Review",val:inReview,color:"var(--amber)"},{label:"Completed",val:completed,color:"var(--green)"}].map((s,i)=>(
+          <div key={s.label} className="dash-card-hover" style={{...glass,padding:'18px 16px',animation:`dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) ${i*60}ms backwards`}}>
+            <div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:6}}>{s.label}</div>
+            <div style={{font:'600 28px var(--fd)',color:s.color}}>{s.val}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filter */}
+      <div style={{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap",alignItems:"center"}}>
+        <span style={{font:'600 13px var(--fd)',color:'var(--text)'}}>Filter:</span>
+        <button className={`action-btn ${clientFilter==="all"?"accent":""}`} onClick={()=>setClientFilter("all")}>All Clients</button>
+        {allClients.map(c=>(
+          <button key={c} className={`action-btn ${clientFilter===c?"accent":""}`} onClick={()=>setClientFilter(c)}>{c}</button>
+        ))}
+      </div>
+
+      {/* Kanban Board */}
+      <div className="kanban-scroll">
+        <div className="kanban" style={{gap:14}}>
+          {PIPELINE_STAGES.map(stage => {
+            const stageItems = filtered.filter(i=>i.status===stage);
+            return (
+              <div key={stage} style={{width:220}}>
+                <div style={{...glass,borderRadius:'14px 14px 0 0',padding:'12px 14px',borderBottom:'none',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                  <div style={{display:'flex',alignItems:'center',gap:6}}>
+                    <span style={{fontSize:14}}>{STAGE_ICONS[stage]}</span>
+                    <span style={{font:'600 11px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text)'}}>{stage}</span>
+                  </div>
+                  <span style={{font:'600 11px var(--fd)',color:'var(--text3)',background:'var(--accent-dim)',padding:'2px 8px',borderRadius:20}}>{stageItems.length}</span>
+                </div>
+                <div style={{background:'rgba(255,255,255,0.35)',border:'1px solid rgba(255,255,255,0.5)',borderRadius:'0 0 14px 14px',padding:8,minHeight:200,display:'flex',flexDirection:'column',gap:8,backdropFilter:'blur(10px)'}}>
+                  {stageItems.map(item => (
+                    <div key={item.id} className="dash-card-hover" style={{
+                      background:'rgba(255,255,255,0.85)',border:'1px solid rgba(0,0,0,0.06)',borderRadius:12,
+                      padding:'12px 14px',cursor:'pointer',backdropFilter:'blur(8px)',boxShadow:'var(--shadow-sm)',
+                    }} onClick={()=>setSelectedItem(selectedItem===item.id?null:item.id)}>
+                      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
+                        <span style={{fontSize:16}}>{item.thumb}</span>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{font:'500 12px var(--fd)',color:'var(--text)',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{item.title}</div>
+                          <div style={{font:'400 10px var(--fb)',color:'var(--text3)',marginTop:1}}>{item.client}</div>
+                        </div>
+                      </div>
+                      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                        <span style={{font:'400 10px var(--fb)',color:'var(--text3)'}}>Due {item.due}</span>
+                        <Badge type={item.type==="script"?"blue":"purple"}>{item.type==="script"?"Script":"Video"}</Badge>
+                      </div>
+                      {item.priority==="high" && <div style={{width:'100%',height:2,background:'var(--red)',borderRadius:2,marginTop:6,opacity:0.6}}/>}
+                      {selectedItem===item.id && (
+                        <div style={{marginTop:10,paddingTop:10,borderTop:'1px solid var(--border)'}}>
+                          <div style={{display:'flex',gap:6}}>
+                            {PIPELINE_STAGES.indexOf(stage) < PIPELINE_STAGES.length - 1 && (
+                              <button className="btn primary" style={{flex:1,padding:'8px 12px',fontSize:11}} onClick={(e)=>{e.stopPropagation();advanceItem(item);}}>
+                                → {PIPELINE_STAGES[PIPELINE_STAGES.indexOf(stage)+1]}
+                              </button>
+                            )}
+                            <button className="btn" style={{padding:'8px 12px',fontSize:11}} onClick={(e)=>{e.stopPropagation();showToast("📝","Notes","Add notes coming soon");}}>Notes</button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  {stageItems.length===0 && (
+                    <div style={{padding:'24px 8px',textAlign:'center',font:'400 11px var(--fb)',color:'var(--text3)',opacity:0.6}}>No items</div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── CLIENT CONTENT (WITH APPROVAL WORKFLOW) ──────────────────────────────────
 function ClientContent({ showToast }) {
   const [selectedItem, setSelectedItem] = useState(null);
+  const [revisionNotes, setRevisionNotes] = useState("");
+  const [showRevisionForm, setShowRevisionForm] = useState(null);
   const [items, setItems] = useState([
-    {id:1,title:"Listing @ 4821 Cactus Rd",type:"Reel · Listing Tour",status:"Editing",  progress:65, thumb:"🏠"},
-    {id:2,title:"Agent Intro — Meet Sarah", type:"Reel · Brand",       status:"Scheduled",progress:100,thumb:"👤"},
-    {id:3,title:"Sold! 3901 Desert View",   type:"Story + Post",       status:"Published",progress:100,thumb:"✅"},
-    {id:4,title:"Neighborhood Spotlight",   type:"Reel · Area Guide",  status:"Scripting",progress:20, thumb:"📍"},
+    {id:1,title:"Listing @ 4821 Cactus Rd",type:"Reel · Listing Tour",status:"Review",    progress:85, thumb:"🏠", script:"HOOK (0–3 sec)\nThis Scottsdale listing just hit the market and it's STUNNING.\n\nSETUP (3–10 sec)\nLocated in the heart of Old Town, 4821 Cactus Rd features 4 beds, 3 baths, and a backyard oasis with mountain views...\n\nBODY (10–40 sec)\nWalk through the open-concept living area, chef's kitchen with quartz counters, and the primary suite with spa-like bathroom. The real showstopper? That heated pool with a sunset view of Camelback.\n\nCTA (40–50 sec)\nDM us or tap the link in bio to schedule a private showing before it's gone.", approvalHistory:[]},
+    {id:2,title:"Agent Intro — Meet Sarah", type:"Reel · Brand",       status:"Approved",  progress:100,thumb:"👤", script:"", approvalHistory:[{action:"approved",date:"Mar 15",note:""}]},
+    {id:3,title:"Sold! 3901 Desert View",   type:"Story + Post",       status:"Published", progress:100,thumb:"✅", script:"", approvalHistory:[{action:"approved",date:"Mar 12",note:""}]},
+    {id:4,title:"Neighborhood Spotlight",   type:"Reel · Area Guide",  status:"Scripting", progress:20, thumb:"📍", script:"", approvalHistory:[]},
+    {id:5,title:"Spring Market Update",     type:"Reel · Educational", status:"Review",    progress:80, thumb:"📊", script:"HOOK (0–3 sec)\nThe Arizona housing market just shifted — here's what you need to know.\n\nSETUP (3–10 sec)\nSpring 2025 is bringing more inventory to the Valley than we've seen in 3 years...\n\nBODY (10–40 sec)\nMedian prices in Scottsdale are up 4% year-over-year, but days on market have increased to 28 from 19. What does that mean for buyers? More negotiating power. For sellers? Pricing strategy matters more than ever.\n\nCTA (40–50 sec)\nFollow for weekly market updates and DM us if you're thinking about buying or selling in Arizona.", approvalHistory:[]},
   ]);
+
+  const approveItem = (id) => {
+    setItems(p=>p.map(i=>i.id===id?{...i,status:"Approved",progress:100,approvalHistory:[...i.approvalHistory,{action:"approved",date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'}),note:""}]}:i));
+    showToast("✅","Approved!","Content approved and moving to production");
+    setSelectedItem(null);
+  };
+
+  const requestRevision = (id) => {
+    if (!revisionNotes.trim()) return;
+    setItems(p=>p.map(i=>i.id===id?{...i,status:"Revision Requested",approvalHistory:[...i.approvalHistory,{action:"revision",date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'}),note:revisionNotes}]}:i));
+    showToast("📝","Revision requested","Team will update the content");
+    setRevisionNotes("");
+    setShowRevisionForm(null);
+    setSelectedItem(null);
+  };
+
+  const statusColor = (s) => s==="Published"?"green":s==="Approved"||s==="Scheduled"?"green":s==="Review"?"amber":s==="Revision Requested"?"red":"gray";
+
   return (
     <div>
       <div className="client-hero">
@@ -2465,10 +2619,59 @@ function ClientContent({ showToast }) {
         <div className="stat-card"><div className="stat-label">Videos</div><div className="stat-value">8</div><div className="stat-sub">2 in production</div></div>
         <div className="stat-card"><div className="stat-label">IG Posts</div><div className="stat-value">6</div><div className="stat-sub">Published</div></div>
         <div className="stat-card"><div className="stat-label">Followers +</div><div className="stat-value">842</div><div className="stat-sub">Since Jan 1</div></div>
-        <div className="stat-card"><div className="stat-label">Next Delivery</div><div className="stat-value">Mar 19</div><div className="stat-sub">Listing Showcase</div></div>
+        <div className="stat-card"><div className="stat-label">Awaiting Review</div><div className="stat-value" style={{color:"var(--amber)"}}>{items.filter(i=>i.status==="Review").length}</div><div className="stat-sub">Needs your approval</div></div>
       </div>
+
+      {/* Items needing review — highlighted */}
+      {items.filter(i=>i.status==="Review").length > 0 && (
+        <div style={{background:'linear-gradient(135deg,rgba(212,150,11,0.08),rgba(253,128,64,0.06))',border:'1px solid rgba(212,150,11,0.25)',borderRadius:16,padding:'16px 18px',marginBottom:12}}>
+          <div style={{font:'700 11px var(--fd)',textTransform:'uppercase',letterSpacing:1,color:'var(--amber)',marginBottom:10}}>⏳ Awaiting Your Approval</div>
+          {items.filter(i=>i.status==="Review").map(d=>(
+            <div key={d.id} style={{background:'rgba(255,255,255,0.8)',borderRadius:12,padding:'14px 16px',marginBottom:8,border:'1px solid rgba(212,150,11,0.15)',cursor:'pointer',backdropFilter:'blur(12px)'}}
+              onClick={()=>setSelectedItem(selectedItem===d.id?null:d.id)}>
+              <div style={{display:'flex',alignItems:'center',gap:10}}>
+                <span style={{fontSize:20}}>{d.thumb}</span>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{font:'600 14px var(--fd)',color:'var(--text)'}}>{d.title}</div>
+                  <div style={{font:'400 11px var(--fb)',color:'var(--text2)',marginTop:2}}>{d.type}</div>
+                </div>
+                <Badge type="amber">Review</Badge>
+              </div>
+              {selectedItem===d.id && (
+                <div style={{marginTop:14,paddingTop:14,borderTop:'1px solid var(--border)'}}>
+                  {/* Script preview */}
+                  {d.script && (
+                    <div style={{marginBottom:14}}>
+                      <div style={{font:'600 11px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text3)',marginBottom:8}}>Script Preview</div>
+                      <div style={{background:'rgba(255,255,255,0.9)',border:'1px solid var(--border)',borderRadius:10,padding:'14px 16px',font:'400 12px var(--fb)',color:'var(--text)',lineHeight:1.7,whiteSpace:'pre-wrap',maxHeight:200,overflowY:'auto'}}>{d.script}</div>
+                    </div>
+                  )}
+                  {/* Approval actions */}
+                  {showRevisionForm===d.id ? (
+                    <div>
+                      <div style={{font:'600 11px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text3)',marginBottom:6}}>What needs to change?</div>
+                      <textarea className="form-textarea" placeholder="Describe the changes you'd like..." value={revisionNotes} onChange={e=>setRevisionNotes(e.target.value)} style={{minHeight:80,marginBottom:8}}/>
+                      <div style={{display:'flex',gap:8}}>
+                        <button className="btn danger" style={{flex:1}} onClick={()=>requestRevision(d.id)}>Submit Revision Request</button>
+                        <button className="btn" onClick={()=>{setShowRevisionForm(null);setRevisionNotes("");}}>Cancel</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{display:'flex',gap:8}}>
+                      <button className="btn success" style={{flex:1,fontWeight:600}} onClick={()=>approveItem(d.id)}>✅ Approve</button>
+                      <button className="btn" style={{flex:1}} onClick={()=>setShowRevisionForm(d.id)}>📝 Request Changes</button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* All content */}
       <div className="card">
-        <div className="card-title">Your Content — March</div>
+        <div className="card-title">All Content — March</div>
         {items.map(d=>(
           <div key={d.id}>
             <div className="deliverable-item" style={{cursor:"pointer"}} onClick={()=>setSelectedItem(selectedItem===d.id?null:d.id)}>
@@ -2476,19 +2679,29 @@ function ClientContent({ showToast }) {
               <div className="deliverable-info">
                 <div className="deliverable-title">{d.title}</div>
                 <div className="deliverable-sub">{d.type}</div>
-              <div className="progress-bar-wrap"><div className="progress-bar" style={{width:`${d.progress}%`,background:d.status==="Published"?"var(--green)":d.status==="Scheduled"?"var(--blue)":"var(--accent)"}}/></div>
+                <div className="progress-bar-wrap"><div className="progress-bar" style={{width:`${d.progress}%`,background:d.status==="Published"?"var(--green)":d.status==="Approved"||d.status==="Scheduled"?"var(--blue)":d.status==="Revision Requested"?"var(--red)":"var(--accent)"}}/></div>
+              </div>
+              <Badge type={statusColor(d.status)}>{d.status}</Badge>
             </div>
-              <Badge type={d.status==="Published"?"green":d.status==="Scheduled"?"blue":d.status==="Editing"?"amber":"gray"}>{d.status}</Badge>
-            </div>
-            {selectedItem===d.id && (
+            {selectedItem===d.id && d.status!=="Review" && (
               <div style={{padding:"10px 0 14px 39px",borderBottom:"1px solid var(--border)"}}>
-                <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:6}}>Deliverable Details</div>
-                <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Title</div><div className="row-sub">{d.title}</div></div></div>
-                <div className="row-item"><div className="row-main"><div className="row-title">Type</div><div className="row-sub">{d.type}</div></div></div>
-                <div className="row-item"><div className="row-main"><div className="row-title">Status</div><div className="row-sub">{d.status}</div></div><Badge type={d.status==="Published"?"green":d.status==="Scheduled"?"blue":d.status==="Editing"?"amber":"gray"}>{d.status}</Badge></div>
-                <div className="row-item" style={{borderBottom:"none",paddingBottom:0}}><div className="row-main"><div className="row-title">Progress</div><div className="row-sub">{d.progress}%</div></div></div>
-                <div className="progress-bar-wrap" style={{marginTop:6,height:6}}><div className="progress-bar" style={{width:`${d.progress}%`,background:d.status==="Published"?"var(--green)":d.status==="Scheduled"?"var(--blue)":"var(--accent)"}}/></div>
-                {d.status==="Editing"&&<button className="btn primary full" style={{marginTop:10}} onClick={()=>{setItems(p=>p.map(i=>i.id===d.id?{...i,status:"Approved",progress:100}:i));showToast("✅","Approved!","");setSelectedItem(null);}}>Approve This Deliverable</button>}
+                <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Status</div><div className="row-sub">{d.status}</div></div><Badge type={statusColor(d.status)}>{d.status}</Badge></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Progress</div><div className="row-sub">{d.progress}%</div></div></div>
+                {d.approvalHistory.length > 0 && (
+                  <div style={{marginTop:8}}>
+                    <div style={{font:'600 10px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text3)',marginBottom:6}}>Approval History</div>
+                    {d.approvalHistory.map((h,i)=>(
+                      <div key={i} style={{display:'flex',alignItems:'center',gap:8,padding:'6px 0',borderBottom:i<d.approvalHistory.length-1?'1px solid var(--border)':'none'}}>
+                        <span style={{fontSize:14}}>{h.action==="approved"?"✅":"📝"}</span>
+                        <div style={{flex:1}}>
+                          <div style={{font:'500 12px var(--fb)',color:'var(--text)'}}>{h.action==="approved"?"Approved":"Revision requested"}</div>
+                          {h.note && <div style={{font:'400 11px var(--fb)',color:'var(--text2)',marginTop:2}}>"{h.note}"</div>}
+                        </div>
+                        <span style={{font:'400 10px var(--fb)',color:'var(--text3)'}}>{h.date}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -2665,7 +2878,7 @@ const ROLES = [
   {key:"client",      label:"Client",       name:"Desert Sun Realty",color:"#FFB800",initial:"C"},
 ];
 const NAV_CONFIG = {
-  admin:        [{label:"Dashboard",icon:"⬛",view:"dashboard"},{label:"Clients",icon:"👥",view:"clients"},{label:"Revenue",icon:"💰",view:"revenue"},{label:"Ads",icon:"📢",view:"ads"},{label:"Settings",icon:"⚙️",view:"settings"}],
+  admin:        [{label:"Dashboard",icon:"⬛",view:"dashboard"},{label:"Pipeline",icon:"🔄",view:"pipeline"},{label:"Clients",icon:"👥",view:"clients"},{label:"Revenue",icon:"💰",view:"revenue"},{label:"Ads",icon:"📢",view:"ads"},{label:"Settings",icon:"⚙️",view:"settings"}],
   sales:        [{label:"Pipeline",icon:"📊",view:"dashboard",badge:3},{label:"Calls",icon:"🎥",view:"calls"},{label:"Leads",icon:"🎯",view:"leads"},{label:"Activity",icon:"📋",view:"activity"}],
   scriptwriter: [{label:"Queue",icon:"✍️",view:"dashboard",badge:2},{label:"Done",icon:"✅",view:"completed"}],
   editor:       [{label:"Production",icon:"🎬",view:"dashboard",badge:2},{label:"Upload",icon:"📤",view:"upload"},{label:"Done",icon:"✅",view:"completed"}],
@@ -2733,6 +2946,7 @@ export default function App() {
 
     if(role==="admin"){
       if(view==="dashboard") return <AdminDashboard clients={clients} onNav={navTo} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} onOpenClientDetail={(c)=>openPanel("client-detail",c)} showToast={showToast}/>;
+      if(view==="pipeline")  return <ContentPipeline scripts={scripts} videos={videos} onAdvanceVideo={advanceVideo} onUpdateScript={updateScript} showToast={showToast}/>;
       if(view==="clients")   return <AdminClients clients={clients} showToast={showToast} onOpenIdeas={(c)=>openPanel("ideas",c)}/>;
       if(view==="revenue")   return <AdminRevenue clients={clients}/>;
       if(view==="ads")       return <AdminAds showToast={showToast}/>;
