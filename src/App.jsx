@@ -5381,6 +5381,138 @@ const NAV_CONFIG = {
 };
 const TITLES = {admin:"Admin",sales:"Sales",scriptwriter:"Scripts",editor:"Production",client:"My Content"};
 
+// ─── HELP CHATBOT ────────────────────────────────────────────────────────────
+const HELP_KB = {
+  dashboard:["Your command center. Shows MRR, active clients, content performance, and quick actions.","KPI cards link to deeper pages. The welcome hero shows your total revenue."],
+  pipeline:["Drag-and-drop Kanban board for all content. 6 columns from Scripting to Published.","Click any card to see details, change status, or leave comments. Filter by client at the top."],
+  library:["Central hub for all finished videos, raw footage, and photos.","Filter by type. Click to see specs, download, share links, or reuse content."],
+  scheduler:["Multi-platform post scheduler for Instagram, TikTok, and Facebook.","Peak time indicators help you post when engagement is highest. Publish now or schedule for later."],
+  shoots:["Schedule and track filming sessions. Set crew, location, and notes.","Confirm shoots, reschedule, or message the crew directly."],
+  coaching:["Track all coaching sessions — camera coaching, strategy calls, sales coaching, and weekly 1:1s.","Sabrina's weekly team meetings show here too."],
+  team:["See who's working on what. Capacity bars show workload at a glance.","Red = overloaded, amber = busy, green = available."],
+  clients:["Full 6-tab detail for each client: Overview, Content, Ads, Shoots, Analytics, Brand Kit.","Click any field to edit inline. Status badges are clickable dropdowns."],
+  revenue:["Agency financials — MRR by client, profit margin, plan distribution.","Revenue pulls from client plans. Expenses feed from the Expenses page."],
+  expenses:["Add, edit, and delete expenses. QuickBooks syncs automatically.","Click any dollar amount to edit inline. Toggle recurring vs one-time."],
+  reports:["Generate monthly performance reports for any client with one click.","Reports show videos delivered, follower growth, engagement, ad ROI. Download PDF or email to client."],
+  ads:["Track Facebook, Instagram, and Google Ads campaigns.","See spend, impressions, CTR, conversions, and ROAS. Create new campaigns with the + button."],
+  calls:["Communication hub — calls, texts, and emails in one place.","Call history shows outcomes. Texts have threaded conversations. Emails have full bodies with open tracking."],
+  finder:["Scan Arizona businesses to find prospects with weak social media.","Score-based leads — Hot (85+), Warm (65+), Cool. One-click add to pipeline."],
+  proposals:["Create and track client proposals with plan selection and pricing.","See if prospects opened your proposal."],
+  templates:["Reusable script templates by industry.","Copy any template and customize it for your client. Usage counts show popularity."],
+};
+
+function HelpChatbot({ currentView, currentRole }) {
+  const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
+
+  useEffect(()=>{messagesEndRef.current?.scrollIntoView({behavior:'smooth'});},[messages]);
+  useEffect(()=>{if(open)setTimeout(()=>inputRef.current?.focus(),200);},[open]);
+
+  const getResponse = (text) => {
+    const q = text.toLowerCase();
+    // Page-specific
+    const pageKB = HELP_KB[currentView];
+    if (pageKB && (q.includes("this page")||q.includes("what is this")||q.includes("how do i")||q.includes("help")||q.includes("what can"))) return pageKB.join(" ");
+    // Feature lookups
+    if (q.includes("pipeline")||q.includes("kanban")) return "The Pipeline is a drag-and-drop Kanban board. Drag cards between columns to change status. Click any card for details. Filter by client at the top.";
+    if (q.includes("client")||q.includes("customer")) return "Go to Clients in the sidebar. Click any client for a 6-tab detail page: Overview, Content, Ads, Shoots, Analytics, Brand Kit. You can edit names, MRR, and industry inline.";
+    if (q.includes("shoot")||q.includes("filming")) return "Shoots are in the sidebar. Schedule filming sessions with date, time, location, and crew. Confirm or reschedule from the detail view.";
+    if (q.includes("revenue")||q.includes("money")||q.includes("mrr")) return "Revenue page shows your full financials — MRR by client, profit/loss, plan distribution. Expenses are tracked separately and sync with QuickBooks.";
+    if (q.includes("expense")||q.includes("cost")) return "Go to Expenses in the sidebar. Add new expenses, edit amounts inline, and sync with QuickBooks. Recurring vs one-time breakdown at the top.";
+    if (q.includes("report")) return "Reports page lets you generate monthly client performance reports. Select a client, click Generate, and get a full report with videos, followers, engagement, and ROI. Download as PDF.";
+    if (q.includes("ad")||q.includes("campaign")||q.includes("facebook")||q.includes("google")) return "Ads page tracks all campaigns across Facebook, Instagram, and Google Ads. See spend, impressions, CTR, conversions, and ROAS.";
+    if (q.includes("lead")||q.includes("prospect")) return "Lead Finder scans for Arizona businesses needing content. Sales Pipeline tracks leads through stages. Comms hub handles calls, texts, and emails.";
+    if (q.includes("script")||q.includes("writing")) return "Script Writer role has a queue with AI tools. Generate content ideas per client, use templates, or write from scratch. Scripts follow HOOK/SETUP/BODY/CTA format.";
+    if (q.includes("video")||q.includes("edit")||q.includes("editor")) return "Video Editor role shows the production queue with file specs, edit checklist, and session timer. Track editing time and send to review when done.";
+    if (q.includes("message")||q.includes("chat")||q.includes("tag")) return "Messages are in the sidebar. Type @ to tag people, projects, shoots, or campaigns. Tags show as highlighted pills with rich preview cards.";
+    if (q.includes("dark mode")||q.includes("theme")) return "Go to Settings and scroll to Appearance. Toggle dark mode with the switch. The entire app switches themes.";
+    if (q.includes("search")||q.includes("find")) return "Press Cmd+K (or click the search button in the topbar) to search across clients, scripts, videos, and leads.";
+    if (q.includes("plan")||q.includes("copper")||q.includes("gold")||q.includes("platinum")) return "Three plans: Copper ($1,500/mo, 4 videos), Gold ($3,000/mo, 8 videos), Platinum ($5,000/mo, 20 videos). Each includes different levels of shoots, ads, coaching, and management.";
+    if (q.includes("role")||q.includes("switch")) return "Click the role button at the bottom of the sidebar to switch between Admin, Sales Rep, Script Writer, Video Editor, and Client views.";
+    if (q.includes("approval")||q.includes("approve")) return "When content reaches Review status, clients see it in their portal. They can read the script and either Approve (with confetti!) or Request Changes with notes.";
+    if (q.includes("comment")) return "Comments are available on pipeline items, videos, shoots, and calendar posts. Type @ to tag team members. Comments show author and timestamp.";
+    if (q.includes("invoice")||q.includes("payment")||q.includes("billing")) return "Client Invoices show in the client portal. Each invoice has line items, Pay Now with processing animation, and Download Receipt for paid invoices.";
+    if (q.includes("calendar")||q.includes("content calendar")) return "Content Calendar has Grid and List views. Generate with AI or add posts manually. Click any post for full detail — edit script, generate captions, assign team, change status.";
+    if (q.includes("hello")||q.includes("hi")||q.includes("hey")) return "Hey! I'm here to help you navigate the Media4You platform. Ask me anything — how to use a feature, where to find something, or what a page does.";
+    return "I can help with any part of the platform! Try asking about: Pipeline, Clients, Shoots, Revenue, Ads, Scripts, Reports, or any specific feature. You can also ask 'What is this page?' for help with wherever you are.";
+  };
+
+  const send = (text) => {
+    if(!text.trim())return;
+    const userMsg = {role:"user",content:text.trim()};
+    const botMsg = {role:"assistant",content:getResponse(text)};
+    setMessages(p=>[...p,userMsg,botMsg]);
+    setInput("");
+    const followUps = ["What is this page?","How do I switch roles?","How do plans work?","How do I approve content?"];
+    setSuggestions(followUps.filter(q=>q.toLowerCase()!==text.toLowerCase()).slice(0,3));
+  };
+
+  return (<>
+    {!open && (
+      <button onClick={()=>setOpen(true)} style={{
+        position:'fixed',bottom:20,right:20,zIndex:10001,width:52,height:52,borderRadius:'50%',
+        background:'linear-gradient(135deg,var(--accent),var(--accent2))',border:'none',cursor:'pointer',
+        boxShadow:'0 4px 20px rgba(252,198,18,0.35)',display:'flex',alignItems:'center',justifyContent:'center',
+        transition:'transform 0.2s',
+      }} onMouseEnter={e=>e.currentTarget.style.transform='scale(1.08)'} onMouseLeave={e=>e.currentTarget.style.transform='scale(1)'}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      </button>
+    )}
+    {open && (
+      <div style={{position:'fixed',bottom:20,right:20,zIndex:10002,width:380,maxWidth:'calc(100vw - 40px)',height:500,maxHeight:'calc(100vh - 100px)',background:'rgba(255,255,255,0.97)',backdropFilter:'blur(30px)',borderRadius:16,border:'1px solid var(--border2)',boxShadow:'0 20px 60px rgba(0,0,0,0.15)',display:'flex',flexDirection:'column',overflow:'hidden',animation:'slideUp 0.2s ease'}}>
+        <div style={{padding:'16px 18px',background:'linear-gradient(135deg,#1a1a1a,#2a2a2a)',display:'flex',alignItems:'center',gap:10,flexShrink:0}}>
+          <div style={{width:32,height:32,borderRadius:'50%',background:'linear-gradient(135deg,var(--accent),var(--accent2))',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontSize:14}}>◆</div>
+          <div style={{flex:1}}><div style={{font:'600 15px var(--fd)',color:'white'}}>Media4You Assistant</div><div style={{font:'400 11px var(--fb)',color:'rgba(255,255,255,0.6)'}}>Ask me anything</div></div>
+          <button onClick={()=>setOpen(false)} style={{width:32,height:32,borderRadius:8,background:'rgba(255,255,255,0.1)',border:'none',color:'rgba(255,255,255,0.7)',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',fontSize:16}}>✕</button>
+        </div>
+        <div style={{flex:1,overflowY:'auto',padding:16,display:'flex',flexDirection:'column',gap:10,background:'var(--bg)'}}>
+          {messages.length===0 && (
+            <div style={{textAlign:'center',padding:'20px 8px'}}>
+              <div style={{font:'600 16px var(--fd)',color:'var(--text)',marginBottom:6}}>Welcome!</div>
+              <div style={{font:'400 13px var(--fb)',color:'var(--text2)',marginBottom:16}}>Ask me how to use any feature, or try these:</div>
+            </div>
+          )}
+          {messages.map((m,i)=>(
+            <div key={i} style={{display:'flex',justifyContent:m.role==="user"?'flex-end':'flex-start',gap:8}}>
+              {m.role==="assistant"&&<div style={{width:24,height:24,borderRadius:'50%',background:'linear-gradient(135deg,var(--accent),var(--accent2))',display:'flex',alignItems:'center',justifyContent:'center',color:'white',fontSize:10,flexShrink:0,marginTop:2}}>◆</div>}
+              <div style={{maxWidth:'80%',padding:'10px 14px',borderRadius:m.role==="user"?'14px 14px 4px 14px':'14px 14px 14px 4px',background:m.role==="user"?'linear-gradient(135deg,var(--accent),var(--accent2))':'var(--surface)',color:m.role==="user"?'white':'var(--text)',font:'400 13px/1.6 var(--fb)',border:m.role==="user"?'none':'1px solid var(--border)'}}>{m.content}</div>
+            </div>
+          ))}
+          {suggestions.length>0&&(
+            <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+              {messages.length>0&&<span style={{font:'600 10px var(--fd)',color:'var(--text3)',textTransform:'uppercase',letterSpacing:'0.05em',width:'100%',marginBottom:2}}>Try asking:</span>}
+              {suggestions.map((q,i)=>(
+                <button key={i} onClick={()=>send(q)} style={{padding:'6px 12px',borderRadius:20,background:'none',border:'1px solid rgba(252,198,18,0.3)',color:'var(--accent)',cursor:'pointer',font:'400 12px var(--fb)',transition:'all 0.15s'}}
+                  onMouseEnter={e=>e.currentTarget.style.background='var(--accent-dim)'} onMouseLeave={e=>e.currentTarget.style.background='none'}>{q}</button>
+              ))}
+            </div>
+          )}
+          {messages.length===0&&(
+            <div style={{display:'flex',flexWrap:'wrap',gap:6}}>
+              {["What is this page?","How do I use the pipeline?","How do plans work?","How do I switch roles?","How do I approve content?","How do I find new leads?"].map((q,i)=>(
+                <button key={i} onClick={()=>send(q)} style={{padding:'6px 12px',borderRadius:20,background:'none',border:'1px solid rgba(252,198,18,0.3)',color:'var(--accent)',cursor:'pointer',font:'400 12px var(--fb)'}}
+                  onMouseEnter={e=>e.currentTarget.style.background='var(--accent-dim)'} onMouseLeave={e=>e.currentTarget.style.background='none'}>{q}</button>
+              ))}
+            </div>
+          )}
+          <div ref={messagesEndRef}/>
+        </div>
+        <form onSubmit={e=>{e.preventDefault();send(input);}} style={{padding:'12px 14px',borderTop:'1px solid var(--border)',display:'flex',gap:8,background:'rgba(255,255,255,0.97)',flexShrink:0}}>
+          <input ref={inputRef} value={input} onChange={e=>setInput(e.target.value)} placeholder="Ask me anything..." style={{flex:1,height:40,padding:'0 14px',border:'1px solid var(--border2)',borderRadius:10,font:'400 13px var(--fb)',color:'var(--text)',outline:'none',background:'var(--surface2)'}}
+            onFocus={e=>e.target.style.borderColor='var(--accent)'} onBlur={e=>e.target.style.borderColor='var(--border2)'}/>
+          <button type="submit" disabled={!input.trim()} style={{width:40,height:40,borderRadius:10,border:'none',background:input.trim()?'linear-gradient(135deg,var(--accent),var(--accent2))':'var(--border2)',color:input.trim()?'white':'var(--text3)',cursor:input.trim()?'pointer':'default',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+          </button>
+        </form>
+      </div>
+    )}
+  </>);
+}
+
 // ─── APP ──────────────────────────────────────────────────────────────────────
 export default function App() {
   const [role, setRole]           = useState("admin");
@@ -5640,6 +5772,7 @@ export default function App() {
         {searchOpen && <GlobalSearch clients={clients} scripts={scripts} videos={videos} leads={leads} onClose={()=>setSearchOpen(false)} onNavigate={navTo} showToast={showToast}/>}
         {modal==="add-client"&&<AddClientModal onClose={()=>setModal(null)} onAdd={addClient}/>}
         {modal==="add-lead"  &&<AddLeadModal   onClose={()=>setModal(null)} onAdd={addLead}/>}
+        <HelpChatbot currentView={view} currentRole={role}/>
         <Toast toast={toast}/>
       </div>
     </>
