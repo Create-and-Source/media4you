@@ -3,32 +3,32 @@ import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContai
 
 // ─── STYLES ───────────────────────────────────────────────────────────────────
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Lato:wght@300;400;500;600;700&display=swap');
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   :root {
-    --bg: #F0EDF5;
-    --bg2: #EAE5F2;
-    --surface: rgba(255,255,255,0.75);
-    --surface2: rgba(255,255,255,0.55);
-    --surface3: rgba(255,255,255,0.35);
-    --border: rgba(180,160,210,0.25);
-    --border2: rgba(180,160,210,0.4);
-    --accent: #8B5E8B;
-    --accent2: #B07FC0;
-    --accent-dim: rgba(139,94,139,0.1);
-    --accent-glow: rgba(139,94,139,0.2);
-    --green: #5BA88A;
-    --blue: #5B8DC8;
-    --purple: #9B72B8;
-    --red: #C86B7A;
-    --amber: #C8A45B;
-    --text: #2A1F3D;
-    --text2: #7A6B8A;
-    --text3: #B0A4BC;
-    --shadow: 0 4px 24px rgba(100,70,140,0.10);
-    --shadow-sm: 0 2px 12px rgba(100,70,140,0.08);
-    --fd: 'Cormorant Garamond', serif;
-    --fb: 'DM Sans', sans-serif;
+    --bg: #F5F3EF;
+    --bg2: #EBE8E2;
+    --surface: rgba(255,255,255,0.85);
+    --surface2: rgba(255,255,255,0.65);
+    --surface3: rgba(255,255,255,0.45);
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --accent: #fcc612;
+    --accent2: #fd8040;
+    --accent-dim: rgba(252,198,18,0.12);
+    --accent-glow: rgba(252,198,18,0.2);
+    --green: #2D9A6A;
+    --blue: #3B7DD8;
+    --purple: #fd8040;
+    --red: #D94F5C;
+    --amber: #D4960B;
+    --text: #1A1A1A;
+    --text2: #5A5A6A;
+    --text3: #9A9AAA;
+    --shadow: 0 4px 24px rgba(0,0,0,0.08);
+    --shadow-sm: 0 2px 12px rgba(0,0,0,0.05);
+    --fd: 'Montserrat', sans-serif;
+    --fb: 'Lato', sans-serif;
     --bnav: 64px;
   }
 
@@ -45,9 +45,9 @@ const styles = `
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(200,180,230,0.35) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(180,210,220,0.25) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 60% 30%, rgba(220,190,240,0.2) 0%, transparent 60%);
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(252,198,18,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 80%, rgba(253,128,64,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 60% 30%, rgba(252,198,18,0.05) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
   }
@@ -58,12 +58,12 @@ const styles = `
   .topbar {
     display:flex; align-items:center; justify-content:space-between;
     padding:0 16px; height:56px;
-    background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.9);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
     flex-shrink:0; gap:8px;
-    box-shadow: 0 1px 20px rgba(100,70,140,0.06);
+    box-shadow: 0 1px 20px rgba(0,0,0,0.06);
   }
   .t-left { display:flex; align-items:center; gap:8px; min-width:0; }
   .t-logo { font-family:var(--fd); font-size:19px; font-weight:700; white-space:nowrap; flex-shrink:0; letter-spacing:0.3px; color:var(--text); }
@@ -86,12 +86,12 @@ const styles = `
     display:flex; align-items:center; justify-content:center; font-size:15px; cursor:pointer; flex-shrink:0;
     box-shadow: var(--shadow-sm);
   }
-  .bell-dot { position:absolute; top:6px; right:6px; width:6px; height:6px; border-radius:50%; background:var(--red); border:1.5px solid white; }
+  .bell-dot { position:absolute; top:6px; right:6px; width:6px; height:6px; border-radius:50%; background:var(--red); border:1.5px solid #fff; }
   .top-action-btn {
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     border:none; color:white; font-size:11px; font-weight:600; font-family:var(--fb);
     padding:0 14px; height:34px; border-radius:20px; cursor:pointer; white-space:nowrap;
-    box-shadow: 0 4px 14px rgba(139,94,139,0.35); letter-spacing:0.2px;
+    box-shadow: 0 4px 14px rgba(252,198,18,0.35); letter-spacing:0.2px;
   }
 
   /* CONTENT */
@@ -100,13 +100,13 @@ const styles = `
   /* BOTTOM NAV */
   .bnav {
     position:fixed; bottom:0; left:0; right:0; height:var(--bnav);
-    background: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.92);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border-top:1px solid var(--border);
     display:flex; align-items:stretch; z-index:100;
     padding-bottom:env(safe-area-inset-bottom);
-    box-shadow: 0 -4px 20px rgba(100,70,140,0.07);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
   }
   .bnav-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; padding:8px 2px; cursor:pointer; position:relative; }
   .bnav-icon { font-size:18px; line-height:1; }
@@ -116,14 +116,14 @@ const styles = `
   .bnav-badge { position:absolute; top:5px; right:calc(50% - 16px); background:var(--red); color:white; font-size:8px; font-weight:700; padding:1px 4px; border-radius:8px; min-width:14px; text-align:center; }
 
   /* OVERLAY / SHEETS */
-  .overlay { position:fixed; inset:0; background:rgba(30,15,50,0.35); backdrop-filter:blur(4px); z-index:200; display:flex; align-items:flex-end; }
+  .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:200; display:flex; align-items:flex-end; }
   .sheet {
-    background: rgba(255,255,255,0.92);
+    background: rgba(255,255,255,0.97);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     border-radius:22px 22px 0 0; border:1px solid var(--border2); border-bottom:none;
     width:100%; padding:0 16px 32px; max-height:90dvh; overflow-y:auto;
-    box-shadow: 0 -8px 40px rgba(100,70,140,0.15);
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.1);
   }
   .sheet-handle { width:36px; height:4px; background:var(--text3); border-radius:2px; margin:14px auto 18px; opacity:0.4; }
   .sheet-title { font-family:var(--fd); font-size:20px; font-weight:600; color:var(--text); margin-bottom:4px; }
@@ -137,8 +137,8 @@ const styles = `
   /* AI COMPONENTS */
   .ai-btn {
     display:flex; align-items:center; gap:12px; padding:14px 16px;
-    background: linear-gradient(135deg, rgba(139,94,139,0.08), rgba(176,127,192,0.06));
-    border:1px solid rgba(139,94,139,0.25); border-radius:14px;
+    background: linear-gradient(135deg, rgba(252,198,18,0.08), rgba(253,128,64,0.06));
+    border:1px solid rgba(252,198,18,0.25); border-radius:14px;
     cursor:pointer; width:100%; margin-bottom:10px; transition:all 0.18s;
     backdrop-filter: blur(8px); box-shadow: var(--shadow-sm);
   }
@@ -152,8 +152,8 @@ const styles = `
 
   .ai-loading {
     display:flex; align-items:center; gap:10px; padding:14px;
-    background: linear-gradient(135deg, rgba(139,94,139,0.07), rgba(176,127,192,0.05));
-    border:1px solid rgba(139,94,139,0.2); border-radius:12px; margin-bottom:12px;
+    background: linear-gradient(135deg, rgba(252,198,18,0.07), rgba(253,128,64,0.05));
+    border:1px solid rgba(252,198,18,0.2); border-radius:12px; margin-bottom:12px;
   }
   .ai-loading-text { font-size:13px; color:var(--accent); font-weight:500; }
   .ai-loading-sub { font-size:11px; color:var(--text2); margin-top:2px; }
@@ -164,20 +164,20 @@ const styles = `
     padding:14px 16px; margin-bottom:8px; cursor:pointer; transition:all 0.18s;
     backdrop-filter: blur(12px); box-shadow: var(--shadow-sm);
   }
-  .idea-card:active { border-color:var(--accent2); box-shadow:0 4px 20px rgba(139,94,139,0.15); }
+  .idea-card:active { border-color:var(--accent2); box-shadow:0 4px 20px rgba(252,198,18,0.15); }
   .idea-card-header { display:flex; align-items:flex-start; gap:10px; margin-bottom:6px; }
-  .idea-num { font-family:var(--fd); font-size:11px; font-weight:700; color:var(--accent); background:var(--accent-dim); padding:2px 8px; border-radius:20px; flex-shrink:0; border:1px solid rgba(139,94,139,0.2); }
+  .idea-num { font-family:var(--fd); font-size:11px; font-weight:700; color:var(--accent); background:var(--accent-dim); padding:2px 8px; border-radius:20px; flex-shrink:0; border:1px solid rgba(252,198,18,0.2); }
   .idea-title { font-size:14px; font-weight:600; color:var(--text); line-height:1.3; font-family:var(--fd); }
   .idea-desc { font-size:12px; color:var(--text2); line-height:1.6; margin-bottom:8px; }
   .idea-footer { display:flex; align-items:center; gap:8px; }
   .idea-tag { font-size:10px; color:var(--text2); background:var(--surface2); border:1px solid var(--border); padding:2px 9px; border-radius:20px; }
-  .idea-script-btn { margin-left:auto; padding:6px 14px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; color:white; font-size:11px; font-weight:600; font-family:var(--fb); border-radius:20px; cursor:pointer; box-shadow:0 3px 10px rgba(139,94,139,0.3); }
+  .idea-script-btn { margin-left:auto; padding:6px 14px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; color:white; font-size:11px; font-weight:600; font-family:var(--fb); border-radius:20px; cursor:pointer; box-shadow:0 3px 10px rgba(252,198,18,0.3); }
 
   /* CALENDAR */
   .cal-week { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:4px; }
   .cal-day-label { text-align:center; font-size:9px; color:var(--text3); font-weight:600; text-transform:uppercase; padding:4px 0; }
   .cal-day { aspect-ratio:1; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:500; color:var(--text3); background:var(--surface2); cursor:pointer; position:relative; border:1px solid var(--border); backdrop-filter:blur(8px); }
-  .cal-day.has-post { background:var(--accent-dim); border-color:rgba(139,94,139,0.35); color:var(--accent); }
+  .cal-day.has-post { background:var(--accent-dim); border-color:rgba(252,198,18,0.35); color:var(--accent); }
   .cal-day.today { border-color:var(--accent2); color:var(--text); font-weight:700; }
   .cal-post-dot { position:absolute; bottom:3px; left:50%; transform:translateX(-50%); width:4px; height:4px; border-radius:50%; background:var(--accent); }
   .cal-post-item { display:flex; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
@@ -188,36 +188,36 @@ const styles = `
   .cal-post-client { font-size:10px; color:var(--text3); margin-top:1px; }
 
   /* CAPTION / OUTREACH RESULTS */
-  .caption-result { background:rgba(255,255,255,0.6); border:1px solid var(--border2); border-radius:12px; padding:16px; margin-top:12px; backdrop-filter:blur(12px); box-shadow:var(--shadow-sm); }
+  .caption-result { background:rgba(255,255,255,0.85); border:1px solid var(--border2); border-radius:12px; padding:16px; margin-top:12px; backdrop-filter:blur(12px); box-shadow:var(--shadow-sm); }
   .caption-text { font-size:13px; color:var(--text); line-height:1.7; white-space:pre-wrap; }
   .caption-copy-btn { margin-top:10px; padding:8px 18px; background:var(--surface); border:1px solid var(--border2); color:var(--text2); font-size:12px; font-family:var(--fb); border-radius:20px; cursor:pointer; box-shadow:var(--shadow-sm); }
-  .outreach-result { background:rgba(255,255,255,0.6); border:1px solid var(--border2); border-radius:12px; padding:16px; margin-top:12px; backdrop-filter:blur(12px); box-shadow:var(--shadow-sm); }
+  .outreach-result { background:rgba(255,255,255,0.85); border:1px solid var(--border2); border-radius:12px; padding:16px; margin-top:12px; backdrop-filter:blur(12px); box-shadow:var(--shadow-sm); }
   .outreach-text { font-size:13px; color:var(--text); line-height:1.7; white-space:pre-wrap; }
 
   /* MESSAGING */
   .msg-panel { position:fixed; inset:0; top:56px; background:var(--bg); z-index:150; display:flex; flex-direction:column; animation:slideUp 0.2s ease; }
-  .msg-top { padding:14px 16px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.8); backdrop-filter:blur(20px); flex-shrink:0; display:flex; align-items:center; justify-content:space-between; }
+  .msg-top { padding:14px 16px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.9); backdrop-filter:blur(20px); flex-shrink:0; display:flex; align-items:center; justify-content:space-between; }
   .msg-thread-list { flex:1; overflow-y:auto; padding:14px; }
   .msg-thread-item { display:flex; gap:11px; padding:13px 14px; background:var(--surface); border:1px solid var(--border); border-radius:14px; margin-bottom:8px; cursor:pointer; backdrop-filter:blur(12px); box-shadow:var(--shadow-sm); transition:all 0.15s; }
-  .msg-thread-item:active { box-shadow:0 4px 20px rgba(139,94,139,0.15); }
+  .msg-thread-item:active { box-shadow:0 4px 20px rgba(252,198,18,0.15); }
   .msg-thread-item.unread { border-left:3px solid var(--accent); }
   .chat-view { position:fixed; inset:0; top:56px; background:var(--bg); z-index:160; display:flex; flex-direction:column; animation:slideUp 0.15s ease; }
-  .chat-header { padding:12px 14px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.8); backdrop-filter:blur(20px); display:flex; align-items:center; gap:10px; flex-shrink:0; }
+  .chat-header { padding:12px 14px; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.9); backdrop-filter:blur(20px); display:flex; align-items:center; gap:10px; flex-shrink:0; }
   .chat-messages { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; }
   .chat-msg { display:flex; gap:8px; max-width:85%; }
   .chat-msg.mine { align-self:flex-end; flex-direction:row-reverse; }
   .chat-bubble { padding:10px 14px; border-radius:16px; font-size:13px; line-height:1.5; }
-  .chat-msg:not(.mine) .chat-bubble { background:rgba(255,255,255,0.85); border:1px solid var(--border); color:var(--text); border-radius:4px 16px 16px 16px; box-shadow:var(--shadow-sm); backdrop-filter:blur(8px); }
-  .chat-msg.mine .chat-bubble { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:white; border-radius:16px 4px 16px 16px; box-shadow:0 4px 14px rgba(139,94,139,0.3); }
+  .chat-msg:not(.mine) .chat-bubble { background:rgba(255,255,255,0.9); border:1px solid var(--border); color:var(--text); border-radius:4px 16px 16px 16px; box-shadow:var(--shadow-sm); backdrop-filter:blur(8px); }
+  .chat-msg.mine .chat-bubble { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:white; border-radius:16px 4px 16px 16px; box-shadow:0 4px 14px rgba(252,198,18,0.3); }
   .chat-time { font-size:9px; color:var(--text3); margin-top:3px; text-align:right; }
-  .chat-input-bar { padding:10px 14px; border-top:1px solid var(--border); background:rgba(255,255,255,0.8); backdrop-filter:blur(20px); display:flex; gap:8px; align-items:flex-end; flex-shrink:0; padding-bottom:calc(10px + env(safe-area-inset-bottom)); }
+  .chat-input-bar { padding:10px 14px; border-top:1px solid var(--border); background:rgba(255,255,255,0.9); backdrop-filter:blur(20px); display:flex; gap:8px; align-items:flex-end; flex-shrink:0; padding-bottom:calc(10px + env(safe-area-inset-bottom)); }
   .chat-input { flex:1; background:var(--surface2); border:1px solid var(--border2); border-radius:22px; padding:10px 16px; font-size:13px; color:var(--text); font-family:var(--fb); outline:none; resize:none; max-height:100px; line-height:1.4; }
-  .chat-input:focus { border-color:var(--accent2); box-shadow:0 0 0 3px rgba(139,94,139,0.1); }
-  .chat-send-btn { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; color:white; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 12px rgba(139,94,139,0.35); }
+  .chat-input:focus { border-color:var(--accent2); box-shadow:0 0 0 3px rgba(252,198,18,0.1); }
+  .chat-send-btn { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; color:white; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 12px rgba(252,198,18,0.35); }
 
   /* NOTIFS */
   .notif-item { display:flex; gap:12px; padding:13px 14px; background:var(--surface); border:1px solid var(--border); border-radius:14px; margin-bottom:8px; cursor:pointer; backdrop-filter:blur(12px); box-shadow:var(--shadow-sm); transition:all 0.15s; }
-  .notif-item.unread { border-left:3px solid var(--accent); background:rgba(255,255,255,0.85); }
+  .notif-item.unread { border-left:3px solid var(--accent); background:rgba(252,198,18,0.06); }
   .notif-icon { font-size:20px; flex-shrink:0; width:32px; text-align:center; }
   .notif-text { font-size:13px; color:var(--text); line-height:1.4; }
   .notif-text strong { color:var(--accent); }
@@ -227,26 +227,26 @@ const styles = `
   /* FORMS */
   .form-group { margin-bottom:14px; }
   .form-label { font-size:11px; color:var(--text2); text-transform:uppercase; letter-spacing:0.8px; font-weight:600; margin-bottom:6px; display:block; }
-  .form-input { width:100%; padding:11px 14px; background:rgba(255,255,255,0.65); border:1px solid var(--border2); border-radius:10px; color:var(--text); font-size:13px; font-family:var(--fb); outline:none; backdrop-filter:blur(8px); }
-  .form-input:focus { border-color:var(--accent2); box-shadow:0 0 0 3px rgba(139,94,139,0.1); }
-  .form-select { width:100%; padding:11px 14px; background:rgba(255,255,255,0.65); border:1px solid var(--border2); border-radius:10px; color:var(--text); font-size:13px; font-family:var(--fb); outline:none; }
-  .form-textarea { width:100%; padding:11px 14px; background:rgba(255,255,255,0.65); border:1px solid var(--border2); border-radius:10px; color:var(--text); font-size:13px; font-family:var(--fb); outline:none; resize:none; min-height:80px; line-height:1.5; }
-  .form-textarea:focus { border-color:var(--accent2); box-shadow:0 0 0 3px rgba(139,94,139,0.1); }
+  .form-input { width:100%; padding:11px 14px; background:rgba(255,255,255,0.7); border:1px solid var(--border2); border-radius:10px; color:var(--text); font-size:13px; font-family:var(--fb); outline:none; backdrop-filter:blur(8px); }
+  .form-input:focus { border-color:var(--accent2); box-shadow:0 0 0 3px rgba(252,198,18,0.1); }
+  .form-select { width:100%; padding:11px 14px; background:rgba(255,255,255,0.7); border:1px solid var(--border2); border-radius:10px; color:var(--text); font-size:13px; font-family:var(--fb); outline:none; }
+  .form-textarea { width:100%; padding:11px 14px; background:rgba(255,255,255,0.7); border:1px solid var(--border2); border-radius:10px; color:var(--text); font-size:13px; font-family:var(--fb); outline:none; resize:none; min-height:80px; line-height:1.5; }
+  .form-textarea:focus { border-color:var(--accent2); box-shadow:0 0 0 3px rgba(252,198,18,0.1); }
   .form-actions { display:flex; gap:8px; margin-top:18px; }
 
   /* BUTTONS */
-  .btn { padding:10px 18px; border-radius:22px; border:1px solid var(--border2); background:rgba(255,255,255,0.6); color:var(--text2); font-size:13px; font-family:var(--fb); cursor:pointer; font-weight:500; transition:all 0.15s; backdrop-filter:blur(8px); }
+  .btn { padding:10px 18px; border-radius:22px; border:1px solid var(--border2); background:rgba(255,255,255,0.7); color:var(--text2); font-size:13px; font-family:var(--fb); cursor:pointer; font-weight:500; transition:all 0.15s; backdrop-filter:blur(8px); }
   .btn:active { opacity:0.8; }
-  .btn.primary { background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; color:white; font-weight:600; flex:1; text-align:center; box-shadow:0 4px 16px rgba(139,94,139,0.3); }
+  .btn.primary { background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; color:white; font-weight:600; flex:1; text-align:center; box-shadow:0 4px 16px rgba(252,198,18,0.3); }
   .btn.full { width:100%; text-align:center; }
   .btn.danger { background:rgba(200,107,122,0.1); border-color:rgba(200,107,122,0.4); color:var(--red); }
   .btn.success { background:rgba(91,168,138,0.1); border-color:rgba(91,168,138,0.4); color:var(--green); }
   .btn.back { display:inline-flex; align-items:center; gap:6px; margin-bottom:12px; font-size:13px; }
-  .action-btn { padding:5px 11px; border-radius:20px; border:1px solid var(--border2); background:rgba(255,255,255,0.5); color:var(--text2); font-size:10px; cursor:pointer; font-family:var(--fb); white-space:nowrap; transition:all 0.15s; }
-  .action-btn.accent { background:var(--accent-dim); border-color:rgba(139,94,139,0.3); color:var(--accent); }
+  .action-btn { padding:5px 11px; border-radius:20px; border:1px solid var(--border2); background:rgba(255,255,255,0.7); color:var(--text2); font-size:10px; cursor:pointer; font-family:var(--fb); white-space:nowrap; transition:all 0.15s; }
+  .action-btn.accent { background:var(--accent-dim); border-color:rgba(252,198,18,0.3); color:var(--accent); }
   .action-btn.green { background:rgba(91,168,138,0.1); border-color:rgba(91,168,138,0.35); color:var(--green); }
-  .sheet-role-btn { display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:14px; border:1px solid var(--border); background:rgba(255,255,255,0.5); color:var(--text); font-size:14px; font-family:var(--fb); cursor:pointer; width:100%; margin-bottom:8px; transition:all 0.15s; text-align:left; backdrop-filter:blur(8px); }
-  .sheet-role-btn.active { background:var(--accent-dim); border-color:rgba(139,94,139,0.35); }
+  .sheet-role-btn { display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:14px; border:1px solid var(--border); background:rgba(255,255,255,0.7); color:var(--text); font-size:14px; font-family:var(--fb); cursor:pointer; width:100%; margin-bottom:8px; transition:all 0.15s; text-align:left; backdrop-filter:blur(8px); }
+  .sheet-role-btn.active { background:var(--accent-dim); border-color:rgba(252,198,18,0.35); }
   .sheet-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
 
   /* CARDS */
@@ -258,13 +258,13 @@ const styles = `
   .card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px 18px; margin-bottom:12px; backdrop-filter:blur(16px); box-shadow:var(--shadow-sm); }
   .card-title { font-family:var(--fd); font-size:11px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:14px; }
   .badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:600; white-space:nowrap; }
-  .badge-green { background:rgba(34,197,94,0.12); color:#22C55E; }
-  .badge-amber { background:rgba(255,184,0,0.12); color:#FFB800; }
-  .badge-blue { background:rgba(59,130,246,0.12); color:#3B82F6; }
-  .badge-purple { background:rgba(168,85,247,0.12); color:#A855F7; }
-  .badge-gray { background:rgba(153,153,168,0.1); color:#9999A8; }
-  .badge-red { background:rgba(239,68,68,0.12); color:#EF4444; }
-  .badge-orange { background:rgba(255,92,0,0.12); color:#FF5C00; }
+  .badge-green { background:rgba(34,197,94,0.12); color:#1A7A42; }
+  .badge-amber { background:rgba(255,184,0,0.12); color:#8B6914; }
+  .badge-blue { background:rgba(59,130,246,0.12); color:#2A5FAA; }
+  .badge-purple { background:rgba(253,128,64,0.12); color:#D05A20; }
+  .badge-gray { background:rgba(153,153,168,0.1); color:#4A4F5C; }
+  .badge-red { background:rgba(239,68,68,0.12); color:#B03A44; }
+  .badge-orange { background:rgba(255,92,0,0.12); color:#C04500; }
   .row-item { display:flex; align-items:center; gap:11px; padding:10px 0; border-bottom:1px solid var(--border); }
   .row-item:last-child { border-bottom:none; padding-bottom:0; }
   .row-item:first-child { padding-top:0; }
@@ -307,22 +307,22 @@ const styles = `
   .video-info { flex:1; min-width:0; }
   .video-title { font-size:12px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .video-meta { font-size:10px; color:var(--text3); margin-top:2px; }
-  .ig-panel { background:linear-gradient(135deg,#1a0a2e 0%,#0d1117 100%); border:1px solid #2d1b4e; border-radius:10px; padding:14px 16px; margin-bottom:12px; }
+  .ig-panel { background:linear-gradient(135deg,rgba(252,198,18,0.06),rgba(253,128,64,0.04)); border:1px solid rgba(252,198,18,0.15); border-radius:10px; padding:14px 16px; margin-bottom:12px; }
   .ig-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
   .ig-title { font-family:var(--fd); font-size:13px; font-weight:700; color:var(--text); }
-  .ig-sub { font-size:10px; color:#9b59b6; }
-  .ig-post { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:10px 12px; margin-bottom:7px; display:flex; align-items:center; gap:10px; }
-  .ig-post-thumb { width:36px; height:36px; border-radius:6px; background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+  .ig-sub { font-size:10px; color:#fcc612; }
+  .ig-post { background:rgba(255,255,255,0.7); border:1px solid var(--border); border-radius:8px; padding:10px 12px; margin-bottom:7px; display:flex; align-items:center; gap:10px; }
+  .ig-post-thumb { width:36px; height:36px; border-radius:6px; background:rgba(252,198,18,0.1); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
   .ig-post-title { font-size:12px; font-weight:600; color:var(--text); }
-  .ig-post-date { font-size:10px; color:#9b59b6; margin-top:1px; }
+  .ig-post-date { font-size:10px; color:#fcc612; margin-top:1px; }
   .badge { display:inline-flex; align-items:center; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:500; white-space:nowrap; letter-spacing:0.2px; }
-  .badge-green  { background:rgba(91,168,138,0.12);  color:#3D8C72; border:1px solid rgba(91,168,138,0.25); }
-  .badge-amber  { background:rgba(200,164,91,0.12);  color:#A07830; border:1px solid rgba(200,164,91,0.25); }
-  .badge-blue   { background:rgba(91,141,200,0.12);  color:#3A6EA8; border:1px solid rgba(91,141,200,0.25); }
-  .badge-purple { background:rgba(155,114,184,0.12); color:#7A4EA0; border:1px solid rgba(155,114,184,0.25); }
-  .badge-gray   { background:rgba(160,140,180,0.1);  color:#8A7A9A; border:1px solid rgba(160,140,180,0.2); }
-  .badge-red    { background:rgba(200,107,122,0.12); color:#A84858; border:1px solid rgba(200,107,122,0.25); }
-  .badge-orange { background:rgba(139,94,139,0.1);   color:var(--accent); border:1px solid rgba(139,94,139,0.2); }
+  .badge-green  { background:rgba(34,150,80,0.1);   color:#1A7A42; border:1px solid rgba(34,150,80,0.25); }
+  .badge-amber  { background:rgba(180,130,30,0.12);  color:#8B6914; border:1px solid rgba(180,130,30,0.25); }
+  .badge-blue   { background:rgba(59,125,216,0.1);  color:#2A5FAA; border:1px solid rgba(59,125,216,0.25); }
+  .badge-purple { background:rgba(253,128,64,0.1);  color:#D05A20; border:1px solid rgba(253,128,64,0.25); }
+  .badge-gray   { background:rgba(85,91,110,0.1);   color:#4A4F5C; border:1px solid rgba(85,91,110,0.25); }
+  .badge-red    { background:rgba(200,70,80,0.1);   color:#B03A44; border:1px solid rgba(200,70,80,0.25); }
+  .badge-orange { background:rgba(252,198,18,0.1);  color:#A07B00; border:1px solid rgba(252,198,18,0.25); }
 
   .row-item { display:flex; align-items:center; gap:11px; padding:11px 0; border-bottom:1px solid var(--border); }
   .row-item:last-child { border-bottom:none; padding-bottom:0; }
@@ -343,11 +343,11 @@ const styles = `
   .kanban-scroll { overflow-x:auto; margin:0 -18px; padding:0 18px 8px; -webkit-overflow-scrolling:touch; }
   .kanban { display:flex; gap:10px; width:max-content; }
   .kanban-col { width:185px; }
-  .kanban-col-header { display:flex; align-items:center; justify-content:space-between; padding:9px 12px; background:rgba(255,255,255,0.5); border:1px solid var(--border); border-bottom:none; border-radius:12px 12px 0 0; backdrop-filter:blur(8px); }
+  .kanban-col-header { display:flex; align-items:center; justify-content:space-between; padding:9px 12px; background:rgba(255,255,255,0.7); border:1px solid var(--border); border-bottom:none; border-radius:12px 12px 0 0; backdrop-filter:blur(8px); }
   .kanban-col-title { font-size:10px; font-weight:600; font-family:var(--fd); color:var(--text2); text-transform:uppercase; letter-spacing:0.8px; }
-  .kanban-col-count { font-size:10px; color:var(--text3); background:rgba(139,94,139,0.08); padding:1px 7px; border-radius:8px; border:1px solid var(--border); }
-  .kanban-col-body { background:rgba(255,255,255,0.3); border:1px solid var(--border); border-radius:0 0 12px 12px; padding:8px; display:flex; flex-direction:column; gap:6px; min-height:160px; backdrop-filter:blur(6px); }
-  .kanban-card { background:rgba(255,255,255,0.7); border:1px solid var(--border); border-radius:10px; padding:10px 12px; backdrop-filter:blur(8px); box-shadow:var(--shadow-sm); }
+  .kanban-col-count { font-size:10px; color:var(--text3); background:rgba(252,198,18,0.08); padding:1px 7px; border-radius:8px; border:1px solid var(--border); }
+  .kanban-col-body { background:rgba(255,255,255,0.5); border:1px solid var(--border); border-radius:0 0 12px 12px; padding:8px; display:flex; flex-direction:column; gap:6px; min-height:160px; backdrop-filter:blur(6px); }
+  .kanban-card { background:rgba(255,255,255,0.85); border:1px solid var(--border); border-radius:10px; padding:10px 12px; backdrop-filter:blur(8px); box-shadow:var(--shadow-sm); }
   .kanban-card-name { font-size:12px; font-weight:500; color:var(--text); margin-bottom:3px; }
   .kanban-card-meta { font-size:10px; color:var(--text3); margin-bottom:5px; }
   .kanban-value { font-size:11px; font-weight:600; color:var(--accent); font-family:var(--fd); }
@@ -360,50 +360,50 @@ const styles = `
   .script-type { font-size:11px; color:var(--text3); margin-top:1px; }
   .script-meta { display:flex; align-items:center; gap:6px; margin-top:5px; flex-wrap:wrap; }
 
-  .editor-wrap { background:rgba(255,255,255,0.6); border:1px solid var(--border2); border-radius:14px; padding:16px; backdrop-filter:blur(16px); box-shadow:var(--shadow-sm); }
+  .editor-wrap { background:rgba(255,255,255,0.85); border:1px solid var(--border2); border-radius:14px; padding:16px; backdrop-filter:blur(16px); box-shadow:var(--shadow-sm); }
   .editor-toolbar { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
-  .editor-tool-btn { padding:6px 12px; border-radius:20px; border:1px solid var(--border2); background:rgba(255,255,255,0.5); color:var(--text2); font-size:11px; font-family:var(--fb); cursor:pointer; }
-  .editor-tool-btn.ai { background:linear-gradient(135deg,rgba(139,94,139,0.1),rgba(176,127,192,0.08)); border-color:rgba(139,94,139,0.3); color:var(--accent); font-weight:600; }
+  .editor-tool-btn { padding:6px 12px; border-radius:20px; border:1px solid var(--border2); background:rgba(255,255,255,0.7); color:var(--text2); font-size:11px; font-family:var(--fb); cursor:pointer; }
+  .editor-tool-btn.ai { background:linear-gradient(135deg,rgba(252,198,18,0.1),rgba(253,128,64,0.08)); border-color:rgba(252,198,18,0.3); color:var(--accent); font-weight:600; }
   .editor-textarea { width:100%; background:transparent; border:none; outline:none; font-size:13px; color:var(--text); line-height:1.7; font-family:var(--fb); resize:none; min-height:180px; }
 
   .video-item { display:flex; align-items:center; gap:11px; padding:11px 0; border-bottom:1px solid var(--border); }
   .video-item:last-child { border-bottom:none; }
-  .video-thumb { width:44px; height:32px; background:rgba(139,94,139,0.08); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; border:1px solid var(--border); }
+  .video-thumb { width:44px; height:32px; background:rgba(252,198,18,0.08); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; border:1px solid var(--border); }
   .video-info { flex:1; min-width:0; }
   .video-title { font-size:12px; font-weight:500; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .video-meta { font-size:10px; color:var(--text3); margin-top:2px; }
 
-  .ig-panel { background:linear-gradient(135deg,rgba(100,50,140,0.12),rgba(60,80,140,0.08)); border:1px solid rgba(140,100,200,0.2); border-radius:16px; padding:16px; margin-bottom:12px; backdrop-filter:blur(16px); box-shadow:var(--shadow-sm); }
+  .ig-panel { background:linear-gradient(135deg,rgba(252,198,18,0.06),rgba(253,128,64,0.04)); border:1px solid rgba(252,198,18,0.15); border-radius:16px; padding:16px; margin-bottom:12px; backdrop-filter:blur(16px); box-shadow:var(--shadow-sm); }
   .ig-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
   .ig-title { font-family:var(--fd); font-size:15px; font-weight:600; color:var(--text); }
   .ig-sub { font-size:10px; color:var(--purple); }
-  .ig-post { background:rgba(255,255,255,0.45); border:1px solid rgba(180,160,220,0.25); border-radius:10px; padding:10px 12px; margin-bottom:7px; display:flex; align-items:center; gap:10px; }
-  .ig-post-thumb { width:36px; height:36px; border-radius:8px; background:rgba(139,94,139,0.1); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+  .ig-post { background:rgba(255,255,255,0.7); border:1px solid rgba(252,198,18,0.25); border-radius:10px; padding:10px 12px; margin-bottom:7px; display:flex; align-items:center; gap:10px; }
+  .ig-post-thumb { width:36px; height:36px; border-radius:8px; background:rgba(252,198,18,0.1); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
   .ig-post-title { font-size:12px; font-weight:500; color:var(--text); }
   .ig-post-date { font-size:10px; color:var(--purple); margin-top:1px; }
 
   .client-hero { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:18px; margin-bottom:12px; position:relative; overflow:hidden; backdrop-filter:blur(16px); box-shadow:var(--shadow); }
-  .client-hero::before { content:''; position:absolute; right:-30px; top:-30px; width:150px; height:150px; background:radial-gradient(circle,rgba(176,127,192,0.3),transparent 70%); pointer-events:none; }
+  .client-hero::before { content:''; position:absolute; right:-30px; top:-30px; width:150px; height:150px; background:radial-gradient(circle,rgba(253,128,64,0.3),transparent 70%); pointer-events:none; }
   .deliverable-item { display:flex; align-items:center; gap:11px; padding:11px 0; border-bottom:1px solid var(--border); }
   .deliverable-item:last-child { border-bottom:none; }
   .deliverable-icon { font-size:20px; width:28px; text-align:center; flex-shrink:0; }
   .deliverable-info { flex:1; min-width:0; }
   .deliverable-title { font-size:12px; font-weight:500; color:var(--text); }
   .deliverable-sub { font-size:10px; color:var(--text3); margin-top:1px; }
-  .progress-bar-wrap { background:rgba(139,94,139,0.1); border-radius:4px; height:4px; overflow:hidden; margin-top:6px; }
+  .progress-bar-wrap { background:rgba(252,198,18,0.1); border-radius:4px; height:4px; overflow:hidden; margin-top:6px; }
   .progress-bar { height:100%; border-radius:4px; }
 
   .call-item { display:flex; align-items:center; gap:11px; padding:11px 0; border-bottom:1px solid var(--border); }
   .call-item:last-child { border-bottom:none; }
-  .call-time-block { background:var(--accent-dim); border:1px solid rgba(139,94,139,0.3); border-radius:10px; padding:6px 10px; text-align:center; flex-shrink:0; min-width:56px; }
+  .call-time-block { background:var(--accent-dim); border:1px solid rgba(252,198,18,0.3); border-radius:10px; padding:6px 10px; text-align:center; flex-shrink:0; min-width:56px; }
   .call-time { font-family:var(--fd); font-size:13px; font-weight:700; color:var(--accent); }
   .call-day { font-size:9px; color:var(--accent); opacity:0.7; }
 
-  .custom-tooltip { background:rgba(255,255,255,0.9); border:1px solid var(--border2); border-radius:10px; padding:8px 14px; backdrop-filter:blur(12px); box-shadow:var(--shadow); }
+  .custom-tooltip { background:rgba(255,255,255,0.95); border:1px solid var(--border2); border-radius:10px; padding:8px 14px; backdrop-filter:blur(12px); box-shadow:var(--shadow); }
   .ct-label { font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; }
   .ct-value { font-family:var(--fd); font-size:18px; font-weight:600; color:var(--text); }
 
-  .toast { position:fixed; top:64px; left:14px; right:14px; background:rgba(255,255,255,0.92); border:1px solid var(--border2); border-radius:14px; padding:12px 16px; z-index:400; display:flex; align-items:center; gap:10px; box-shadow:0 8px 40px rgba(100,70,140,0.2); animation:toastIn 0.2s ease; backdrop-filter:blur(20px); }
+  .toast { position:fixed; top:64px; left:14px; right:14px; background:rgba(255,255,255,0.97); border:1px solid var(--border2); border-radius:14px; padding:12px 16px; z-index:400; display:flex; align-items:center; gap:10px; box-shadow:0 8px 40px rgba(0,0,0,0.1); animation:toastIn 0.2s ease; backdrop-filter:blur(20px); }
   @keyframes toastIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
   .toast-icon { font-size:18px; flex-shrink:0; }
   .toast-text { font-size:13px; font-weight:500; color:var(--text); }
@@ -415,7 +415,7 @@ const styles = `
 
   ::-webkit-scrollbar { width:3px; height:3px; }
   ::-webkit-scrollbar-track { background:transparent; }
-  ::-webkit-scrollbar-thumb { background:rgba(139,94,139,0.2); border-radius:2px; }
+  ::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.15); border-radius:2px; }
 `;
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -486,6 +486,36 @@ const INIT_THREADS = [
    messages:[{id:1,from:"Maya R.",mine:false,text:"I've drafted the script for your neighborhood spotlight reel — take a look!",time:"1 hr ago"}]},
   {id:3,name:"Jordan T.",role:"Video Editor",color:"#22C55E",last:"Sold! Desert View is ready for approval.",time:"2 hr",unread:0,
    messages:[{id:1,from:"Jordan T.",mine:false,text:"The 'Sold! 3901 Desert View' video is ready for your approval.",time:"2 hr ago"},{id:2,from:"Me",mine:true,text:"Looks amazing! Approved 👍",time:"1 hr ago"},{id:3,from:"Jordan T.",mine:false,text:"Perfect, scheduling it for tomorrow morning.",time:"58 min ago"}]},
+];
+
+const AD_SPEND_DATA = [
+  {month:"Oct",spend:2800},{month:"Nov",spend:3200},{month:"Dec",spend:3600},
+  {month:"Jan",spend:3900},{month:"Feb",spend:4000},{month:"Mar",spend:4200},
+];
+
+const AD_CAMPAIGNS = [
+  {id:1,client:"Mesa Auto Detailing",name:"Spring Detail Special",platform:"Instagram",budget:800,impressions:42000,clicks:1344,ctr:"3.2%",conversions:89,status:"Running",roas:"3.8x"},
+  {id:2,client:"Desert Sun Realty",name:"New Listing Ads",platform:"Both",budget:1200,impressions:68000,clicks:1904,ctr:"2.8%",conversions:124,status:"Running",roas:"4.8x"},
+  {id:3,client:"Tempe Taqueria",name:"Grand Opening",platform:"Facebook",budget:600,impressions:28000,clicks:1148,ctr:"4.1%",conversions:42,status:"Scheduled",roas:"—"},
+  {id:4,client:"Cactus CrossFit",name:"Membership Drive",platform:"Instagram",budget:400,impressions:18000,clicks:630,ctr:"3.5%",conversions:29,status:"Paused",roas:"2.1x"},
+];
+
+const CLIENT_AD_DATA = [
+  {day:"Mar 1",impressions:1800},{day:"Mar 5",impressions:2400},{day:"Mar 10",impressions:3100},
+  {day:"Mar 15",impressions:2800},{day:"Mar 20",impressions:3400},{day:"Mar 25",impressions:2600},{day:"Mar 30",impressions:3200},
+];
+
+const SALES_ACTIVITY_LOG = [
+  {id:1,type:"Deals",text:<><strong>Carlos V.</strong> moved <strong>Chandler Law Group</strong> to Demo Scheduled</>,time:"34 min ago",icon:"📊",color:"var(--blue)"},
+  {id:2,type:"Calls",text:<><strong>Jade</strong> completed discovery call with <strong>Desert Bloom Boutique</strong></>,time:"1 hr ago",icon:"📞",color:"var(--green)"},
+  {id:3,type:"Emails",text:<><strong>Carlos V.</strong> sent proposal to <strong>Sun Devil Gym</strong></>,time:"2 hr ago",icon:"📧",color:"var(--purple)"},
+  {id:4,type:"Deals",text:<><strong>Jade</strong> added <strong>Scottsdale Spa</strong> as a new lead</>,time:"3 hr ago",icon:"🎯",color:"var(--accent)"},
+  {id:5,type:"Calls",text:<><strong>Carlos V.</strong> scheduled demo with <strong>Mesa Roofing Co</strong> for Thursday</>,time:"4 hr ago",icon:"🎥",color:"var(--blue)"},
+  {id:6,type:"Emails",text:<><strong>Jade</strong> sent follow-up email to <strong>Phoenix Flooring Co</strong></>,time:"5 hr ago",icon:"📧",color:"var(--purple)"},
+  {id:7,type:"Deals",text:<><strong>Carlos V.</strong> closed <strong>Tempe Taqueria</strong> — $600/mo</>,time:"Yesterday",icon:"🎉",color:"var(--green)"},
+  {id:8,type:"Calls",text:<><strong>Jade</strong> completed onboarding call with <strong>Tempe Taqueria</strong></>,time:"Yesterday",icon:"📞",color:"var(--green)"},
+  {id:9,type:"Emails",text:<><strong>Carlos V.</strong> sent contract to <strong>AZ Landscaping</strong></>,time:"2 days ago",icon:"📧",color:"var(--purple)"},
+  {id:10,type:"Deals",text:<><strong>Jade</strong> updated pricing for <strong>Scottsdale Med Spa</strong> proposal</>,time:"2 days ago",icon:"💰",color:"var(--accent)"},
 ];
 
 const STATUS_FLOW = {"Raw Footage":"Editing","Editing":"Review","Review":"Approved","Approved":"Scheduled"};
@@ -991,7 +1021,7 @@ function ChatInput({ onSend }) {
 }
 
 // ─── ADMIN VIEWS ──────────────────────────────────────────────────────────────
-function AdminDashboard({ clients, onNav, onOpenIdeas, onOpenCalendar, showToast }) {
+function AdminDashboard({ clients, onNav, onOpenIdeas, onOpenCalendar, onOpenClientDetail, showToast }) {
   const mrr = clients.reduce((s,c)=>s+c.mrr,0);
   return (
     <div>
@@ -1001,7 +1031,7 @@ function AdminDashboard({ clients, onNav, onOpenIdeas, onOpenCalendar, showToast
         <div className="stat-card"><div className="stat-label">Videos MTD</div><div className="stat-value">23</div><div className="stat-sub">↑ +5 vs last mo</div></div>
         <div className="stat-card"><div className="stat-label">IG Scheduled</div><div className="stat-value">14</div><div className="stat-sub">Next: Mar 18</div></div>
       </div>
-      <div className="card" style={{background:"linear-gradient(135deg,rgba(255,92,0,0.08),rgba(168,85,247,0.06))",borderColor:"rgba(255,92,0,0.3)"}}>
+      <div className="card" style={{background:"linear-gradient(135deg,rgba(255,92,0,0.08),rgba(253,128,64,0.06))",borderColor:"rgba(255,92,0,0.3)"}}>
         <div style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700,color:"var(--accent)",marginBottom:10,textTransform:"uppercase",letterSpacing:"1px"}}>✨ AI Tools</div>
         <div onClick={onOpenCalendar} className="ai-btn">
           <div className="ai-btn-icon">📅</div>
@@ -1020,23 +1050,23 @@ function AdminDashboard({ clients, onNav, onOpenIdeas, onOpenCalendar, showToast
         <ResponsiveContainer width="100%" height={110}>
           <AreaChart data={MRR_DATA} margin={{top:4,right:4,left:-20,bottom:0}}>
             <defs><linearGradient id="mg" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#FF5C00" stopOpacity={0.3}/><stop offset="95%" stopColor="#FF5C00" stopOpacity={0}/></linearGradient></defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#26262F" vertical={false}/>
-            <XAxis dataKey="month" tick={{fill:"#55555F",fontSize:10}} axisLine={false} tickLine={false}/>
-            <YAxis tick={{fill:"#55555F",fontSize:10}} axisLine={false} tickLine={false} tickFormatter={v=>`$${v/1000}K`}/>
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E5" vertical={false}/>
+            <XAxis dataKey="month" tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
+            <YAxis tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false} tickFormatter={v=>`$${v/1000}K`}/>
             <Tooltip content={<CustomTooltip/>}/>
             <Area type="monotone" dataKey="mrr" stroke="#FF5C00" strokeWidth={2} fill="url(#mg)"/>
           </AreaChart>
         </ResponsiveContainer>
       </div>
       <div className="card">
-        <div className="card-title">Clients — Tap for AI Ideas</div>
+        <div className="card-title">Clients — Tap row for details</div>
         {clients.map(c => (
-          <div className="row-item" key={c.id} onClick={()=>onOpenIdeas(c)} style={{cursor:"pointer"}}>
+          <div className="row-item" key={c.id} onClick={()=>onOpenClientDetail(c)} style={{cursor:"pointer"}}>
             <div className="row-avatar" style={{background:`${c.color}20`,color:c.color}}>{c.name[0]}</div>
             <div className="row-main"><div className="row-title">{c.name}</div><div className="row-sub">{c.stage} · Next {c.nextPost}</div></div>
             <div className="row-right">
               <Badge type={c.plan==="Pro"?"purple":c.plan==="Growth"?"blue":"gray"}>{c.plan}</Badge>
-              <span style={{fontSize:16,color:"var(--accent)"}}>💡</span>
+              <span style={{fontSize:16,color:"var(--accent)",cursor:"pointer"}} onClick={(e)=>{e.stopPropagation();onOpenIdeas(c);}}>💡</span>
             </div>
           </div>
         ))}
@@ -1058,9 +1088,9 @@ function AdminRevenue({ clients }) {
         <ResponsiveContainer width="100%" height={140}>
           <AreaChart data={MRR_DATA} margin={{top:4,right:4,left:-20,bottom:0}}>
             <defs><linearGradient id="mg2" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#FF5C00" stopOpacity={0.3}/><stop offset="95%" stopColor="#FF5C00" stopOpacity={0}/></linearGradient></defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#26262F" vertical={false}/>
-            <XAxis dataKey="month" tick={{fill:"#55555F",fontSize:10}} axisLine={false} tickLine={false}/>
-            <YAxis tick={{fill:"#55555F",fontSize:10}} axisLine={false} tickLine={false} tickFormatter={v=>`$${v/1000}K`}/>
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E5" vertical={false}/>
+            <XAxis dataKey="month" tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
+            <YAxis tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false} tickFormatter={v=>`$${v/1000}K`}/>
             <Tooltip content={<CustomTooltip/>}/>
             <Area type="monotone" dataKey="mrr" stroke="#FF5C00" strokeWidth={2} fill="url(#mg2)"/>
           </AreaChart>
@@ -1070,9 +1100,9 @@ function AdminRevenue({ clients }) {
         <div className="card-title">Videos Produced</div>
         <ResponsiveContainer width="100%" height={120}>
           <BarChart data={VIDEO_DATA} margin={{top:4,right:4,left:-20,bottom:0}}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#26262F" vertical={false}/>
-            <XAxis dataKey="month" tick={{fill:"#55555F",fontSize:10}} axisLine={false} tickLine={false}/>
-            <YAxis tick={{fill:"#55555F",fontSize:10}} axisLine={false} tickLine={false}/>
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E5" vertical={false}/>
+            <XAxis dataKey="month" tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
+            <YAxis tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
             <Tooltip content={<CustomTooltip prefix=""/>}/>
             <Bar dataKey="videos" fill="#3B82F6" radius={[4,4,0,0]}/>
           </BarChart>
@@ -1083,15 +1113,523 @@ function AdminRevenue({ clients }) {
 }
 
 function AdminSettings({ showToast }) {
+  const [integrations, setIntegrations] = useState([
+    {name:"Zoom",connected:true,icon:"🎥"},{name:"Stripe Billing",connected:false,icon:"💳"},{name:"Twilio SMS",connected:false,icon:"💬"}
+  ]);
+  const toggleIntegration = (name) => {
+    setIntegrations(p=>p.map(i=>i.name===name?{...i,connected:!i.connected}:i));
+    const intg = integrations.find(i=>i.name===name);
+    showToast(intg.connected?"🔌":"✅", intg.connected?"Disconnected":"Connected", name+(intg.connected?" has been disconnected":" is now connected"));
+  };
+  const [accounts, setAccounts] = useState([
+    {id:1,name:"Instagram",handle:"@media.4" + ".you",connected:true,icon:"📸",lastSync:"2 min ago"},
+    {id:2,name:"Facebook",handle:"Media4You Page",connected:true,icon:"📘",lastSync:"2 min ago"},
+    {id:3,name:"Meta Ads Manager",handle:"Business ID: 847291",connected:true,icon:"📢",lastSync:"5 min ago"},
+    {id:4,name:"TikTok",handle:"—",connected:false,icon:"🎵",lastSync:"Never"},
+  ]);
+  const toggleConnection = (id) => {
+    setAccounts(p=>p.map(a=>a.id===id?{...a,connected:!a.connected,lastSync:a.connected?"Never":"Just now",handle:a.connected?"—":a.handle}:a));
+    const acct = accounts.find(a=>a.id===id);
+    showToast(acct.connected?"🔌":"✅", acct.connected?"Disconnected":"Connected", acct.name+(acct.connected?" has been disconnected":" is now connected"));
+  };
   return (
     <div>
       <div className="card">
+        <div className="card-title">Connected Accounts</div>
+        {accounts.map(a=>(
+          <div className="row-item" key={a.id}>
+            <div style={{fontSize:20,width:28,textAlign:"center",flexShrink:0}}>{a.icon}</div>
+            <div className="row-main">
+              <div className="row-title">{a.name}</div>
+              <div className="row-sub">{a.handle} · Last sync: {a.lastSync}</div>
+            </div>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4}}>
+              <Badge type={a.connected?"green":"gray"}>{a.connected?"Connected":"Not Connected"}</Badge>
+              <button className={`action-btn ${a.connected?"":"accent"}`} onClick={()=>toggleConnection(a.id)}>
+                {a.connected?"Disconnect":"Connect"}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="card">
+        <div className="card-title">Meta API Status</div>
+        {[{label:"API Version",value:"v19.0"},{label:"Rate Limit",value:"4,800 / 4,800 calls/hr"},{label:"Token Expiry",value:"Apr 15, 2025"},{label:"Permissions",value:"pages_manage_posts, ads_management, instagram_basic"}].map(s=>(
+          <div className="row-item" key={s.label}>
+            <div className="row-main"><div className="row-title">{s.label}</div></div>
+            <div style={{fontSize:11,color:"var(--text2)",maxWidth:"55%",textAlign:"right"}}>{s.value}</div>
+          </div>
+        ))}
+      </div>
+      <div className="card">
         <div className="card-title">Integrations</div>
-        {[{name:"Meta / Instagram API",status:"Connected",icon:"📸"},{name:"Zoom",status:"Connected",icon:"🎥"},{name:"Stripe Billing",status:"Not connected",icon:"💳"},{name:"Twilio SMS",status:"Not connected",icon:"💬"}].map(i=>(
-          <div className="row-item" key={i.name}>
+        {integrations.map(i=>(
+          <div className="row-item" key={i.name} style={{cursor:"pointer"}} onClick={()=>toggleIntegration(i.name)}>
             <div style={{fontSize:20,width:28,textAlign:"center",flexShrink:0}}>{i.icon}</div>
             <div className="row-main"><div className="row-title">{i.name}</div></div>
-            <Badge type={i.status==="Connected"?"green":"gray"}>{i.status}</Badge>
+            <Badge type={i.connected?"green":"gray"}>{i.connected?"Connected":"Not connected"}</Badge>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── ADMIN CLIENTS ────────────────────────────────────────────────────────
+function AdminClients({ clients, showToast }) {
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [selectedClient, setSelectedClient] = useState(null);
+
+  const filtered = clients.filter(c => {
+    const matchSearch = c.name.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = statusFilter === "all" || c.status === statusFilter;
+    return matchSearch && matchStatus;
+  });
+
+  if (selectedClient) {
+    const c = selectedClient;
+    const teamMembers = [{name:"Maya R.",role:"Script Writer",color:"#A855F7"},{name:"Jordan T.",role:"Video Editor",color:"#22C55E"},{name:"Carlos V.",role:"Account Manager",color:"#3B82F6"}];
+    const pipeline = [{title:"Day in the Life",status:"Scripting",progress:20},{title:"Listing Showcase",status:"Editing",progress:60},{title:"Testimonial Reel",status:"Review",progress:85}];
+    return (
+      <div>
+        <button className="btn back" onClick={()=>setSelectedClient(null)}>← All Clients</button>
+        <div className="client-hero">
+          <div style={{display:"flex",alignItems:"center",gap:12}}>
+            <div className="row-avatar" style={{background:`${c.color}20`,color:c.color,width:44,height:44,fontSize:18}}>{c.name[0]}</div>
+            <div>
+              <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:800}}>{c.name}</div>
+              <div style={{fontSize:12,color:"var(--text2)",marginTop:2}}>{c.industry}</div>
+            </div>
+          </div>
+          <div style={{display:"flex",gap:8,marginTop:14,flexWrap:"wrap"}}>
+            <Badge type={c.plan==="Pro"?"purple":c.plan==="Growth"?"blue":"gray"}>{c.plan} Plan</Badge>
+            <Badge type={c.status==="active"?"green":c.status==="onboarding"?"amber":"red"}>{c.status}</Badge>
+          </div>
+        </div>
+        <div className="stats-grid">
+          <div className="stat-card"><div className="stat-label">MRR</div><div className="stat-value">${c.mrr.toLocaleString()}</div></div>
+          <div className="stat-card"><div className="stat-label">Videos</div><div className="stat-value">{c.videos}</div><div className="stat-sub">produced</div></div>
+          <div className="stat-card"><div className="stat-label">Next Delivery</div><div className="stat-value" style={{fontSize:16}}>{c.nextPost}</div></div>
+          <div className="stat-card"><div className="stat-label">Stage</div><div className="stat-value" style={{fontSize:16}}>{c.stage}</div></div>
+        </div>
+        <div className="card">
+          <div className="card-title">Content Pipeline</div>
+          {pipeline.map((p,i)=>(
+            <div className="deliverable-item" key={i}>
+              <div className="deliverable-icon">{["✍️","🎬","👁️"][i]}</div>
+              <div className="deliverable-info">
+                <div className="deliverable-title">{p.title}</div>
+                <div className="deliverable-sub">{p.status}</div>
+                <div className="progress-bar-wrap"><div className="progress-bar" style={{width:`${p.progress}%`,background:"var(--accent)"}}/></div>
+              </div>
+              <Badge type={p.status==="Scripting"?"gray":p.status==="Editing"?"blue":"amber"}>{p.status}</Badge>
+            </div>
+          ))}
+        </div>
+        <div className="card">
+          <div className="card-title">Assigned Team</div>
+          {teamMembers.map(m=>(
+            <div className="row-item" key={m.name}>
+              <div className="row-avatar" style={{background:`${m.color}20`,color:m.color}}>{m.name[0]}</div>
+              <div className="row-main"><div className="row-title">{m.name}</div><div className="row-sub">{m.role}</div></div>
+            </div>
+          ))}
+        </div>
+        <div style={{display:"flex",gap:8}}>
+          <button className="btn primary" style={{flex:1}} onClick={()=>showToast("✏️","Edit mode","Client details are now editable")}>Edit</button>
+          <button className="btn" style={{flex:1}} onClick={()=>showToast("⏸️","Paused","Client account paused")}>Pause</button>
+          <button className="btn" style={{flex:1}} onClick={()=>showToast("💬","Message sent","Notification sent to team")}>Message</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="form-group" style={{marginBottom:10}}>
+        <input className="form-input" placeholder="Search clients..." value={search} onChange={e=>setSearch(e.target.value)} />
+      </div>
+      <div style={{display:"flex",gap:6,marginBottom:14}}>
+        {["all","active","onboarding","review"].map(s=>(
+          <button key={s} className={`action-btn ${statusFilter===s?"accent":""}`} onClick={()=>setStatusFilter(s)} style={{textTransform:"capitalize"}}>{s}</button>
+        ))}
+      </div>
+      <div className="card">
+        <div className="card-title">Clients ({filtered.length})</div>
+        {filtered.map(c=>(
+          <div className="row-item" key={c.id} style={{cursor:"pointer"}} onClick={()=>setSelectedClient(c)}>
+            <div className="row-avatar" style={{background:`${c.color}20`,color:c.color}}>{c.name[0]}</div>
+            <div className="row-main">
+              <div className="row-title">{c.name}</div>
+              <div className="row-sub">{c.industry} · {c.stage}</div>
+            </div>
+            <div className="row-right">
+              <Badge type={c.plan==="Pro"?"purple":c.plan==="Growth"?"blue":"gray"}>{c.plan}</Badge>
+              <Badge type={c.status==="active"?"green":c.status==="onboarding"?"amber":"red"}>{c.status}</Badge>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── ADMIN ADS ────────────────────────────────────────────────────────────
+function AdminAds({ showToast }) {
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const [showNewCampaign, setShowNewCampaign] = useState(false);
+  const [newCampaignForm, setNewCampaignForm] = useState({client:"Mesa Auto Detailing",platform:"Instagram",objective:"Awareness",budget:"20",duration:"30",audience:"25-54, Phoenix Metro"});
+
+  const dailySpendData = [{day:"Mon",spend:28},{day:"Tue",spend:35},{day:"Wed",spend:42},{day:"Thu",spend:38},{day:"Fri",spend:44},{day:"Sat",spend:32},{day:"Sun",spend:22}];
+
+  if (selectedCampaign) {
+    const c = selectedCampaign;
+    return (
+      <div>
+        <button className="btn back" onClick={()=>setSelectedCampaign(null)}>← All Campaigns</button>
+        <div className="client-hero">
+          <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:800}}>{c.name}</div>
+          <div style={{fontSize:12,color:"var(--text2)",marginTop:2}}>{c.client}</div>
+          <div style={{display:"flex",gap:8,marginTop:10}}>
+            <Badge type={c.status==="Running"?"green":c.status==="Scheduled"?"blue":"amber"}>{c.status}</Badge>
+            <Badge type="gray">{c.platform}</Badge>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-title">Daily Spend — Last 7 Days</div>
+          <ResponsiveContainer width="100%" height={120}>
+            <BarChart data={dailySpendData} margin={{top:4,right:4,left:-20,bottom:0}}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E5" vertical={false}/>
+              <XAxis dataKey="day" tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
+              <YAxis tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false} tickFormatter={v=>`$${v}`}/>
+              <Tooltip content={<CustomTooltip/>}/>
+              <Bar dataKey="spend" fill="#FF5C00" radius={[4,4,0,0]}/>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="card">
+          <div className="card-title">Audience Breakdown</div>
+          {[{label:"Age 25-34",pct:"38%",bar:38},{label:"Age 35-44",pct:"29%",bar:29},{label:"Age 45-54",pct:"21%",bar:21},{label:"Age 55+",pct:"12%",bar:12}].map(a=>(
+            <div key={a.label} style={{marginBottom:10}}>
+              <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"var(--text2)",marginBottom:4}}><span>{a.label}</span><span style={{fontWeight:600}}>{a.pct}</span></div>
+              <div className="progress-bar-wrap"><div className="progress-bar" style={{width:`${a.bar}%`,background:"var(--accent)"}}/></div>
+            </div>
+          ))}
+          <div style={{marginTop:14}}>
+            <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:8}}>Gender Split</div>
+            <div style={{display:"flex",gap:12}}>
+              <div style={{flex:1,textAlign:"center",padding:10,background:"var(--surface2)",borderRadius:8,border:"1px solid var(--border)"}}>
+                <div style={{fontSize:18,fontFamily:"var(--fd)",fontWeight:700}}>54%</div><div style={{fontSize:10,color:"var(--text3)"}}>Female</div>
+              </div>
+              <div style={{flex:1,textAlign:"center",padding:10,background:"var(--surface2)",borderRadius:8,border:"1px solid var(--border)"}}>
+                <div style={{fontSize:18,fontFamily:"var(--fd)",fontWeight:700}}>46%</div><div style={{fontSize:10,color:"var(--text3)"}}>Male</div>
+              </div>
+            </div>
+          </div>
+          <div style={{marginTop:14}}>
+            <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:8}}>Top Locations</div>
+            {["Phoenix, AZ","Scottsdale, AZ","Mesa, AZ","Tempe, AZ"].map((loc,i)=>(
+              <div className="row-item" key={loc}><div className="row-main"><div className="row-title">{loc}</div></div><span style={{fontSize:12,fontFamily:"var(--fd)",fontWeight:700,color:"var(--accent)"}}>{[34,22,18,14][i]}%</span></div>
+            ))}
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-title">Platform Split</div>
+          <div style={{display:"flex",gap:12}}>
+            <div style={{flex:1,textAlign:"center",padding:14,background:"linear-gradient(135deg,rgba(252,198,18,0.06),rgba(253,128,64,0.04))",borderRadius:12,border:"1px solid rgba(252,198,18,0.15)"}}>
+              <div style={{fontSize:20,marginBottom:4}}>📸</div>
+              <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:700}}>62%</div>
+              <div style={{fontSize:10,color:"var(--text3)"}}>Instagram</div>
+            </div>
+            <div style={{flex:1,textAlign:"center",padding:14,background:"rgba(59,130,246,0.06)",borderRadius:12,border:"1px solid rgba(59,130,246,0.15)"}}>
+              <div style={{fontSize:20,marginBottom:4}}>📘</div>
+              <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:700}}>38%</div>
+              <div style={{fontSize:10,color:"var(--text3)"}}>Facebook</div>
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-title">Top Performing Creative</div>
+          <div style={{background:"var(--surface2)",borderRadius:10,padding:16,textAlign:"center",border:"1px solid var(--border)"}}>
+            <div style={{fontSize:40,marginBottom:8}}>🎬</div>
+            <div style={{fontFamily:"var(--fd)",fontSize:13,fontWeight:700}}>"Before & After Reveal"</div>
+            <div style={{fontSize:11,color:"var(--text3)",marginTop:4}}>4.8% CTR · 12.4K impressions · 42 conversions</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="stats-grid" style={{gridTemplateColumns:"1fr 1fr 1fr"}}>
+        <div className="stat-card"><div className="stat-label">Ad Spend</div><div className="stat-value" style={{fontSize:22}}>$4.2K</div></div>
+        <div className="stat-card"><div className="stat-label">Impressions</div><div className="stat-value" style={{fontSize:22}}>182K</div></div>
+        <div className="stat-card"><div className="stat-label">Clicks</div><div className="stat-value" style={{fontSize:22}}>3.8K</div></div>
+        <div className="stat-card"><div className="stat-label">Avg CPC</div><div className="stat-value" style={{fontSize:22}}>$1.12</div></div>
+        <div className="stat-card"><div className="stat-label">ROAS</div><div className="stat-value" style={{fontSize:22}}>4.2x</div></div>
+        <div className="stat-card"><div className="stat-label">Conversions</div><div className="stat-value" style={{fontSize:22}}>284</div></div>
+      </div>
+      <div className="card">
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+          <div className="card-title" style={{margin:0}}>Ad Spend — 6 Months</div>
+          <span style={{fontSize:12,fontWeight:700,color:"var(--green)"}}>+50% growth</span>
+        </div>
+        <ResponsiveContainer width="100%" height={120}>
+          <AreaChart data={AD_SPEND_DATA} margin={{top:4,right:4,left:-20,bottom:0}}>
+            <defs><linearGradient id="adsg" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#FF5C00" stopOpacity={0.3}/><stop offset="95%" stopColor="#FF5C00" stopOpacity={0}/></linearGradient></defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E5" vertical={false}/>
+            <XAxis dataKey="month" tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
+            <YAxis tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false} tickFormatter={v=>`$${v/1000}K`}/>
+            <Tooltip content={<CustomTooltip/>}/>
+            <Area type="monotone" dataKey="spend" stroke="#FF5C00" strokeWidth={2} fill="url(#adsg)"/>
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="card">
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+          <div className="card-title" style={{margin:0}}>Active Campaigns</div>
+          <button className="action-btn accent" onClick={()=>setShowNewCampaign(true)}>+ New Campaign</button>
+        </div>
+        {AD_CAMPAIGNS.map(c=>(
+          <div className="row-item" key={c.id} onClick={()=>setSelectedCampaign(c)} style={{cursor:"pointer"}}>
+            <div style={{flex:1,minWidth:0}}>
+              <div className="row-title">{c.name}</div>
+              <div className="row-sub">{c.client} · {c.platform}</div>
+              <div style={{display:"flex",gap:8,marginTop:4,flexWrap:"wrap"}}>
+                <span style={{fontSize:10,color:"var(--text3)"}}>${c.budget}/mo</span>
+                <span style={{fontSize:10,color:"var(--text3)"}}>{(c.impressions/1000).toFixed(0)}K imp</span>
+                <span style={{fontSize:10,color:"var(--text3)"}}>{c.ctr} CTR</span>
+              </div>
+            </div>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
+              <Badge type={c.status==="Running"?"green":c.status==="Scheduled"?"blue":"amber"}>{c.status}</Badge>
+              <span style={{color:"var(--text3)",fontSize:18}}>›</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      {showNewCampaign && (
+        <div className="overlay" onClick={()=>setShowNewCampaign(false)}>
+          <div className="sheet" onClick={e=>e.stopPropagation()}>
+            <div className="sheet-handle"/>
+            <div className="sheet-title">New Campaign</div>
+            <div className="sheet-sub">Set up a new Meta ad campaign</div>
+            <div className="form-group"><label className="form-label">Client</label>
+              <select className="form-select" value={newCampaignForm.client} onChange={e=>setNewCampaignForm(p=>({...p,client:e.target.value}))}>
+                {INIT_CLIENTS.map(c=><option key={c.id}>{c.name}</option>)}
+              </select>
+            </div>
+            <div className="form-group"><label className="form-label">Platform</label>
+              <select className="form-select" value={newCampaignForm.platform} onChange={e=>setNewCampaignForm(p=>({...p,platform:e.target.value}))}>
+                <option>Instagram</option><option>Facebook</option><option>Both</option>
+              </select>
+            </div>
+            <div className="form-group"><label className="form-label">Objective</label>
+              <select className="form-select" value={newCampaignForm.objective} onChange={e=>setNewCampaignForm(p=>({...p,objective:e.target.value}))}>
+                <option>Awareness</option><option>Traffic</option><option>Conversions</option>
+              </select>
+            </div>
+            <div className="form-group"><label className="form-label">Daily Budget ($)</label>
+              <input className="form-input" type="number" value={newCampaignForm.budget} onChange={e=>setNewCampaignForm(p=>({...p,budget:e.target.value}))}/>
+            </div>
+            <div className="form-group"><label className="form-label">Duration (days)</label>
+              <input className="form-input" type="number" value={newCampaignForm.duration} onChange={e=>setNewCampaignForm(p=>({...p,duration:e.target.value}))}/>
+            </div>
+            <div className="form-group"><label className="form-label">Target Audience</label>
+              <input className="form-input" value={newCampaignForm.audience} onChange={e=>setNewCampaignForm(p=>({...p,audience:e.target.value}))} placeholder="e.g. 25-54, Phoenix Metro"/>
+            </div>
+            <div className="form-actions">
+              <button className="btn" onClick={()=>setShowNewCampaign(false)}>Cancel</button>
+              <button className="btn primary" onClick={()=>{setShowNewCampaign(false);showToast("📢","Campaign Created",`${newCampaignForm.client} — ${newCampaignForm.platform} — $${newCampaignForm.budget}/day`);}}>Create Campaign</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── EDITOR UPLOAD ────────────────────────────────────────────────────────
+function EditorUpload({ showToast }) {
+  const [selectedUpload, setSelectedUpload] = useState(null);
+  const [uploads, setUploads] = useState([
+    {id:1,title:"Patient Transformation #4",client:"Sky Harbor Dental",type:"Reel",status:"Ready",time:"2 hr ago"},
+    {id:2,title:"Black Tesla Model S Detail",client:"Mesa Auto Detailing",type:"Ad Creative",status:"Ready",time:"4 hr ago"},
+    {id:3,title:"Saturday Vibes — March",client:"Frost Barbershop",type:"Reel",status:"Processing",time:"5 hr ago"},
+  ]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [form, setForm] = useState({client:"Desert Sun Realty",title:"",type:"Reel",notes:""});
+  const [dragOver, setDragOver] = useState(false);
+
+  const simulateUpload = () => {
+    if (!form.title.trim()) { showToast("⚠️","Missing title","Please enter a video title"); return; }
+    setUploading(true);
+    setUploadProgress(0);
+    const interval = setInterval(()=>{
+      setUploadProgress(p=>{
+        if(p>=100){ clearInterval(interval); setUploading(false);
+          setUploads(prev=>[{id:Date.now(),title:form.title,client:form.client,type:form.type,status:"Processing",time:"Just now"},...prev]);
+          setForm(f=>({...f,title:"",notes:""}));
+          showToast("✅","Upload complete",form.title+" added to queue");
+          setTimeout(()=>setUploads(prev=>prev.map((u,i)=>i===0?{...u,status:"Ready"}:u)),3000);
+          return 0;
+        }
+        return p+Math.random()*15+5;
+      });
+    },200);
+  };
+
+  return (
+    <div>
+      <div style={{border:dragOver?"2px solid var(--accent)":"2px dashed var(--border2)",borderRadius:16,padding:32,textAlign:"center",marginBottom:16,background:dragOver?"var(--accent-dim)":"var(--surface)",transition:"all 0.2s",cursor:"pointer"}}
+        onDragOver={e=>{e.preventDefault();setDragOver(true);}} onDragLeave={()=>setDragOver(false)} onDrop={e=>{e.preventDefault();setDragOver(false);simulateUpload();}} onClick={simulateUpload}>
+        <div style={{fontSize:36,marginBottom:8,opacity:0.5}}>📤</div>
+        <div style={{fontFamily:"var(--fd)",fontSize:14,fontWeight:700,color:"var(--text)",marginBottom:4}}>Drop video files here or tap to browse</div>
+        <div style={{fontSize:11,color:"var(--text3)"}}>MP4, MOV up to 2GB</div>
+      </div>
+      {uploading && (
+        <div className="card">
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+            <div className="ai-spinner"/>
+            <span style={{fontSize:13,fontWeight:600,color:"var(--text)"}}>Uploading...</span>
+            <span style={{fontSize:12,color:"var(--text3)",marginLeft:"auto"}}>{Math.min(Math.round(uploadProgress),100)}%</span>
+          </div>
+          <div className="progress-bar-wrap" style={{height:6}}><div className="progress-bar" style={{width:`${Math.min(uploadProgress,100)}%`,background:"linear-gradient(90deg,var(--accent),var(--accent2))",transition:"width 0.2s"}}/></div>
+        </div>
+      )}
+      <div className="card">
+        <div className="card-title">Upload Details</div>
+        <div className="form-group"><label className="form-label">Client</label>
+          <select className="form-select" value={form.client} onChange={e=>setForm(p=>({...p,client:e.target.value}))}>
+            {INIT_CLIENTS.map(c=><option key={c.id}>{c.name}</option>)}
+          </select>
+        </div>
+        <div className="form-group"><label className="form-label">Title</label>
+          <input className="form-input" placeholder="e.g. Spring Detail Reveal" value={form.title} onChange={e=>setForm(p=>({...p,title:e.target.value}))}/>
+        </div>
+        <div className="form-group"><label className="form-label">Content Type</label>
+          <select className="form-select" value={form.type} onChange={e=>setForm(p=>({...p,type:e.target.value}))}>
+            <option>Reel</option><option>Story</option><option>Ad Creative</option>
+          </select>
+        </div>
+        <div className="form-group"><label className="form-label">Notes</label>
+          <textarea className="form-textarea" placeholder="Any notes for the team..." value={form.notes} onChange={e=>setForm(p=>({...p,notes:e.target.value}))}/>
+        </div>
+        <button className="btn primary full" onClick={simulateUpload} disabled={uploading}>Upload Video</button>
+      </div>
+      <div className="card">
+        <div className="card-title">Recent Uploads</div>
+        {uploads.slice(0,5).map(u=>(
+          <div key={u.id}>
+            <div className="video-item" style={{cursor:"pointer"}} onClick={()=>setSelectedUpload(selectedUpload===u.id?null:u.id)}>
+              <div className="video-thumb">🎬</div>
+              <div className="video-info"><div className="video-title">{u.title}</div><div className="video-meta">{u.client} · {u.type} · {u.time}</div></div>
+              <Badge type={u.status==="Ready"?"green":"amber"}>{u.status}</Badge>
+            </div>
+            {selectedUpload===u.id && (
+              <div style={{padding:"8px 0 12px 55px",borderBottom:"1px solid var(--border)"}}>
+                <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:6}}>Upload Details</div>
+                <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Title</div><div className="row-sub">{u.title}</div></div></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Client</div><div className="row-sub">{u.client}</div></div></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Type</div><div className="row-sub">{u.type}</div></div></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Status</div><div className="row-sub">{u.status}</div></div><Badge type={u.status==="Ready"?"green":"amber"}>{u.status}</Badge></div>
+                <div className="row-item" style={{borderBottom:"none",paddingBottom:0}}><div className="row-main"><div className="row-title">Uploaded</div><div className="row-sub">{u.time}</div></div></div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── CLIENT ADS ───────────────────────────────────────────────────────────
+function ClientAds({ showToast }) {
+  const [selectedAd, setSelectedAd] = useState(null);
+  const adData = [{name:"New Listing Ads",type:"Carousel",impressions:"38K",impNum:38000,clicks:1064,ctr:"2.8%",leads:14,status:"Running",icon:"🏠"},{name:"Open House Promo",type:"Video",impressions:"18K",impNum:18000,clicks:738,ctr:"4.1%",leads:7,status:"Running",icon:"🔑"},{name:"Agent Brand Reel",type:"Reel",impressions:"12K",impNum:12000,clicks:420,ctr:"3.5%",leads:3,status:"Paused",icon:"👤"}];
+  return (
+    <div>
+      <div className="stats-grid">
+        <div className="stat-card"><div className="stat-label">Monthly Spend</div><div className="stat-value" style={{fontSize:22}}>$1,200</div></div>
+        <div className="stat-card"><div className="stat-label">Impressions</div><div className="stat-value" style={{fontSize:22}}>68K</div></div>
+        <div className="stat-card"><div className="stat-label">Leads Generated</div><div className="stat-value" style={{fontSize:22}}>24</div></div>
+        <div className="stat-card"><div className="stat-label">Cost Per Lead</div><div className="stat-value" style={{fontSize:22}}>$50</div></div>
+      </div>
+      <div className="card">
+        <div className="card-title">Impressions — Last 30 Days</div>
+        <ResponsiveContainer width="100%" height={120}>
+          <AreaChart data={CLIENT_AD_DATA} margin={{top:4,right:4,left:-20,bottom:0}}>
+            <defs><linearGradient id="clad" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3}/><stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/></linearGradient></defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E5" vertical={false}/>
+            <XAxis dataKey="day" tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
+            <YAxis tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
+            <Tooltip content={<CustomTooltip prefix=""/>}/>
+            <Area type="monotone" dataKey="impressions" stroke="#3B82F6" strokeWidth={2} fill="url(#clad)"/>
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="card">
+        <div className="card-title">Active Ads</div>
+        {adData.map((ad,i)=>(
+          <div key={i}>
+            <div className="row-item" style={{cursor:"pointer"}} onClick={()=>setSelectedAd(selectedAd===i?null:i)}>
+              <div style={{width:44,height:44,borderRadius:10,background:"var(--accent-dim)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>
+                {ad.icon}
+              </div>
+              <div className="row-main">
+                <div className="row-title">{ad.name}</div>
+                <div className="row-sub">{ad.type} · {ad.impressions} impressions · {ad.leads} leads</div>
+              </div>
+              <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
+                <Badge type={ad.status==="Running"?"green":"amber"}>{ad.status}</Badge>
+              </div>
+            </div>
+            {selectedAd===i && (
+              <div style={{padding:"10px 0 14px 55px",borderBottom:"1px solid var(--border)"}}>
+                <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:6}}>Ad Details</div>
+                <div style={{display:"flex",justifyContent:"center",marginBottom:12}}>
+                  <div style={{width:80,height:80,borderRadius:12,background:"var(--accent-dim)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:36,border:"1px solid var(--border)"}}>{ad.icon}</div>
+                </div>
+                <div className="stats-grid" style={{marginBottom:8}}>
+                  <div className="stat-card"><div className="stat-label">Impressions</div><div className="stat-value" style={{fontSize:18}}>{ad.impressions}</div></div>
+                  <div className="stat-card"><div className="stat-label">Clicks</div><div className="stat-value" style={{fontSize:18}}>{ad.clicks.toLocaleString()}</div></div>
+                  <div className="stat-card"><div className="stat-label">CTR</div><div className="stat-value" style={{fontSize:18}}>{ad.ctr}</div></div>
+                  <div className="stat-card"><div className="stat-label">Leads</div><div className="stat-value" style={{fontSize:18}}>{ad.leads}</div></div>
+                </div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Status</div></div><Badge type={ad.status==="Running"?"green":"amber"}>{ad.status}</Badge></div>
+                <button className="btn full" style={{marginTop:10}} onClick={()=>showToast("📝","Request Sent","Your change request has been submitted")}>Request Changes</button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── SALES ACTIVITY ───────────────────────────────────────────────────────
+function SalesActivity() {
+  const [filter, setFilter] = useState("All");
+  const filtered = filter==="All" ? SALES_ACTIVITY_LOG : SALES_ACTIVITY_LOG.filter(a=>a.type===filter);
+  return (
+    <div>
+      <div style={{display:"flex",gap:6,marginBottom:14}}>
+        {["All","Calls","Emails","Deals"].map(f=>(
+          <button key={f} className={`action-btn ${filter===f?"accent":""}`} onClick={()=>setFilter(f)}>{f}</button>
+        ))}
+      </div>
+      <div className="card">
+        <div className="card-title">Recent Activity ({filtered.length})</div>
+        {filtered.map(a=>(
+          <div className="activity-item" key={a.id}>
+            <div style={{fontSize:16,width:28,textAlign:"center",flexShrink:0}}>{a.icon}</div>
+            <div style={{flex:1}}>
+              <div className="activity-text">{a.text}</div>
+              <div className="activity-time">{a.time}</div>
+            </div>
           </div>
         ))}
       </div>
@@ -1100,7 +1638,46 @@ function AdminSettings({ showToast }) {
 }
 
 // ─── SALES VIEWS ──────────────────────────────────────────────────────────────
+function LeadDetailSheet({ lead, stage, onClose, showToast }) {
+  if(!lead) return null;
+  const stages = ["New","Contacted","Demo","Proposal","Won \u2713"];
+  const curIdx = stages.indexOf(stage);
+  const nextStage = curIdx < stages.length-1 ? stages[curIdx+1] : null;
+  return (
+    <div className="overlay" onClick={onClose}>
+      <div className="sheet" onClick={e=>e.stopPropagation()}>
+        <div className="sheet-handle"/>
+        <div className="sheet-title">{lead.name}</div>
+        <div className="sheet-sub">{lead.industry} \u00b7 {stage}</div>
+        <div className="stats-grid" style={{marginBottom:12}}>
+          <div className="stat-card"><div className="stat-label">Value</div><div className="stat-value" style={{fontSize:20}}>{lead.value}</div></div>
+          <div className="stat-card"><div className="stat-label">Source</div><div className="stat-value" style={{fontSize:16}}>{lead.source}</div></div>
+        </div>
+        <div className="card" style={{marginBottom:12}}>
+          <div className="row-item" style={{paddingTop:0}}>
+            <div className="row-main"><div className="row-title">Assigned Rep</div><div className="row-sub">{lead.rep}</div></div>
+          </div>
+          <div className="row-item">
+            <div className="row-main"><div className="row-title">Industry</div><div className="row-sub">{lead.industry}</div></div>
+          </div>
+          <div className="row-item" style={{borderBottom:"none",paddingBottom:0}}>
+            <div className="row-main"><div className="row-title">Pipeline Stage</div><div className="row-sub">{stage}</div></div>
+            <Badge type={stage==="Won \u2713"?"green":stage==="Proposal"?"purple":"blue"}>{stage}</Badge>
+          </div>
+        </div>
+        <div style={{display:"flex",gap:8}}>
+          <button className="btn" style={{flex:1}} onClick={()=>{showToast("\ud83d\udcde","Calling...",lead.name);onClose();}}>\ud83d\udcde Call</button>
+          <button className="btn" style={{flex:1}} onClick={()=>{showToast("\ud83d\udce7","Email draft opened",lead.name);onClose();}}>\ud83d\udce7 Email</button>
+          {nextStage && <button className="btn primary" style={{flex:1}} onClick={()=>{showToast("\ud83d\udcca","Moved",lead.name+" \u2192 "+nextStage);onClose();}}>\u2192 {nextStage}</button>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SalesDashboard({ leads, onOpenOutreach, showToast }) {
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [selectedStage, setSelectedStage] = useState(null);
   const total = Object.values(leads).flat().length;
   const won = (leads["Won ✓"]||[]).length;
   return (
@@ -1127,7 +1704,7 @@ function SalesDashboard({ leads, onOpenOutreach, showToast }) {
                 <div className="kanban-col-header"><span className="kanban-col-title">{col}</span><span className="kanban-col-count">{items.length}</span></div>
                 <div className="kanban-col-body">
                   {items.map(l=>(
-                    <div className="kanban-card" key={l.id}>
+                    <div className="kanban-card" key={l.id} style={{cursor:"pointer"}} onClick={()=>{setSelectedLead(l);setSelectedStage(col);}}>
                       <div className="kanban-card-name">{l.name}</div>
                       <div className="kanban-card-meta">{l.source} · {l.rep}</div>
                       <div className="kanban-value">{l.value}</div>
@@ -1139,39 +1716,95 @@ function SalesDashboard({ leads, onOpenOutreach, showToast }) {
           </div>
         </div>
       </div>
+      {selectedLead && <LeadDetailSheet lead={selectedLead} stage={selectedStage} onClose={()=>setSelectedLead(null)} showToast={showToast}/>}
     </div>
   );
 }
 
 function SalesCalls({ showToast }) {
+  const [joinedCalls, setJoinedCalls] = useState({});
+  const [expandedCall, setExpandedCall] = useState(null);
+  const handleJoin = (i) => {
+    setJoinedCalls(p=>({...p,[i]:"joining"}));
+    setTimeout(()=>setJoinedCalls(p=>({...p,[i]:"joined"})),1500);
+  };
+  const callData = [{name:"Chandler Law Group",rep:"Jade",time:"2:00 PM",day:"Today",type:"Demo",status:"Confirmed",agenda:"Demo walkthrough of content strategy and pricing packages",notes:"CEO interested in Instagram Reels for brand awareness. Has 2 locations."},{name:"Scottsdale Med Spa",rep:"Carlos",time:"4:30 PM",day:"Today",type:"Discovery",status:"Confirmed",agenda:"Initial discovery call to understand their content needs",notes:"Referred by existing client. Currently not doing any video content."},{name:"Sun Devil Gym",rep:"Jade",time:"10:00 AM",day:"Mar 19",type:"Proposal",status:"Pending",agenda:"Present Growth plan proposal and review content samples",notes:"Wants to focus on member transformation stories and workout highlights."}];
   return (
     <div className="card">
       <div className="card-title">Scheduled Calls</div>
-      {[{name:"Chandler Law Group",rep:"Jade",time:"2:00 PM",day:"Today",type:"Demo",status:"Confirmed"},{name:"Scottsdale Med Spa",rep:"Carlos",time:"4:30 PM",day:"Today",type:"Discovery",status:"Confirmed"},{name:"Sun Devil Gym",rep:"Jade",time:"10:00 AM",day:"Mar 19",type:"Proposal",status:"Pending"}].map((c,i)=>(
-        <div className="call-item" key={i}>
-          <div className="call-time-block"><div className="call-time">{c.time}</div><div className="call-day">{c.day}</div></div>
-          <div className="row-main"><div className="row-title">{c.name}</div><div className="row-sub">{c.type} · {c.rep}</div></div>
-          <div style={{display:"flex",flexDirection:"column",gap:4,alignItems:"flex-end"}}>
-            <Badge type={c.status==="Confirmed"?"green":"amber"}>{c.status}</Badge>
-            <button className="action-btn accent" onClick={()=>showToast("🎥","Joining Zoom","")}>Join</button>
+      {callData.map((c,i)=>(
+        <div key={i}>
+          <div className="call-item" style={{cursor:"pointer"}} onClick={()=>setExpandedCall(expandedCall===i?null:i)}>
+            <div className="call-time-block"><div className="call-time">{c.time}</div><div className="call-day">{c.day}</div></div>
+            <div className="row-main"><div className="row-title">{c.name}</div><div className="row-sub">{c.type} · {c.rep}</div></div>
+            <div style={{display:"flex",flexDirection:"column",gap:4,alignItems:"flex-end"}}>
+              <Badge type={c.status==="Confirmed"?"green":"amber"}>{c.status}</Badge>
+              {joinedCalls[i]==="joined" ? (
+                <button className="action-btn green" disabled>In Call</button>
+              ) : joinedCalls[i]==="joining" ? (
+                <button className="action-btn" disabled style={{opacity:0.7}}>Joining...</button>
+              ) : (
+                <button className="action-btn accent" onClick={(e)=>{e.stopPropagation();handleJoin(i);}}>Join</button>
+              )}
+            </div>
           </div>
+          {expandedCall===i && (
+            <div style={{padding:"8px 0 12px 66px",borderBottom:"1px solid var(--border)"}}>
+              <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:4}}>Agenda</div>
+              <div style={{fontSize:12,color:"var(--text2)",lineHeight:1.5,marginBottom:10}}>{c.agenda}</div>
+              <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:4}}>Prep Notes</div>
+              <div style={{fontSize:12,color:"var(--text2)",lineHeight:1.5}}>{c.notes}</div>
+            </div>
+          )}
         </div>
       ))}
     </div>
   );
 }
 
+// ─── SALES LEADS LIST ──────────────────────────────────────────────────────
+function SalesLeadsList({ leads, showToast }) {
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [selectedStage, setSelectedStage] = useState(null);
+  return (
+    <div>
+      <div className="card">
+        <div className="card-title">All Leads</div>
+        {Object.entries(leads).flatMap(([s,items])=>items.map(l=>(
+          <div className="row-item" key={l.id} style={{cursor:"pointer"}} onClick={()=>{setSelectedLead(l);setSelectedStage(s);}}>
+            <div className="row-avatar" style={{background:"var(--accent-dim)",color:"var(--accent)"}}>{l.name[0]}</div>
+            <div className="row-main"><div className="row-title">{l.name}</div><div className="row-sub">{l.source} · {l.rep}</div></div>
+            <div className="row-right"><div style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700,color:"var(--accent)"}}>{l.value}</div><Badge type="gray">{s}</Badge></div>
+          </div>
+        )))}
+      </div>
+      {selectedLead && <LeadDetailSheet lead={selectedLead} stage={selectedStage} onClose={()=>setSelectedLead(null)} showToast={showToast}/>}
+    </div>
+  );
+}
+
 // ─── SCRIPT VIEWS ─────────────────────────────────────────────────────────────
 function ScriptQueue({ scripts, onSelect }) {
+  const [clientFilter, setClientFilter] = useState("all");
+  const clientNames = [...new Set(scripts.map(s=>s.client))];
+  const filtered = clientFilter==="all" ? scripts : scripts.filter(s=>s.client===clientFilter);
   return (
     <div>
       <div className="stats-grid" style={{marginBottom:12}}>
         <div className="stat-card"><div className="stat-label">In Queue</div><div className="stat-value">{scripts.length}</div><div className="stat-sub">2 due this week</div></div>
         <div className="stat-card"><div className="stat-label">Urgent</div><div className="stat-value">{scripts.filter(s=>s.priority==="high").length}</div><div className="stat-sub">High priority</div></div>
       </div>
+      <div className="form-group" style={{marginBottom:10}}>
+        <select className="form-select" value={clientFilter} onChange={e=>setClientFilter(e.target.value)}>
+          <option value="all">All Clients</option>
+          {clientNames.map(n=><option key={n} value={n}>{n}</option>)}
+        </select>
+      </div>
       <div style={{fontSize:10,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"1px",fontWeight:700,marginBottom:8}}>Tap to open — ✨ AI Draft inside</div>
-      {scripts.map((s,i)=>(
-        <div key={s.id} className="script-item" onClick={()=>onSelect(i)}>
+      {filtered.map((s)=>{
+        const realIdx = scripts.findIndex(sc=>sc.id===s.id);
+        return (
+        <div key={s.id} className="script-item" onClick={()=>onSelect(realIdx)}>
           <div className="script-pbar" style={{background:s.priority==="high"?"#EF4444":s.priority==="med"?"#FFB800":"#3B82F6"}}/>
           <div className="script-info">
             <div className="script-client">{s.client}</div>
@@ -1183,7 +1816,8 @@ function ScriptQueue({ scripts, onSelect }) {
           </div>
           <span style={{color:"var(--text3)",fontSize:18}}>›</span>
         </div>
-      ))}
+      );
+      })}
     </div>
   );
 }
@@ -1252,7 +1886,10 @@ function ScriptCompleted({ scripts }) {
 }
 
 // ─── EDITOR VIEWS ─────────────────────────────────────────────────────────────
-function EditorProduction({ videos, igPosts, onAdvance, onSchedule, onOpenCaption, showToast }) {
+function EditorProduction({ videos, igPosts, onAdvance, onSchedule, onOpenCaption, showToast, onNav }) {
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [showScheduleSheet, setShowScheduleSheet] = useState(false);
+  const [schedForm, setSchedForm] = useState({client:"Desert Sun Realty",date:"2025-03-25",time:"09:00",caption:""});
   return (
     <div>
       <div className="stats-grid">
@@ -1261,7 +1898,7 @@ function EditorProduction({ videos, igPosts, onAdvance, onSchedule, onOpenCaptio
         <div className="stat-card"><div className="stat-label">Published MTD</div><div className="stat-value">11</div><div className="stat-sub">4 clients</div></div>
         <div className="stat-card"><div className="stat-label">IG Scheduled</div><div className="stat-value">{igPosts.filter(p=>p.status==="Scheduled").length}</div><div className="stat-sub">Next: Mar 20</div></div>
       </div>
-      <div className="card" style={{background:"linear-gradient(135deg,rgba(255,92,0,0.08),rgba(168,85,247,0.06))",borderColor:"rgba(255,92,0,0.3)"}}>
+      <div className="card" style={{background:"linear-gradient(135deg,rgba(255,92,0,0.08),rgba(253,128,64,0.06))",borderColor:"rgba(255,92,0,0.3)"}}>
         <div style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700,color:"var(--accent)",marginBottom:10,textTransform:"uppercase",letterSpacing:"1px"}}>✨ AI Tools</div>
         <div className="ai-btn" onClick={onOpenCaption}>
           <div className="ai-btn-icon">📝</div>
@@ -1271,24 +1908,66 @@ function EditorProduction({ videos, igPosts, onAdvance, onSchedule, onOpenCaptio
       <div className="card">
         <div className="card-title">Production Queue</div>
         {videos.map(v=>(
-          <div className="video-item" key={v.id}>
-            <div className="video-thumb">{v.thumb}</div>
-            <div className="video-info"><div className="video-title">{v.title}</div><div className="video-meta">{v.client} · {v.due}</div></div>
-            <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
-              <Badge type={VID_STATUS_COLOR[v.status]||"gray"}>{v.status}</Badge>
-              {v.status!=="Approved"&&v.status!=="Scheduled"&&<button className="action-btn accent" onClick={()=>{onAdvance(v.id);showToast("🎬","Updated",`→ ${STATUS_FLOW[v.status]}`);}}>
-                {v.status==="Raw Footage"?"Start Edit":v.status==="Editing"?"Send Review":"Approve"}
-              </button>}
-              {v.status==="Approved"&&<button className="action-btn green" onClick={()=>{onSchedule(v.id);showToast("📸","Scheduled on IG","");}}>→ IG</button>}
+          <div key={v.id}>
+            <div className="video-item" style={{cursor:"pointer"}} onClick={()=>setSelectedVideo(selectedVideo===v.id?null:v.id)}>
+              <div className="video-thumb">{v.thumb}</div>
+              <div className="video-info"><div className="video-title">{v.title}</div><div className="video-meta">{v.client} · {v.due}</div></div>
+              <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
+                <Badge type={VID_STATUS_COLOR[v.status]||"gray"}>{v.status}</Badge>
+              </div>
             </div>
+            {selectedVideo===v.id && (
+              <div style={{padding:"10px 0 14px 55px",borderBottom:"1px solid var(--border)"}}>
+                <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:6}}>Video Details</div>
+                <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Client</div><div className="row-sub">{v.client}</div></div></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Status</div><div className="row-sub">{v.status}</div></div><Badge type={VID_STATUS_COLOR[v.status]||"gray"}>{v.status}</Badge></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Due Date</div><div className="row-sub">{v.due}</div></div></div>
+                <div style={{display:"flex",gap:8,marginTop:10}}>
+                  {v.status!=="Approved"&&v.status!=="Scheduled"&&<button className="btn primary" style={{flex:1}} onClick={()=>{onAdvance(v.id);showToast("🎬","Updated",`→ ${STATUS_FLOW[v.status]}`);setSelectedVideo(null);}}>
+                    {v.status==="Raw Footage"?"Start Edit":v.status==="Editing"?"Send to Review":"Approve"}
+                  </button>}
+                  {v.status==="Approved"&&<button className="btn primary" style={{flex:1}} onClick={()=>{onSchedule(v.id);showToast("📸","Scheduled on IG","");setSelectedVideo(null);}}>Schedule on IG</button>}
+                  <button className="btn" style={{flex:1}} onClick={()=>showToast("📝","Notes","Add notes feature coming soon")}>Add Notes</button>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
       <div className="ig-panel">
         <div className="ig-header"><span style={{fontSize:20}}>📸</span><div><div className="ig-title">Instagram Queue</div><div className="ig-sub">Publish via Meta API</div></div></div>
         {igPosts.map(p=><div className="ig-post" key={p.id}><div className="ig-post-thumb">{p.thumb}</div><div style={{flex:1}}><div className="ig-post-title">{p.client}</div><div className="ig-post-date">{p.date}</div></div><Badge type={p.status==="Scheduled"?"green":"amber"}>{p.status}</Badge></div>)}
-        <button className="btn primary full" style={{marginTop:8}} onClick={()=>showToast("📸","Scheduled","Added to IG queue")}>+ Schedule Post</button>
+        <button className="btn primary full" style={{marginTop:8}} onClick={()=>setShowScheduleSheet(true)}>+ Schedule Post</button>
       </div>
+      {showScheduleSheet && (
+        <div className="overlay" onClick={()=>setShowScheduleSheet(false)}>
+          <div className="sheet" onClick={e=>e.stopPropagation()}>
+            <div className="sheet-handle"/>
+            <div className="sheet-title">Schedule Post</div>
+            <div className="sheet-sub">Schedule a new Instagram post</div>
+            <div className="form-group"><label className="form-label">Client</label>
+              <select className="form-select" value={schedForm.client} onChange={e=>setSchedForm(p=>({...p,client:e.target.value}))}>
+                {INIT_CLIENTS.map(c=><option key={c.id}>{c.name}</option>)}
+              </select>
+            </div>
+            <div className="form-group"><label className="form-label">Date</label>
+              <input className="form-input" type="date" value={schedForm.date} onChange={e=>setSchedForm(p=>({...p,date:e.target.value}))}/>
+            </div>
+            <div className="form-group"><label className="form-label">Time</label>
+              <select className="form-select" value={schedForm.time} onChange={e=>setSchedForm(p=>({...p,time:e.target.value}))}>
+                {["08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00"].map(t=><option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+            <div className="form-group"><label className="form-label">Caption</label>
+              <textarea className="form-textarea" placeholder="Write your caption..." value={schedForm.caption} onChange={e=>setSchedForm(p=>({...p,caption:e.target.value}))}/>
+            </div>
+            <div className="form-actions">
+              <button className="btn" onClick={()=>setShowScheduleSheet(false)}>Cancel</button>
+              <button className="btn primary" onClick={()=>{setShowScheduleSheet(false);showToast("📸","Post Scheduled",`${schedForm.client} — ${schedForm.date} at ${schedForm.time}`);}}>Schedule</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1301,6 +1980,7 @@ function EditorCompleted({ videos }) {
 
 // ─── CLIENT VIEWS ─────────────────────────────────────────────────────────────
 function ClientContent({ showToast }) {
+  const [selectedItem, setSelectedItem] = useState(null);
   const [items, setItems] = useState([
     {id:1,title:"Listing @ 4821 Cactus Rd",type:"Reel · Listing Tour",status:"Editing",  progress:65, thumb:"🏠"},
     {id:2,title:"Agent Intro — Meet Sarah", type:"Reel · Brand",       status:"Scheduled",progress:100,thumb:"👤"},
@@ -1327,17 +2007,27 @@ function ClientContent({ showToast }) {
       <div className="card">
         <div className="card-title">Your Content — March</div>
         {items.map(d=>(
-          <div className="deliverable-item" key={d.id}>
-            <div className="deliverable-icon">{d.thumb}</div>
-            <div className="deliverable-info">
-              <div className="deliverable-title">{d.title}</div>
-              <div className="deliverable-sub">{d.type}</div>
+          <div key={d.id}>
+            <div className="deliverable-item" style={{cursor:"pointer"}} onClick={()=>setSelectedItem(selectedItem===d.id?null:d.id)}>
+              <div className="deliverable-icon">{d.thumb}</div>
+              <div className="deliverable-info">
+                <div className="deliverable-title">{d.title}</div>
+                <div className="deliverable-sub">{d.type}</div>
               <div className="progress-bar-wrap"><div className="progress-bar" style={{width:`${d.progress}%`,background:d.status==="Published"?"var(--green)":d.status==="Scheduled"?"var(--blue)":"var(--accent)"}}/></div>
             </div>
-            <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
               <Badge type={d.status==="Published"?"green":d.status==="Scheduled"?"blue":d.status==="Editing"?"amber":"gray"}>{d.status}</Badge>
-              {d.status==="Editing"&&<button className="action-btn accent" onClick={()=>{setItems(p=>p.map(i=>i.id===d.id?{...i,status:"Approved",progress:100}:i));showToast("✅","Approved!","");}}>Approve</button>}
             </div>
+            {selectedItem===d.id && (
+              <div style={{padding:"10px 0 14px 39px",borderBottom:"1px solid var(--border)"}}>
+                <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:6}}>Deliverable Details</div>
+                <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Title</div><div className="row-sub">{d.title}</div></div></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Type</div><div className="row-sub">{d.type}</div></div></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Status</div><div className="row-sub">{d.status}</div></div><Badge type={d.status==="Published"?"green":d.status==="Scheduled"?"blue":d.status==="Editing"?"amber":"gray"}>{d.status}</Badge></div>
+                <div className="row-item" style={{borderBottom:"none",paddingBottom:0}}><div className="row-main"><div className="row-title">Progress</div><div className="row-sub">{d.progress}%</div></div></div>
+                <div className="progress-bar-wrap" style={{marginTop:6,height:6}}><div className="progress-bar" style={{width:`${d.progress}%`,background:d.status==="Published"?"var(--green)":d.status==="Scheduled"?"var(--blue)":"var(--accent)"}}/></div>
+                {d.status==="Editing"&&<button className="btn primary full" style={{marginTop:10}} onClick={()=>{setItems(p=>p.map(i=>i.id===d.id?{...i,status:"Approved",progress:100}:i));showToast("✅","Approved!","");setSelectedItem(null);}}>Approve This Deliverable</button>}
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -1346,12 +2036,29 @@ function ClientContent({ showToast }) {
 }
 
 function ClientIG({ igPosts }) {
+  const [selectedPost, setSelectedPost] = useState(null);
   const myPosts = igPosts.filter(p=>p.client==="Desert Sun Realty");
   return (
     <div>
       <div className="ig-panel">
         <div className="ig-header"><span style={{fontSize:20}}>📸</span><div><div className="ig-title">Instagram</div><div className="ig-sub">@desertsunrealtyaz</div></div></div>
-        {myPosts.map(p=><div className="ig-post" key={p.id}><div className="ig-post-thumb">{p.thumb}</div><div style={{flex:1}}><div className="ig-post-title" style={{fontSize:11}}>{p.caption.substring(0,30)}...</div><div className="ig-post-date">{p.date}</div></div><Badge type={p.status==="Scheduled"?"green":"amber"}>{p.status}</Badge></div>)}
+        {myPosts.map(p=>(
+          <div key={p.id}>
+            <div className="ig-post" style={{cursor:"pointer"}} onClick={()=>setSelectedPost(selectedPost===p.id?null:p.id)}>
+              <div className="ig-post-thumb">{p.thumb}</div>
+              <div style={{flex:1}}><div className="ig-post-title" style={{fontSize:11}}>{p.caption.substring(0,30)}...</div><div className="ig-post-date">{p.date}</div></div>
+              <Badge type={p.status==="Scheduled"?"green":"amber"}>{p.status}</Badge>
+            </div>
+            {selectedPost===p.id && (
+              <div style={{background:"rgba(255,255,255,0.5)",borderRadius:"0 0 8px 8px",padding:"10px 12px",marginBottom:7,marginTop:-7,border:"1px solid var(--border)",borderTop:"none"}}>
+                <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:6}}>Post Details</div>
+                <div style={{fontSize:12,color:"var(--text)",lineHeight:1.6,marginBottom:8}}>{p.caption}</div>
+                <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Scheduled</div><div className="row-sub">{p.date}</div></div></div>
+                <div className="row-item" style={{borderBottom:"none",paddingBottom:0}}><div className="row-main"><div className="row-title">Status</div></div><Badge type={p.status==="Scheduled"?"green":"amber"}>{p.status}</Badge></div>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
       <div className="card">
         <div className="card-title">Performance</div>
@@ -1364,17 +2071,48 @@ function ClientIG({ igPosts }) {
 }
 
 function ClientInvoices({ showToast }) {
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [invoices, setInvoices] = useState([
+    {id:1,month:"March 2025",amount:"$2,400",status:"Due Apr 1",paid:false,processing:false},
+    {id:2,month:"February 2025",amount:"$2,400",status:"Paid Feb 28",paid:true,processing:false},
+    {id:3,month:"January 2025",amount:"$2,400",status:"Paid Jan 31",paid:true,processing:false},
+  ]);
+  const handlePay = (id) => {
+    setInvoices(p=>p.map(inv=>inv.id===id?{...inv,processing:true}:inv));
+    setTimeout(()=>{
+      setInvoices(p=>p.map(inv=>inv.id===id?{...inv,processing:false,paid:true,status:"Paid Mar 17"}:inv));
+      showToast("✅","Payment Complete","Invoice has been paid");
+    },2000);
+  };
   return (
     <div className="card">
       <div className="card-title">Invoices</div>
-      {[{month:"March 2025",amount:"$2,400",status:"Due Apr 1",paid:false},{month:"February 2025",amount:"$2,400",status:"Paid Feb 28",paid:true},{month:"January 2025",amount:"$2,400",status:"Paid Jan 31",paid:true}].map((inv,i)=>(
-        <div className="row-item" key={i}>
-          <div className="row-avatar" style={{background:inv.paid?"rgba(34,197,94,0.12)":"rgba(255,184,0,0.12)",color:inv.paid?"var(--green)":"var(--amber)"}}>{inv.paid?"✓":"!"}</div>
-          <div className="row-main"><div className="row-title">{inv.month}</div><div className="row-sub">{inv.status}</div></div>
-          <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4}}>
-            <div style={{fontFamily:"var(--fd)",fontSize:14,fontWeight:800}}>{inv.amount}</div>
-            {!inv.paid&&<button className="action-btn accent" onClick={()=>showToast("💳","Payment link sent","Check your email")}>Pay Now</button>}
+      {invoices.map(inv=>(
+        <div key={inv.id}>
+          <div className="row-item" style={{cursor:"pointer"}} onClick={()=>setSelectedInvoice(selectedInvoice===inv.id?null:inv.id)}>
+            <div className="row-avatar" style={{background:inv.paid?"rgba(34,197,94,0.12)":"rgba(255,184,0,0.12)",color:inv.paid?"var(--green)":"var(--amber)"}}>{inv.paid?"✓":"!"}</div>
+            <div className="row-main"><div className="row-title">{inv.month}</div><div className="row-sub">{inv.status}</div></div>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4}}>
+              <div style={{fontFamily:"var(--fd)",fontSize:14,fontWeight:800}}>{inv.amount}</div>
+              {inv.processing ? (
+                <Badge type="amber">Processing...</Badge>
+              ) : inv.paid ? (
+                <Badge type="green">Paid</Badge>
+              ) : (
+                <button className="action-btn accent" onClick={(e)=>{e.stopPropagation();handlePay(inv.id);}}>Pay Now</button>
+              )}
+            </div>
           </div>
+          {selectedInvoice===inv.id && (
+            <div style={{padding:"8px 0 12px 47px",borderBottom:"1px solid var(--border)"}}>
+              <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:6}}>Invoice Details</div>
+              <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Period</div><div className="row-sub">{inv.month}</div></div></div>
+              <div className="row-item"><div className="row-main"><div className="row-title">Pro Plan — 8 videos/mo</div><div className="row-sub">Monthly retainer</div></div><div style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700}}>{inv.amount}</div></div>
+              <div className="row-item"><div className="row-main"><div className="row-title">Payment Status</div></div><Badge type={inv.paid?"green":"amber"}>{inv.paid?"Paid":"Unpaid"}</Badge></div>
+              <div className="row-item" style={{borderBottom:"none",paddingBottom:0}}><div className="row-main"><div className="row-title">Due Date</div><div className="row-sub">{inv.status}</div></div></div>
+              {!inv.paid && !inv.processing && <button className="btn primary full" style={{marginTop:10}} onClick={()=>handlePay(inv.id)}>Pay Now — {inv.amount}</button>}
+            </div>
+          )}
         </div>
       ))}
     </div>
@@ -1382,15 +2120,29 @@ function ClientInvoices({ showToast }) {
 }
 
 function ClientTeam({ showToast, onOpenMessages }) {
+  const [selectedMember, setSelectedMember] = useState(null);
+  const teamData = [{name:"Maya R.",role:"Script Writer",color:"#A855F7",note:"Writing your March scripts",assignments:["Neighborhood Spotlight script","Agent Intro script revision"],email:"maya@media4you.com"},{name:"Jordan T.",role:"Video Editor",color:"#22C55E",note:"Editing Listing Showcase",assignments:["Listing @ 4821 Cactus Rd","Sold! 3901 Desert View"],email:"jordan@media4you.com"},{name:"Carlos V.",role:"Account Manager",color:"#3B82F6",note:"Your main point of contact",assignments:["Monthly strategy call","Content calendar planning"],email:"carlos@media4you.com"}];
   return (
     <div>
       <div className="card">
         <div className="card-title">Your Dedicated Team</div>
-        {[{name:"Maya R.",role:"Script Writer",color:"#A855F7",note:"Writing your March scripts"},{name:"Jordan T.",role:"Video Editor",color:"#22C55E",note:"Editing Listing Showcase"},{name:"Carlos V.",role:"Account Manager",color:"#3B82F6",note:"Your main point of contact"}].map(m=>(
-          <div className="row-item" key={m.name}>
-            <div className="row-avatar" style={{background:`${m.color}20`,color:m.color}}>{m.name[0]}</div>
-            <div className="row-main"><div className="row-title">{m.name}</div><div className="row-sub">{m.role} · {m.note}</div></div>
-            <button className="action-btn accent" onClick={onOpenMessages}>Message</button>
+        {teamData.map(m=>(
+          <div key={m.name}>
+            <div className="row-item" style={{cursor:"pointer"}} onClick={()=>setSelectedMember(selectedMember===m.name?null:m.name)}>
+              <div className="row-avatar" style={{background:`${m.color}20`,color:m.color}}>{m.name[0]}</div>
+              <div className="row-main"><div className="row-title">{m.name}</div><div className="row-sub">{m.role} · {m.note}</div></div>
+              <button className="action-btn accent" onClick={(e)=>{e.stopPropagation();onOpenMessages();}}>Message</button>
+            </div>
+            {selectedMember===m.name && (
+              <div style={{padding:"8px 0 12px 47px",borderBottom:"1px solid var(--border)"}}>
+                <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:6}}>Team Member Details</div>
+                <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Role</div><div className="row-sub">{m.role}</div></div></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Contact</div><div className="row-sub">{m.email}</div></div></div>
+                <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginTop:8,marginBottom:6}}>Current Assignments</div>
+                {m.assignments.map(a=>(<div className="row-item" key={a}><div className="row-main"><div className="row-sub">{a}</div></div></div>))}
+                <button className="btn primary full" style={{marginTop:10}} onClick={onOpenMessages}>💬 Message {m.name}</button>
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -1450,11 +2202,11 @@ const ROLES = [
   {key:"client",      label:"Client",       name:"Desert Sun Realty",color:"#FFB800",initial:"C"},
 ];
 const NAV_CONFIG = {
-  admin:        [{label:"Dashboard",icon:"⬛",view:"dashboard"},{label:"Clients",icon:"👥",view:"clients"},{label:"Revenue",icon:"💰",view:"revenue"},{label:"Settings",icon:"⚙️",view:"settings"}],
-  sales:        [{label:"Pipeline",icon:"📊",view:"dashboard",badge:3},{label:"Calls",icon:"🎥",view:"calls"},{label:"Leads",icon:"🎯",view:"leads"}],
+  admin:        [{label:"Dashboard",icon:"⬛",view:"dashboard"},{label:"Clients",icon:"👥",view:"clients"},{label:"Revenue",icon:"💰",view:"revenue"},{label:"Ads",icon:"📢",view:"ads"},{label:"Settings",icon:"⚙️",view:"settings"}],
+  sales:        [{label:"Pipeline",icon:"📊",view:"dashboard",badge:3},{label:"Calls",icon:"🎥",view:"calls"},{label:"Leads",icon:"🎯",view:"leads"},{label:"Activity",icon:"📋",view:"activity"}],
   scriptwriter: [{label:"Queue",icon:"✍️",view:"dashboard",badge:2},{label:"Done",icon:"✅",view:"completed"}],
-  editor:       [{label:"Production",icon:"🎬",view:"dashboard",badge:2},{label:"Done",icon:"✅",view:"completed"}],
-  client:       [{label:"Content",icon:"📹",view:"dashboard"},{label:"Instagram",icon:"📸",view:"instagram"},{label:"Invoices",icon:"🧾",view:"invoices"},{label:"Team",icon:"👥",view:"team"}],
+  editor:       [{label:"Production",icon:"🎬",view:"dashboard",badge:2},{label:"Upload",icon:"📤",view:"upload"},{label:"Done",icon:"✅",view:"completed"}],
+  client:       [{label:"Content",icon:"📹",view:"dashboard"},{label:"Instagram",icon:"📸",view:"instagram"},{label:"Ads",icon:"📢",view:"ads"},{label:"Invoices",icon:"🧾",view:"invoices"},{label:"Team",icon:"👥",view:"team"}],
 };
 const TITLES = {admin:"Admin",sales:"Sales",scriptwriter:"Scripts",editor:"Production",client:"My Content"};
 
@@ -1506,8 +2258,8 @@ export default function App() {
     if(role==="admin") setModal("add-client");
     else if(role==="sales") setModal("add-lead");
     else if(role==="scriptwriter") showToast("✨","AI Draft","Select a script first");
-    else if(role==="editor") openPanel("caption");
-    else showToast("📞","Contacting team","Your account manager will respond shortly");
+    else if(role==="editor") navTo("upload");
+    else if(role==="client") openPanel("messages");
   };
 
   const currentTitle = panel==="notifs"?"Notifications":panel==="messages"?"Messages":TITLES[role];
@@ -1517,15 +2269,17 @@ export default function App() {
     if(subView?.type==="client-detail") return null; // handled in panels
 
     if(role==="admin"){
-      if(view==="dashboard") return <AdminDashboard clients={clients} onNav={navTo} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} showToast={showToast}/>;
-      if(view==="clients")   return <AdminDashboard clients={clients} onNav={navTo} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} showToast={showToast}/>;
+      if(view==="dashboard") return <AdminDashboard clients={clients} onNav={navTo} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} onOpenClientDetail={(c)=>openPanel("client-detail",c)} showToast={showToast}/>;
+      if(view==="clients")   return <AdminClients clients={clients} showToast={showToast}/>;
       if(view==="revenue")   return <AdminRevenue clients={clients}/>;
+      if(view==="ads")       return <AdminAds showToast={showToast}/>;
       if(view==="settings")  return <AdminSettings showToast={showToast}/>;
     }
     if(role==="sales"){
       if(view==="dashboard") return <SalesDashboard leads={leads} onOpenOutreach={()=>openPanel("outreach")} showToast={showToast}/>;
       if(view==="calls")     return <SalesCalls showToast={showToast}/>;
-      if(view==="leads")     return <div className="card"><div className="card-title">All Leads</div>{Object.entries(leads).flatMap(([s,items])=>items.map(l=>(<div className="row-item" key={l.id}><div className="row-avatar" style={{background:"var(--accent-dim)",color:"var(--accent)"}}>{l.name[0]}</div><div className="row-main"><div className="row-title">{l.name}</div><div className="row-sub">{l.source} · {l.rep}</div></div><div className="row-right"><div style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700,color:"var(--accent)"}}>{l.value}</div><Badge type="gray">{s}</Badge></div></div>)))}</div>;
+      if(view==="leads")     return <SalesLeadsList leads={leads} showToast={showToast}/>;
+      if(view==="activity")  return <SalesActivity/>;
     }
     if(role==="scriptwriter"){
       if(view==="dashboard") return <ScriptQueue scripts={scripts} onSelect={setSelScript}/>;
@@ -1533,11 +2287,13 @@ export default function App() {
     }
     if(role==="editor"){
       if(view==="dashboard") return <EditorProduction videos={videos} igPosts={igPosts} onAdvance={advanceVideo} onSchedule={scheduleVideo} onOpenCaption={()=>openPanel("caption")} showToast={showToast}/>;
+      if(view==="upload")    return <EditorUpload showToast={showToast}/>;
       if(view==="completed") return <EditorCompleted videos={videos}/>;
     }
     if(role==="client"){
       if(view==="dashboard") return <ClientContent showToast={showToast}/>;
       if(view==="instagram") return <ClientIG igPosts={igPosts}/>;
+      if(view==="ads")       return <ClientAds showToast={showToast}/>;
       if(view==="invoices")  return <ClientInvoices showToast={showToast}/>;
       if(view==="team")      return <ClientTeam showToast={showToast} onOpenMessages={()=>openPanel("messages")}/>;
     }
@@ -1605,6 +2361,48 @@ export default function App() {
         {panel==="calendar" && <ContentCalendar clients={clients} onClose={closePanel}/>}
         {panel==="caption" && <CaptionWriter onClose={closePanel} showToast={showToast}/>}
         {panel==="outreach" && <OutreachWriter onClose={closePanel} showToast={showToast}/>}
+        {panel==="client-detail" && panelData && (
+          <div className="full-panel">
+            <div style={{padding:"12px 14px",borderBottom:"1px solid var(--border)",background:"var(--surface)",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
+              <button className="btn back" style={{margin:0,padding:"6px 10px",fontSize:12}} onClick={closePanel}>←</button>
+              <div className="row-avatar" style={{background:`${panelData.color}20`,color:panelData.color,width:36,height:36}}>{panelData.name[0]}</div>
+              <div style={{flex:1}}>
+                <div style={{fontFamily:"var(--fd)",fontSize:14,fontWeight:700}}>{panelData.name}</div>
+                <div style={{fontSize:11,color:"var(--text3)"}}>{panelData.industry}</div>
+              </div>
+            </div>
+            <div className="full-panel-scroll">
+              <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
+                <Badge type={panelData.plan==="Pro"?"purple":panelData.plan==="Growth"?"blue":"gray"}>{panelData.plan} Plan</Badge>
+                <Badge type={panelData.status==="active"?"green":panelData.status==="onboarding"?"amber":"red"}>{panelData.status}</Badge>
+              </div>
+              <div className="stats-grid">
+                <div className="stat-card"><div className="stat-label">MRR</div><div className="stat-value">${panelData.mrr.toLocaleString()}</div></div>
+                <div className="stat-card"><div className="stat-label">Videos</div><div className="stat-value">{panelData.videos}</div><div className="stat-sub">produced</div></div>
+                <div className="stat-card"><div className="stat-label">Next Delivery</div><div className="stat-value" style={{fontSize:16}}>{panelData.nextPost}</div></div>
+                <div className="stat-card"><div className="stat-label">Stage</div><div className="stat-value" style={{fontSize:16}}>{panelData.stage}</div></div>
+              </div>
+              <div className="card">
+                <div className="card-title">Content Pipeline</div>
+                {[{title:"Day in the Life",status:"Scripting",progress:20,icon:"✍️"},{title:"Listing Showcase",status:"Editing",progress:60,icon:"🎬"},{title:"Testimonial Reel",status:"Review",progress:85,icon:"👁️"}].map((p,i)=>(
+                  <div className="deliverable-item" key={i}>
+                    <div className="deliverable-icon">{p.icon}</div>
+                    <div className="deliverable-info">
+                      <div className="deliverable-title">{p.title}</div>
+                      <div className="deliverable-sub">{p.status}</div>
+                      <div className="progress-bar-wrap"><div className="progress-bar" style={{width:`${p.progress}%`,background:"var(--accent)"}}/></div>
+                    </div>
+                    <Badge type={p.status==="Scripting"?"gray":p.status==="Editing"?"blue":"amber"}>{p.status}</Badge>
+                  </div>
+                ))}
+              </div>
+              <div style={{display:"flex",gap:8}}>
+                <button className="btn primary" style={{flex:1}} onClick={()=>{openPanel("ideas",panelData);}}>💡 AI Ideas</button>
+                <button className="btn" style={{flex:1}} onClick={()=>showToast("💬","Message sent","Notification sent to team")}>Message</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* BOTTOM NAV */}
         <div className="bnav">
