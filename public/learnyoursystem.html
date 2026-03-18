@@ -258,28 +258,68 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
         <div class="feature-icon" style="background:rgba(252,198,18,0.1);color:#B8960C;">▦</div>
         <div class="feature-name">Content Library</div>
         <div class="feature-desc">Central hub for all finished videos, raw footage, and photos. Browse, download, share, or reuse any asset.</div>
-        <div class="feature-detail">Filter by Videos, Raw Footage, or Photos. Each asset shows format (MP4/MOV), resolution (4K/1080p), file size, and duration. Click to expand and see full specs. Download files, copy shareable links, or add directly to the content calendar for reuse. Storage tracking shows total space used across all clients.<a href="/#admin/library" class="try-btn" target="_blank">Open Library →</a></div>
+        <div class="feature-detail">
+          <div class="mockup" style="margin:0 0 12px;padding:14px">
+            <div style="display:flex;gap:6px;margin-bottom:10px"><span style="padding:3px 10px;border-radius:20px;background:rgba(252,198,18,0.1);border:1px solid rgba(252,198,18,0.2);font:500 10px var(--fd);color:var(--accent)">All</span><span style="padding:3px 10px;border-radius:20px;border:1px solid rgba(0,0,0,0.08);font:500 10px var(--fd);color:var(--text3)">Videos</span><span style="padding:3px 10px;border-radius:20px;border:1px solid rgba(0,0,0,0.08);font:500 10px var(--fd);color:var(--text3)">Raw Footage</span><span style="padding:3px 10px;border-radius:20px;border:1px solid rgba(0,0,0,0.08);font:500 10px var(--fd);color:var(--text3)">Photos</span></div>
+            <div class="mockup-row"><div style="width:44px;height:32px;border-radius:6px;background:#1a1a1a;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;flex-shrink:0">▶</div><div style="flex:1"><div style="font:500 12px var(--fd)">Frost — Spring Lineup</div><div style="font:400 10px var(--fb);color:var(--text3)">MP4 · 1080p · 380 MB</div></div><span class="mockup-badge" style="background:rgba(34,197,94,0.1);color:#16A34A">Published</span></div>
+            <div class="mockup-row"><div style="width:44px;height:32px;border-radius:6px;background:#1a1a1a;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;flex-shrink:0">▶</div><div style="flex:1"><div style="font:500 12px var(--fd)">Desert Sun — 4K Listing</div><div style="font:400 10px var(--fb);color:var(--text3)">MP4 · 4K · 1.2 GB</div></div><span class="mockup-badge" style="background:rgba(34,197,94,0.1);color:#16A34A">Published</span></div>
+          </div>
+          Filter by type. Each asset shows format, resolution, file size. Click to download, share, or reuse.
+          <a href="/#admin/library" class="try-btn" target="_blank">Open Library →</a>
+        </div>
       </div>
       <div class="feature-card reveal reveal-delay-1" onclick="this.classList.toggle('expanded')">
         <div class="feature-expand">+</div>
         <div class="feature-icon" style="background:rgba(168,85,247,0.1);color:#A855F7;">◫</div>
         <div class="feature-name">Post Scheduler</div>
         <div class="feature-desc">Schedule posts across Instagram, TikTok, and Facebook with peak-time optimization and platform-specific previews.</div>
-        <div class="feature-detail">Color-coded platform pills show which platforms each post targets. Peak time posts are highlighted in gold. Stats show scheduled count, drafts, and this week's posts. Click any post to publish immediately, reschedule to a different time, or preview how it'll look. Supports Instagram Reels, TikTok videos, and Facebook posts.<a href="/#admin/scheduler" class="try-btn" target="_blank">Open Scheduler →</a></div>
+        <div class="feature-detail">
+          <div class="mockup" style="margin:0 0 12px;padding:14px">
+            <div class="mockup-row"><div style="min-width:40px;text-align:center"><div style="font:700 14px var(--fd);color:var(--accent)">19</div><div style="font:400 8px var(--fd);color:var(--text3)">MAR</div></div><div style="flex:1"><div style="font:500 12px var(--fd)">Spring Lineup Styles</div><div style="font:400 10px var(--fb);color:var(--text3)">Frost Barbershop · 9:00 AM</div><div style="display:flex;gap:4px;margin-top:4px"><span style="font:500 8px var(--fd);color:#A855F7;background:rgba(168,85,247,0.1);padding:1px 6px;border-radius:8px">Instagram</span><span style="font:500 8px var(--fd);color:#3B82F6;background:rgba(59,130,246,0.1);padding:1px 6px;border-radius:8px">TikTok</span></div></div><span class="mockup-badge" style="background:rgba(34,197,94,0.1);color:#16A34A">Scheduled</span></div>
+            <div class="mockup-row"><div style="min-width:40px;text-align:center"><div style="font:700 14px var(--fd);color:var(--accent)">20</div><div style="font:400 8px var(--fd);color:var(--text3)">MAR</div></div><div style="flex:1"><div style="font:500 12px var(--fd)">Listing Tour — Cactus Rd</div><div style="font:400 10px var(--fb);color:var(--text3)">Desert Sun Realty · 10:00 AM</div><div style="display:flex;gap:4px;margin-top:4px"><span style="font:500 8px var(--fd);color:#A855F7;background:rgba(168,85,247,0.1);padding:1px 6px;border-radius:8px">Instagram</span><span style="font:500 8px var(--fd);color:#3B82F6;background:rgba(59,130,246,0.1);padding:1px 6px;border-radius:8px">TikTok</span><span style="font:500 8px var(--fd);color:#3B82F6;background:rgba(59,130,246,0.1);padding:1px 6px;border-radius:8px">Facebook</span></div></div><span class="mockup-badge" style="background:rgba(34,197,94,0.1);color:#16A34A">Scheduled</span></div>
+          </div>
+          Color-coded platform pills. Peak time highlights. Publish now, reschedule, or preview.
+          <a href="/#admin/scheduler" class="try-btn" target="_blank">Open Scheduler →</a>
+        </div>
       </div>
       <div class="feature-card reveal reveal-delay-2" onclick="this.classList.toggle('expanded')">
         <div class="feature-expand">+</div>
         <div class="feature-icon" style="background:rgba(255,92,0,0.1);color:#FF5C00;">$</div>
         <div class="feature-name">Revenue & Expenses</div>
         <div class="feature-desc">Full agency financials. MRR by client, profit/loss, plan distribution, QuickBooks sync, and editable expense tracking.</div>
-        <div class="feature-detail">Revenue page shows total revenue, MRR per client (expandable with plan details), profit margin, and ARR. Plan distribution breaks down Copper/Gold/Platinum client counts with revenue per tier. Expenses page has QuickBooks sync, add/edit/delete expenses with recurring vs one-time breakdown. Click any dollar amount to edit inline.<a href="/#admin/revenue" class="try-btn" target="_blank">Open Revenue →</a></div>
+        <div class="feature-detail">
+          <div class="mockup" style="margin:0 0 12px;padding:14px">
+            <div class="mockup-stats" style="grid-template-columns:repeat(3,1fr);gap:8px">
+              <div class="mockup-stat" style="padding:10px"><div class="mockup-stat-label">Revenue</div><div style="font:600 18px var(--fd);color:var(--text)">$19.5K</div></div>
+              <div class="mockup-stat" style="padding:10px"><div class="mockup-stat-label">Expenses</div><div style="font:600 18px var(--fd);color:#D94F5C">$9.9K</div></div>
+              <div class="mockup-stat" style="padding:10px"><div class="mockup-stat-label">Profit</div><div style="font:600 18px var(--fd);color:#16A34A">$9.6K</div></div>
+            </div>
+            <div class="mockup-row"><div style="width:28px;height:28px;border-radius:6px;background:rgba(59,130,246,0.1);display:flex;align-items:center;justify-content:center;font:600 10px var(--fd);color:#3B82F6;flex-shrink:0">F</div><div style="flex:1"><div style="font:500 12px var(--fd)">Frost Barbershop</div><div style="font:400 10px var(--fb);color:var(--text3)">Gold · Barbershop</div></div><div style="font:600 13px var(--fd)">$3,000</div></div>
+            <div class="mockup-row"><div style="width:28px;height:28px;border-radius:6px;background:rgba(168,85,247,0.1);display:flex;align-items:center;justify-content:center;font:600 10px var(--fd);color:#A855F7;flex-shrink:0">D</div><div style="flex:1"><div style="font:500 12px var(--fd)">Desert Sun Realty</div><div style="font:400 10px var(--fb);color:var(--text3)">Platinum · Real Estate</div></div><div style="font:600 13px var(--fd)">$5,000</div></div>
+          </div>
+          MRR by client, profit margin, plan distribution. QuickBooks sync on expenses. Click amounts to edit inline.
+          <a href="/#admin/revenue" class="try-btn" target="_blank">Open Revenue →</a>
+        </div>
       </div>
       <div class="feature-card reveal reveal-delay-3" onclick="this.classList.toggle('expanded')">
         <div class="feature-expand">+</div>
         <div class="feature-icon" style="background:rgba(34,197,94,0.1);color:#16A34A;">▤</div>
         <div class="feature-name">Client Reports</div>
         <div class="feature-desc">One-click monthly performance reports. Videos delivered, follower growth, engagement rate, ad ROI. Download or email.</div>
-        <div class="feature-detail">Select any active client and click Generate Report. Full report includes: videos delivered vs plan quota, followers gained, average views per video, engagement rate, ad spend and conversions, content delivered checklist, top performing content, platform breakdown (IG/TikTok/FB), and ROI summary with cost per follower. Download as PDF, copy shareable link, or email directly to the client.<a href="/#admin/reports" class="try-btn" target="_blank">Open Reports →</a></div>
+        <div class="feature-detail">
+          <div class="mockup" style="margin:0 0 12px;padding:14px">
+            <div style="font:500 9px var(--fd);text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:4px">Monthly Performance Report</div>
+            <div style="font:700 16px var(--fd);margin-bottom:8px">Desert Sun Realty</div>
+            <div class="mockup-stats" style="grid-template-columns:repeat(3,1fr);gap:6px">
+              <div class="mockup-stat" style="padding:8px"><div class="mockup-stat-label">Videos</div><div style="font:600 16px var(--fd)">8</div></div>
+              <div class="mockup-stat" style="padding:8px"><div class="mockup-stat-label">Followers</div><div style="font:600 16px var(--fd);color:#16A34A">+842</div></div>
+              <div class="mockup-stat" style="padding:8px"><div class="mockup-stat-label">Engagement</div><div style="font:600 16px var(--fd)">6.2%</div></div>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:8px"><span style="padding:4px 10px;border-radius:6px;background:rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.06);font:400 10px var(--fb);color:var(--text2)">Download PDF</span><span style="padding:4px 10px;border-radius:6px;background:rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.06);font:400 10px var(--fb);color:var(--text2)">Email to Client</span></div>
+          </div>
+          Select a client, generate report. Videos, followers, engagement, ad ROI, content checklist, platform breakdown.
+          <a href="/#admin/reports" class="try-btn" target="_blank">Open Reports →</a>
+        </div>
       </div>
     </div>
   </div>
@@ -347,14 +387,31 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
         <div class="feature-icon" style="background:rgba(59,125,216,0.1);color:#3B82F6;">◎</div>
         <div class="feature-name">Sales Pipeline</div>
         <div class="feature-desc">Kanban board tracking leads from New → Contacted → Demo → Proposal → Won with deal values and rep assignments.</div>
-        <div class="feature-detail">Click any lead card to see full details: deal value, source, industry, assigned rep, and next step. Action buttons open the Comms hub for calling, texting, or emailing. Advance leads to the next stage with one click — when a deal is won, confetti celebrates the close.<a href="/#sales/dashboard" class="try-btn" target="_blank">Open Pipeline →</a></div>
+        <div class="feature-detail">
+          <div class="mockup" style="margin:0 0 12px;padding:14px">
+            <div class="mockup-kanban">
+              <div class="mockup-col"><div class="mockup-col-head">New <span style="background:rgba(252,198,18,0.1);padding:1px 6px;border-radius:8px;font-size:9px">3</span></div><div class="mockup-col-body"><div class="mockup-card"><div class="mockup-card-title">Mesa Flooring Co</div><div class="mockup-card-sub">$3,000/mo · Referral</div></div></div></div>
+              <div class="mockup-col"><div class="mockup-col-head">Demo</div><div class="mockup-col-body"><div class="mockup-card"><div class="mockup-card-title">Chandler Law</div><div class="mockup-card-sub">$3,000/mo · Website</div></div></div></div>
+              <div class="mockup-col"><div class="mockup-col-head">Won ✓</div><div class="mockup-col-body"><div class="mockup-card" style="border-left:3px solid #16A34A"><div class="mockup-card-title">AZ Pool Pros</div><div class="mockup-card-sub">$3,000/mo</div></div></div></div>
+            </div>
+          </div>
+          Click any lead for details. Call, email, or text from the detail view. Confetti on wins.
+          <a href="/#sales/dashboard" class="try-btn" target="_blank">Open Pipeline →</a>
+        </div>
       </div>
       <div class="feature-card reveal reveal-delay-1" onclick="this.classList.toggle('expanded')">
         <div class="feature-expand">+</div>
         <div class="feature-icon" style="background:rgba(168,85,247,0.1);color:#A855F7;">◫</div>
         <div class="feature-name">Proposals</div>
         <div class="feature-desc">Create proposals with plan selection (Copper/Gold/Platinum). Track sent, draft, and accepted status with open tracking.</div>
-        <div class="feature-detail">Generate proposals with the client name and recommended plan. Each plan shows pricing and what's included. Track whether prospects opened your proposal. Status badges show Draft, Sent, or Accepted. Great for following up — you know when they've looked at it.<a href="/#sales/proposals" class="try-btn" target="_blank">Open Proposals →</a></div>
+        <div class="feature-detail">
+          <div class="mockup" style="margin:0 0 12px;padding:14px">
+            <div class="mockup-row"><div style="width:28px;height:28px;border-radius:6px;background:var(--accent-dim,rgba(252,198,18,0.1));display:flex;align-items:center;justify-content:center;font:600 10px var(--fd);color:var(--accent,#fcc612);flex-shrink:0">C</div><div style="flex:1"><div style="font:500 12px var(--fd)">Chandler Law Group</div><div style="font:400 10px var(--fb);color:var(--text3)">Gold Plan · $3,000/mo</div></div><span class="mockup-badge" style="background:rgba(59,130,246,0.1);color:#3B82F6">Sent</span></div>
+            <div class="mockup-row"><div style="width:28px;height:28px;border-radius:6px;background:rgba(34,197,94,0.1);display:flex;align-items:center;justify-content:center;font:600 10px var(--fd);color:#16A34A;flex-shrink:0">A</div><div style="flex:1"><div style="font:500 12px var(--fd)">AZ Pool Pros</div><div style="font:400 10px var(--fb);color:var(--text3)">Gold Plan · $3,000/mo</div></div><span class="mockup-badge" style="background:rgba(34,197,94,0.1);color:#16A34A">Accepted</span></div>
+          </div>
+          Create proposals with plan pricing. Track if prospects opened them. Status: Draft, Sent, Accepted.
+          <a href="/#sales/proposals" class="try-btn" target="_blank">Open Proposals →</a>
+        </div>
       </div>
       <div class="feature-card reveal reveal-delay-2" onclick="this.classList.toggle('expanded')">
         <div class="feature-expand">+</div>
