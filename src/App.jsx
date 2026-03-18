@@ -3449,7 +3449,7 @@ function SalesCalls({ showToast }) {
 }
 
 // ─── LEAD FINDER ─────────────────────────────────────────────────────────────
-function LeadFinder({ onAddLead, showToast }) {
+function LeadFinder({ onAddLead, showToast, onOpenOutreach }) {
   const [scanning, setScanning] = useState(false);
   const [scanned, setScanned] = useState(false);
   const [filter, setFilter] = useState("all");
@@ -3574,7 +3574,7 @@ function LeadFinder({ onAddLead, showToast }) {
                   {!addedIds[p.id] && (
                     <div style={{display:'flex',gap:8,marginTop:12}}>
                       <button className="btn primary" style={{flex:1}} onClick={(e)=>{e.stopPropagation();setAddedIds(prev=>({...prev,[p.id]:true}));onAddLead({id:Date.now(),name:p.name,industry:p.industry,value:`$${p.score>=85?3000:1500}/mo`,source:"Lead Finder",rep:"Carlos"});showToast("✓","Added to pipeline",p.name);fireConfetti();}}>Add to Pipeline</button>
-                      <button className="btn" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("◉","Outreach draft","Opening AI outreach writer...");}}>Draft Outreach</button>
+                      <button className="btn" style={{flex:1}} onClick={(e)=>{e.stopPropagation();if(onOpenOutreach)onOpenOutreach();}}>Draft Outreach</button>
                     </div>
                   )}
                 </div>
@@ -4518,6 +4518,7 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
   const [clientFilter, setClientFilter] = useState("all");
   const [dragging, setDragging] = useState(null);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [detailModal, setDetailModal] = useState(null);
   const [didDrag, setDidDrag] = useState(false);
   const [dragOver, setDragOver] = useState(null);
 
@@ -4674,16 +4675,14 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
                         <Badge type={item.type==="script"?"blue":"purple"}>{item.type==="script"?"Script":"Video"}</Badge>
                       </div>
                       {item.priority==="high" && <div style={{width:'100%',height:2,background:'var(--red)',borderRadius:2,marginTop:6,opacity:0.6}}/>}
-                      {/* Expanded detail */}
+                      {/* Expanded inline */}
                       {selectedCard===item.id && (
                         <div style={{marginTop:10,paddingTop:10,borderTop:'1px solid var(--border)'}} onClick={e=>e.stopPropagation()}>
-                          <div style={{font:'400 11px var(--fb)',color:'var(--text2)',marginBottom:6}}>Assigned: {item.type==="script"?"Maya R.":"Jordan T."}</div>
-                          <div style={{font:'400 11px var(--fb)',color:'var(--text2)',marginBottom:8}}>Due: {item.due} · {item.client}</div>
-                          <div style={{display:'flex',gap:6}}>
+                          <div style={{font:'400 11px var(--fb)',color:'var(--text2)',marginBottom:4}}>{item.type==="script"?"Maya R.":"Jordan T."} · {item.due}</div>
+                          <div style={{display:'flex',gap:4,marginTop:6}}>
                             <StatusBadge status={item.status} options={["Scripting","Editing","Review","Approved","Scheduled","Published"]} onChange={(s)=>{moveItem(item,s);setSelectedCard(null);}}/>
-                            <button className="btn" style={{flex:1,padding:'6px 10px',fontSize:10}} onClick={()=>showToast("◉","Details","Opening full details...")}>Full Details</button>
+                            <button className="btn" style={{flex:1,padding:'5px 8px',fontSize:10}} onClick={()=>{setDetailModal(item);setSelectedCard(null);}}>Details</button>
                           </div>
-                          <CommentThread itemId={`pipeline-card-${item.id}`} showToast={showToast}/>
                         </div>
                       )}
                     </div>
@@ -4699,6 +4698,54 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
           })}
         </div>
       </div>
+
+      {/* Detail Modal */}
+      {detailModal && (
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',backdropFilter:'blur(4px)',zIndex:300,display:'flex',alignItems:'center',justifyContent:'center',padding:20}} onClick={()=>setDetailModal(null)}>
+          <div style={{background:'rgba(255,255,255,0.97)',backdropFilter:'blur(30px)',borderRadius:18,border:'1px solid var(--border2)',width:'100%',maxWidth:560,padding:'28px 24px',boxShadow:'0 20px 60px rgba(0,0,0,0.15)',maxHeight:'85vh',overflowY:'auto',animation:'slideUp 0.2s ease'}} onClick={e=>e.stopPropagation()}>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:20}}>
+              <div>
+                <div style={{font:'700 20px var(--fd)',color:'var(--text)'}}>{detailModal.title}</div>
+                <div style={{font:'400 13px var(--fb)',color:'var(--text2)',marginTop:4}}>{detailModal.client} · {detailModal.type==="script"?"Script":"Video"}</div>
+              </div>
+              <button style={{background:'none',border:'none',fontSize:18,color:'var(--text3)',cursor:'pointer'}} onClick={()=>setDetailModal(null)}>✕</button>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:10,marginBottom:20}}>
+              <div style={{padding:'12px',background:'var(--surface2)',borderRadius:10,border:'1px solid var(--border)'}}>
+                <div style={{font:'400 9px var(--fd)',color:'var(--text3)',textTransform:'uppercase',letterSpacing:0.5,marginBottom:2}}>Status</div>
+                <StatusBadge status={detailModal.status} options={["Scripting","Editing","Review","Approved","Scheduled","Published"]} onChange={(s)=>{moveItem(detailModal,s);setDetailModal(null);}}/>
+              </div>
+              <div style={{padding:'12px',background:'var(--surface2)',borderRadius:10,border:'1px solid var(--border)'}}>
+                <div style={{font:'400 9px var(--fd)',color:'var(--text3)',textTransform:'uppercase',letterSpacing:0.5,marginBottom:2}}>Assigned</div>
+                <div style={{font:'500 13px var(--fb)',color:'var(--text)'}}>{detailModal.type==="script"?"Maya R.":"Jordan T."}</div>
+              </div>
+              <div style={{padding:'12px',background:'var(--surface2)',borderRadius:10,border:'1px solid var(--border)'}}>
+                <div style={{font:'400 9px var(--fd)',color:'var(--text3)',textTransform:'uppercase',letterSpacing:0.5,marginBottom:2}}>Due</div>
+                <div style={{font:'500 13px var(--fb)',color:detailModal.due&&detailModal.due<"Mar 18"?'var(--red)':'var(--text)'}}>{detailModal.due}</div>
+              </div>
+            </div>
+            {detailModal.source?.draft && (
+              <div style={{marginBottom:16}}>
+                <div style={{font:'600 11px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text3)',marginBottom:8}}>Script</div>
+                <div style={{background:'var(--surface2)',border:'1px solid var(--border)',borderRadius:10,padding:'14px 16px',font:'400 12px var(--fb)',color:'var(--text)',lineHeight:1.7,whiteSpace:'pre-wrap'}}>{detailModal.source.draft}</div>
+              </div>
+            )}
+            {!detailModal.source?.draft && (
+              <div style={{marginBottom:16}}>
+                <div style={{font:'600 11px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text3)',marginBottom:8}}>Details</div>
+                <div style={{font:'400 13px var(--fb)',color:'var(--text2)',lineHeight:1.6}}>
+                  {detailModal.type==="script" ? "Script in progress. Assigned to Maya R. for drafting." : "Video in "+detailModal.status.toLowerCase()+". Assigned to Jordan T."}
+                </div>
+              </div>
+            )}
+            <div style={{display:'flex',gap:8,marginBottom:16}}>
+              <button className="btn primary" style={{flex:1}} onClick={()=>{moveItem(detailModal,detailModal.status==="Scripting"?"Editing":detailModal.status==="Editing"?"Review":"Approved");setDetailModal(null);}}>Advance →</button>
+              <button className="btn" style={{flex:1}} onClick={()=>setDetailModal(null)}>Close</button>
+            </div>
+            <CommentThread itemId={`detail-${detailModal.id}`} showToast={showToast}/>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -5238,7 +5285,7 @@ export default function App() {
     if(role==="sales"){
       if(view==="dashboard") return <SalesDashboard leads={leads} onOpenOutreach={()=>openPanel("outreach")} showToast={showToast} onOpenComms={()=>navTo("calls")}/>;
       if(view==="calls")     return <SalesCalls showToast={showToast}/>;
-      if(view==="finder")    return <LeadFinder onAddLead={addLead} showToast={showToast}/>;
+      if(view==="finder")    return <LeadFinder onAddLead={addLead} showToast={showToast} onOpenOutreach={()=>openPanel("outreach")}/>;
       if(view==="proposals") return <ProposalGenerator showToast={showToast}/>;
       if(view==="leads")     return <SalesLeadsList leads={leads} showToast={showToast} onOpenComms={()=>navTo("calls")}/>;
       if(view==="activity")  return <SalesActivity/>;
