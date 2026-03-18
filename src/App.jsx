@@ -1183,60 +1183,134 @@ Punchy, Arizona flavor where relevant. No hashtags. Just the script.`
     );
   }
 
-  // ── CALENDAR LIST VIEW ──
+  const [showAddPost, setShowAddPost] = useState(false);
+  const [newPost, setNewPost] = useState({client:clients[0]?.name||"",title:"",type:"Behind the Scenes",date:"Apr 20",time:"9:00 AM",description:""});
+  const [calView, setCalView] = useState("list");
+
+  const addManualPost = () => {
+    if(!newPost.title.trim()) return;
+    setCalendar(p=>[...p,{...newPost,id:Date.now(),status:"Planned",caption:"",script:"",assigned:"",platform:"Instagram Reel"}]);
+    setShowAddPost(false);
+    setNewPost({client:clients[0]?.name||"",title:"",type:"Behind the Scenes",date:"Apr 20",time:"9:00 AM",description:""});
+    showToast("✓","Post added","Added to calendar");
+  };
+
+  // Month grid helper
+  const daysInApril = 30;
+  const firstDayOffset = 1; // Apr 1 2025 is Tuesday (offset 1 from Mon)
+  const getPostsForDay = (day) => filtered.filter(p => {
+    const d = parseInt(p.date?.split(" ")[1]);
+    return d === day;
+  });
+
+  // ── CALENDAR VIEW ──
   return (
     <div className="full-panel">
       <div style={{padding:"12px 14px",borderBottom:"1px solid var(--border)",background:"var(--surface)",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
         <button className="btn back" style={{margin:0,padding:"6px 10px",fontSize:12}} onClick={onClose}>←</button>
         <div style={{flex:1}}>
           <div style={{fontFamily:"var(--fd)",fontSize:14,fontWeight:700}}>Content Calendar</div>
-          <div style={{fontSize:11,color:"var(--text3)"}}>AI-generated — April 2025</div>
+          <div style={{fontSize:11,color:"var(--text3)"}}>April 2025</div>
+        </div>
+        <div style={{display:'flex',gap:4}}>
+          <button className={`action-btn ${calView==="grid"?"accent":""}`} onClick={()=>setCalView("grid")}>Grid</button>
+          <button className={`action-btn ${calView==="list"?"accent":""}`} onClick={()=>setCalView("list")}>List</button>
         </div>
       </div>
       <div className="full-panel-scroll">
-        <div style={{marginBottom:12}}>
-          <select className="form-select" value={selClient} onChange={e=>setSelClient(e.target.value)}>
+        <div style={{display:'flex',gap:8,marginBottom:12}}>
+          <select className="form-select" style={{flex:1}} value={selClient} onChange={e=>setSelClient(e.target.value)}>
             <option value="all">All Clients</option>
             {clients.filter(c=>c.status==="active").map(c=><option key={c.id}>{c.name}</option>)}
           </select>
+          <button className="btn primary" onClick={()=>setShowAddPost(!showAddPost)}>+ Add Post</button>
         </div>
+
+        {/* Add Post Form */}
+        {showAddPost && (
+          <div className="card" style={{marginBottom:12}}>
+            <div className="card-title">Add New Post</div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+              <div className="form-group" style={{margin:0}}><label className="form-label">Client</label><select className="form-select" value={newPost.client} onChange={e=>setNewPost(p=>({...p,client:e.target.value}))}>{clients.map(c=><option key={c.id}>{c.name}</option>)}</select></div>
+              <div className="form-group" style={{margin:0}}><label className="form-label">Type</label><select className="form-select" value={newPost.type} onChange={e=>setNewPost(p=>({...p,type:e.target.value}))}>{["Behind the Scenes","Before/After","Educational","Testimonial","Day in the Life","Promotional","Listing Tour","Team Intro"].map(t=><option key={t}>{t}</option>)}</select></div>
+            </div>
+            <div className="form-group"><label className="form-label">Title</label><input className="form-input" placeholder="Video title" value={newPost.title} onChange={e=>setNewPost(p=>({...p,title:e.target.value}))}/></div>
+            <div className="form-group"><label className="form-label">Description</label><textarea className="form-textarea" style={{minHeight:60}} placeholder="Describe the video concept..." value={newPost.description} onChange={e=>setNewPost(p=>({...p,description:e.target.value}))}/></div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+              <div className="form-group" style={{margin:0}}><label className="form-label">Date</label><select className="form-select" value={newPost.date} onChange={e=>setNewPost(p=>({...p,date:e.target.value}))}>{Array.from({length:30},(_,i)=><option key={i+1} value={`Apr ${i+1}`}>Apr {i+1}</option>)}</select></div>
+              <div className="form-group" style={{margin:0}}><label className="form-label">Time</label><select className="form-select" value={newPost.time} onChange={e=>setNewPost(p=>({...p,time:e.target.value}))}>{["8:00 AM","9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM"].map(t=><option key={t}>{t}</option>)}</select></div>
+            </div>
+            <div style={{display:'flex',gap:8,marginTop:12}}>
+              <button className="btn primary" style={{flex:1}} onClick={addManualPost}>Add to Calendar</button>
+              <button className="btn" onClick={()=>setShowAddPost(false)}>Cancel</button>
+            </div>
+          </div>
+        )}
+
         {!generated && !loading && (
-          <button className="btn primary full" onClick={generate}>✨ Generate April Calendar</button>
+          <div style={{textAlign:'center',padding:20}}>
+            <button className="btn primary" onClick={generate} style={{marginBottom:8}}>Generate Calendar with AI</button>
+            <div style={{font:'400 11px var(--fb)',color:'var(--text3)'}}>Or add posts manually above</div>
+          </div>
         )}
         {loading && <AILoading text="Building content calendar..."/>}
-        {generated && !loading && (
-          <>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-              <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"1px",fontWeight:700}}>{filtered.length} posts · Tap for details</div>
-              <button className="action-btn accent" onClick={generate}>↺ Regenerate</button>
-            </div>
-            {filtered.map((p)=>{
-              const cl = clients.find(c=>c.name===p.client);
-              return (
-                <div key={p.id} onClick={()=>setSelectedPost(p)} style={{display:"flex",gap:10,padding:"12px 14px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:14,marginBottom:8,cursor:"pointer",alignItems:"center",backdropFilter:"blur(12px)",boxShadow:"var(--shadow-sm)",transition:"all 0.15s"}}>
-                  <div style={{minWidth:46,textAlign:"center"}}>
-                    <div style={{fontFamily:"var(--fd)",fontSize:14,fontWeight:700,color:"var(--accent)"}}>{p.date.split(" ")[1]}</div>
-                    <div style={{fontSize:9,color:"var(--text3)",textTransform:"uppercase"}}>{p.date.split(" ")[0]}</div>
-                  </div>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:13,fontWeight:600,color:"var(--text)",marginBottom:2}}>{p.title}</div>
-                    <div style={{fontSize:11,color:"var(--text3)"}}>{p.client}</div>
-                    <div style={{display:"flex",gap:6,marginTop:4,flexWrap:"wrap"}}>
-                      <Badge type={statusColors[p.status]||"gray"}>{p.status}</Badge>
-                      <span className="badge badge-gray">{p.type}</span>
-                      {p.assigned&&<span style={{fontSize:10,color:"var(--text3)"}}>👤 {p.assigned}</span>}
-                    </div>
-                  </div>
-                  <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
-                    {p.script&&<span style={{fontSize:10,color:"var(--green)"}}>✓ Script</span>}
-                    {p.caption&&<span style={{fontSize:10,color:"var(--green)"}}>✓ Caption</span>}
-                    <span style={{color:"var(--text3)",fontSize:18}}>›</span>
-                  </div>
+        {generated && !loading && (<>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+            <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"1px",fontWeight:700}}>{filtered.length} posts</div>
+            <button className="action-btn accent" onClick={generate}>↺ Regenerate</button>
+          </div>
+
+          {/* Month Grid View */}
+          {calView==="grid" && (
+            <div className="card" style={{marginBottom:12}}>
+              <div className="cal-week">
+                {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d=><div key={d} className="cal-day-label">{d}</div>)}
+              </div>
+              {Array.from({length:5}).map((_,week)=>(
+                <div key={week} className="cal-week">
+                  {Array.from({length:7}).map((_,dow)=>{
+                    const dayNum = week*7+dow-firstDayOffset+1;
+                    if(dayNum<1||dayNum>daysInApril) return <div key={dow} style={{aspectRatio:'1'}}/>;
+                    const dayPosts = getPostsForDay(dayNum);
+                    return (
+                      <div key={dow} className={`cal-day ${dayPosts.length>0?"has-post":""}`}
+                        style={{cursor:dayPosts.length?'pointer':'default',position:'relative'}}
+                        onClick={()=>{if(dayPosts.length===1)setSelectedPost(dayPosts[0]);else if(dayPosts.length>1)showToast("◎",`${dayPosts.length} posts on Apr ${dayNum}`,dayPosts.map(p=>p.title).join(", "));}}>
+                        {dayNum}
+                        {dayPosts.length>0 && <div className="cal-post-dot"/>}
+                        {dayPosts.length>1 && <div style={{position:'absolute',top:2,right:2,font:'700 8px var(--fd)',color:'var(--accent)'}}>{dayPosts.length}</div>}
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
-          </>
-        )}
+              ))}
+            </div>
+          )}
+
+          {/* List View */}
+          {filtered.map((p)=>(
+            <div key={p.id} onClick={()=>setSelectedPost(p)} style={{display:"flex",gap:10,padding:"12px 14px",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:14,marginBottom:8,cursor:"pointer",alignItems:"center",backdropFilter:"blur(12px)",boxShadow:"var(--shadow-sm)",transition:"all 0.15s"}}>
+              <div style={{minWidth:46,textAlign:"center"}}>
+                <div style={{fontFamily:"var(--fd)",fontSize:14,fontWeight:700,color:"var(--accent)"}}>{p.date.split(" ")[1]}</div>
+                <div style={{fontSize:9,color:"var(--text3)",textTransform:"uppercase"}}>{p.date.split(" ")[0]}</div>
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontSize:13,fontWeight:600,color:"var(--text)",marginBottom:2}}>{p.title}</div>
+                <div style={{fontSize:11,color:"var(--text3)"}}>{p.client}</div>
+                <div style={{display:"flex",gap:6,marginTop:4,flexWrap:"wrap"}}>
+                  <Badge type={statusColors[p.status]||"gray"}>{p.status}</Badge>
+                  <span className="badge badge-gray">{p.type}</span>
+                  {p.assigned&&<span style={{fontSize:10,color:"var(--text3)"}}>{p.assigned}</span>}
+                </div>
+              </div>
+              <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
+                {p.script&&<span style={{fontSize:10,color:"var(--green)"}}>✓ Script</span>}
+                {p.caption&&<span style={{fontSize:10,color:"var(--green)"}}>✓ Caption</span>}
+                <span style={{color:"var(--text3)",fontSize:14}}>›</span>
+              </div>
+            </div>
+          ))}
+        </>)}
       </div>
     </div>
   );
