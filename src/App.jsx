@@ -1596,38 +1596,146 @@ function AdminDashboard({ clients, onNav, onOpenIdeas, onOpenCalendar, onOpenCli
 }
 
 function AdminRevenue({ clients }) {
+  const [expandedRow, setExpandedRow] = useState(null);
   const mrr = clients.reduce((s,c)=>s+c.mrr,0);
+  const adRevenue = AD_CAMPAIGNS.reduce((s,c)=>s+c.budget,0);
+  const totalRevenue = mrr + adRevenue;
+  const copperClients = clients.filter(c=>c.plan==="Copper").length;
+  const goldClients = clients.filter(c=>c.plan==="Gold").length;
+  const platClients = clients.filter(c=>c.plan==="Platinum").length;
+  const expenses = {payroll:8500,software:420,equipment:300,adSpend:adRevenue*0.7,misc:200};
+  const totalExpenses = Object.values(expenses).reduce((s,v)=>s+v,0);
+  const profit = totalRevenue - totalExpenses;
+
+  const glass = {
+    background:'rgba(255,255,255,0.6)',backdropFilter:'blur(20px)',WebkitBackdropFilter:'blur(20px)',
+    border:'1px solid rgba(255,255,255,0.65)',borderRadius:18,
+    boxShadow:'0 4px 24px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)',
+  };
+
   return (
     <div>
-      <div className="stats-grid">
-        <div className="stat-card"><div className="stat-label">MRR</div><div className="stat-value">${(mrr/1000).toFixed(1)}K</div><div className="stat-sub">↑ +$600 this mo</div></div>
-        <div className="stat-card"><div className="stat-label">ARR</div><div className="stat-value">${((mrr*12)/1000).toFixed(0)}K</div><div className="stat-sub">Annualized</div></div>
+      <div style={{...glass,padding:'28px 32px',marginBottom:24,background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',borderLeft:'3px solid var(--accent)',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:16}}>
+          <div>
+            <h1 style={{font:'600 22px var(--fd)',color:'var(--text)',marginBottom:4}}>Revenue & Financials</h1>
+            <p style={{font:'400 13px var(--fb)',color:'var(--text2)',margin:0}}>Agency-wide financial overview</p>
+          </div>
+          <div style={{textAlign:'right'}}>
+            <div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.5,color:'var(--text3)',marginBottom:2}}>Net Profit</div>
+            <div style={{font:'600 24px var(--fd)',color:profit>0?'var(--green)':'var(--red)'}}>${(profit/1000).toFixed(1)}K</div>
+          </div>
+        </div>
       </div>
-      <div className="card">
-        <div className="card-title">MRR Over Time</div>
-        <ResponsiveContainer width="100%" height={140}>
-          <AreaChart data={MRR_DATA} margin={{top:4,right:4,left:-20,bottom:0}}>
-            <defs><linearGradient id="mg2" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#FF5C00" stopOpacity={0.3}/><stop offset="95%" stopColor="#FF5C00" stopOpacity={0}/></linearGradient></defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E5" vertical={false}/>
-            <XAxis dataKey="month" tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
-            <YAxis tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false} tickFormatter={v=>`$${v/1000}K`}/>
-            <Tooltip content={<CustomTooltip/>}/>
-            <Area type="monotone" dataKey="mrr" stroke="#FF5C00" strokeWidth={2} fill="url(#mg2)"/>
-          </AreaChart>
-        </ResponsiveContainer>
+
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(180px, 1fr))',gap:14,marginBottom:24}}>
+        {[
+          {label:"Monthly Revenue",val:`$${(totalRevenue/1000).toFixed(1)}K`,sub:"Retainers + ad mgmt",color:"var(--accent)"},
+          {label:"MRR (Retainers)",val:`$${(mrr/1000).toFixed(1)}K`,sub:`${clients.length} clients`,color:"var(--text)"},
+          {label:"Ad Mgmt Revenue",val:`$${(adRevenue/1000).toFixed(1)}K`,sub:`${AD_CAMPAIGNS.filter(a=>a.status==="Running").length} active campaigns`,color:"var(--blue)"},
+          {label:"Monthly Expenses",val:`$${(totalExpenses/1000).toFixed(1)}K`,sub:"Payroll, software, ads",color:"var(--red)"},
+          {label:"Profit Margin",val:`${Math.round((profit/totalRevenue)*100)}%`,sub:profit>0?"Healthy":"Needs attention",color:profit>0?"var(--green)":"var(--red)"},
+          {label:"ARR",val:`$${((totalRevenue*12)/1000).toFixed(0)}K`,sub:"Annualized",color:"var(--text)"},
+        ].map((s,i)=>(
+          <div key={s.label} className="dash-card-hover" style={{...glass,padding:'20px 18px',animation:`dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) ${i*60}ms backwards`}}>
+            <div style={{font:'500 10px var(--fd)',textTransform:'uppercase',letterSpacing:1.2,color:'var(--text3)',marginBottom:6}}>{s.label}</div>
+            <div style={{font:'600 26px var(--fd)',color:s.color,letterSpacing:'-0.5px'}}>{s.val}</div>
+            <div style={{font:'400 11px var(--fb)',color:'var(--text2)',marginTop:4}}>{s.sub}</div>
+          </div>
+        ))}
       </div>
-      <div className="card">
-        <div className="card-title">Videos Produced</div>
-        <ResponsiveContainer width="100%" height={120}>
-          <BarChart data={VIDEO_DATA} margin={{top:4,right:4,left:-20,bottom:0}}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E5" vertical={false}/>
-            <XAxis dataKey="month" tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
-            <YAxis tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
-            <Tooltip content={<CustomTooltip prefix=""/>}/>
-            <Bar dataKey="videos" fill="#3B82F6" radius={[4,4,0,0]}/>
-          </BarChart>
-        </ResponsiveContainer>
+
+      <div style={{display:'grid',gridTemplateColumns:'1.1fr 0.9fr',gap:20}}>
+        {/* LEFT: Revenue Breakdown */}
+        <div>
+          <div className="card">
+            <div className="card-title">MRR Trend</div>
+            <ResponsiveContainer width="100%" height={140}>
+              <AreaChart data={MRR_DATA} margin={{top:4,right:4,left:-20,bottom:0}}>
+                <defs><linearGradient id="mg2" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#FF5C00" stopOpacity={0.3}/><stop offset="95%" stopColor="#FF5C00" stopOpacity={0}/></linearGradient></defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E5" vertical={false}/>
+                <XAxis dataKey="month" tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
+                <YAxis tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false} tickFormatter={v=>`$${v/1000}K`}/>
+                <Tooltip content={<CustomTooltip/>}/>
+                <Area type="monotone" dataKey="mrr" stroke="#FF5C00" strokeWidth={2} fill="url(#mg2)"/>
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="card">
+            <div className="card-title">Revenue by Client</div>
+            {clients.sort((a,b)=>b.mrr-a.mrr).map(c=>(
+              <div key={c.id} className="row-item" style={{cursor:'pointer'}} onClick={()=>setExpandedRow(expandedRow===c.id?null:c.id)}>
+                <div className="row-avatar" style={{background:`${c.color}20`,color:c.color}}>{c.name[0]}</div>
+                <div className="row-main">
+                  <div className="row-title">{c.name}</div>
+                  <div className="row-sub">{c.plan} · {c.industry}</div>
+                  {expandedRow===c.id && (
+                    <div style={{marginTop:8}}>
+                      <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'var(--text2)',marginBottom:4}}><span>Retainer</span><span style={{fontWeight:600}}>${c.mrr.toLocaleString()}/mo</span></div>
+                      <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'var(--text2)',marginBottom:4}}><span>Videos/mo</span><span>{PLAN_DETAILS[c.plan]?.videos||4}</span></div>
+                      <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'var(--text2)',marginBottom:4}}><span>Shoots/mo</span><span>{PLAN_DETAILS[c.plan]?.shoots||"1x3hr"}</span></div>
+                      <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'var(--text2)'}}><span>Ad management</span><span>{(PLAN_DETAILS[c.plan]?.googleAds?"FB + Google":"FB only")}</span></div>
+                    </div>
+                  )}
+                </div>
+                <div style={{font:'600 14px var(--fd)',color:'var(--text)',flexShrink:0}}>${c.mrr.toLocaleString()}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* RIGHT: Expenses + Plan Distribution */}
+        <div>
+          <div className="card">
+            <div className="card-title">Monthly Expenses</div>
+            {[
+              {label:"Team Payroll",val:expenses.payroll,icon:"👥"},
+              {label:"Ad Spend (pass-through)",val:expenses.adSpend,icon:"📢"},
+              {label:"Software & Tools",val:expenses.software,icon:"💻"},
+              {label:"Equipment & Gear",val:expenses.equipment,icon:"🎬"},
+              {label:"Miscellaneous",val:expenses.misc,icon:"📋"},
+            ].map(e=>(
+              <div key={e.label} className="row-item" style={{cursor:'pointer'}} onClick={()=>setExpandedRow(expandedRow===e.label?null:e.label)}>
+                <div style={{fontSize:16,width:24,textAlign:'center',flexShrink:0}}>{e.icon}</div>
+                <div className="row-main"><div className="row-title">{e.label}</div></div>
+                <div style={{font:'600 13px var(--fd)',color:'var(--red)'}}>${e.val.toLocaleString()}</div>
+              </div>
+            ))}
+            <div style={{borderTop:'1px solid var(--border)',paddingTop:10,marginTop:4,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <span style={{font:'600 12px var(--fd)',color:'var(--text)'}}>Total Expenses</span>
+              <span style={{font:'700 16px var(--fd)',color:'var(--red)'}}>${totalExpenses.toLocaleString()}</span>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-title">Plan Distribution</div>
+            {[{plan:"Platinum",count:platClients,price:"$5,000",color:"#A855F7"},{plan:"Gold",count:goldClients,price:"$3,000",color:"#3B82F6"},{plan:"Copper",count:copperClients,price:"$1,500",color:"#9999A8"}].map(p=>(
+              <div key={p.plan} style={{display:'flex',alignItems:'center',gap:12,padding:'10px 0',borderBottom:'1px solid var(--border)'}}>
+                <div style={{width:36,height:36,borderRadius:10,background:`${p.color}15`,display:'flex',alignItems:'center',justifyContent:'center',font:'700 12px var(--fd)',color:p.color}}>{p.count}</div>
+                <div style={{flex:1}}>
+                  <div style={{font:'600 13px var(--fd)',color:'var(--text)'}}>{p.plan}</div>
+                  <div style={{font:'400 11px var(--fb)',color:'var(--text3)'}}>{p.price}/mo per client</div>
+                </div>
+                <div style={{font:'600 14px var(--fd)',color:'var(--text)'}}>${(p.count*(parseInt(p.price.replace(/\D/g,"")))).toLocaleString()}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="card">
+            <div className="card-title">Videos Produced</div>
+            <ResponsiveContainer width="100%" height={100}>
+              <BarChart data={VIDEO_DATA} margin={{top:4,right:4,left:-20,bottom:0}}>
+                <XAxis dataKey="month" tick={{fill:"#999",fontSize:10}} axisLine={false} tickLine={false}/>
+                <Tooltip content={<CustomTooltip prefix=""/>}/>
+                <Bar dataKey="videos" fill="#3B82F6" radius={[4,4,0,0]}/>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
+
+      <style>{"@media(max-width:860px){.card:has(.card-title){margin-bottom:12px}}"}</style>
     </div>
   );
 }
@@ -1709,10 +1817,14 @@ function AdminSettings({ showToast, darkMode, setDarkMode }) {
 }
 
 // ─── ADMIN CLIENTS ────────────────────────────────────────────────────────
-function AdminClients({ clients, showToast, onOpenIdeas }) {
+function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAutoSelect }) {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedClient, setSelectedClient] = useState(null);
+  const [selectedClient, setSelectedClient] = useState(autoSelect||null);
+  const [clientTab, setClientTab] = useState("overview");
+  const [expandedPipeline, setExpandedPipeline] = useState(null);
+  const [expandedSection, setExpandedSection] = useState(null);
+  useEffect(()=>{if(autoSelect){setSelectedClient(autoSelect);setClientTab("overview");onClearAutoSelect?.();}}, [autoSelect]);
 
   const filtered = clients.filter(c => {
     const matchSearch = c.name.toLowerCase().includes(search.toLowerCase());
@@ -1722,8 +1834,6 @@ function AdminClients({ clients, showToast, onOpenIdeas }) {
 
   if (selectedClient) {
     const c = selectedClient;
-    const [clientTab, setClientTab] = useState("overview");
-    const [expandedPipeline, setExpandedPipeline] = useState(null);
     const teamMembers = [{name:"Maya R.",role:"Script Writer",color:"#A855F7",tasks:3,status:"Active"},{name:"Jordan T.",role:"Video Editor",color:"#22C55E",tasks:2,status:"Active"},{name:"Carlos V.",role:"Account Manager",color:"#3B82F6",tasks:1,status:"Available"}];
     const pipeline = [
       {id:1,title:"Day in the Life",status:"Scripting",progress:20,icon:"✍️",assigned:"Maya R.",due:"Mar 22",script:"HOOK (0–3 sec)\nEver wonder what a day at "+c.name+" looks like?\n\nSETUP (3–10 sec)\nWe spent a full morning with the team and captured everything...",notes:"Client wants to highlight the morning rush. Keep it authentic."},
@@ -1741,7 +1851,7 @@ function AdminClients({ clients, showToast, onOpenIdeas }) {
     const clientShoots = INIT_SHOOTS.filter(s=>s.client===c.name);
     const clientCoaching = INIT_COACHING.filter(s=>s.client===c.name);
     const clientAds = AD_CAMPAIGNS.filter(a=>a.client===c.name);
-    const [expandedSection, setExpandedSection] = useState(null);
+    /* expandedSection already declared at component top */
     const socials = [
       {platform:"Instagram",handle:c.brandKit?.ig||"—",icon:"📸",connected:c.status==="active",followers:c.metrics?.followers||0},
       {platform:"Facebook",handle:c.name+" Page",icon:"📘",connected:c.status==="active",followers:Math.round((c.metrics?.followers||0)*0.6)},
@@ -3650,6 +3760,7 @@ export default function App() {
   const [panelData, setPanelData] = useState(null);
   const [sheetOpen, setSheet]     = useState(false);
   const [darkMode, setDarkMode]   = useState(false);
+  const [autoSelectClient, setAutoSelectClient] = useState(null);
 
   useEffect(() => { document.documentElement.classList.toggle("dark", darkMode); }, [darkMode]);
   const [modal, setModal]         = useState(null);
@@ -3704,12 +3815,12 @@ export default function App() {
     if(subView?.type==="client-detail") return null; // handled in panels
 
     if(role==="admin"){
-      if(view==="dashboard") return <AdminDashboard clients={clients} onNav={navTo} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} onOpenClientDetail={(c)=>openPanel("client-detail",c)} showToast={showToast}/>;
+      if(view==="dashboard") return <AdminDashboard clients={clients} onNav={navTo} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} onOpenClientDetail={(c)=>{setAutoSelectClient(c);navTo("clients");}} showToast={showToast}/>;
       if(view==="pipeline")  return <ContentPipeline scripts={scripts} videos={videos} onAdvanceVideo={advanceVideo} onUpdateScript={updateScript} showToast={showToast}/>;
       if(view==="shoots")    return <ShootCalendar shoots={INIT_SHOOTS} showToast={showToast}/>;
       if(view==="coaching")  return <CoachingTracker sessions={INIT_COACHING} showToast={showToast}/>;
       if(view==="team")      return <TeamWorkload scripts={scripts} videos={videos}/>;
-      if(view==="clients")   return <AdminClients clients={clients} showToast={showToast} onOpenIdeas={(c)=>openPanel("ideas",c)}/>;
+      if(view==="clients")   return <AdminClients clients={clients} showToast={showToast} onOpenIdeas={(c)=>openPanel("ideas",c)} autoSelect={autoSelectClient} onClearAutoSelect={()=>setAutoSelectClient(null)}/>;
       if(view==="revenue")   return <AdminRevenue clients={clients}/>;
       if(view==="ads")       return <AdminAds showToast={showToast}/>;
       if(view==="settings")  return <AdminSettings showToast={showToast} darkMode={darkMode} setDarkMode={setDarkMode}/>;
@@ -3849,85 +3960,7 @@ export default function App() {
           {panel==="calendar" && <ContentCalendar clients={clients} onClose={closePanel} showToast={showToast}/>}
           {panel==="caption" && <CaptionWriter onClose={closePanel} showToast={showToast}/>}
           {panel==="outreach" && <OutreachWriter onClose={closePanel} showToast={showToast}/>}
-          {panel==="client-detail" && panelData && (
-            <div className="full-panel">
-              <div style={{padding:"12px 24px",borderBottom:"1px solid var(--border)",background:"var(--surface)",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
-                <button className="btn back" style={{margin:0,padding:"6px 10px",fontSize:12}} onClick={closePanel}>←</button>
-                <div className="row-avatar" style={{background:`${panelData.color}20`,color:panelData.color,width:36,height:36}}>{panelData.name[0]}</div>
-                <div style={{flex:1}}>
-                  <div style={{fontFamily:"var(--fd)",fontSize:14,fontWeight:700}}>{panelData.name}</div>
-                  <div style={{fontSize:11,color:"var(--text3)"}}>{panelData.industry}</div>
-                </div>
-              </div>
-              <div className="full-panel-scroll">
-                <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
-                  <Badge type={panelData.plan==="Platinum"?"purple":panelData.plan==="Gold"?"blue":"gray"}>{panelData.plan} Plan</Badge>
-                  <Badge type={panelData.status==="active"?"green":panelData.status==="onboarding"?"amber":"red"}>{panelData.status}</Badge>
-                </div>
-                <div className="stats-grid">
-                  <div className="stat-card"><div className="stat-label">MRR</div><div className="stat-value">${panelData.mrr.toLocaleString()}</div></div>
-                  <div className="stat-card"><div className="stat-label">Videos</div><div className="stat-value">{panelData.videos}</div><div className="stat-sub">produced</div></div>
-                  <div className="stat-card"><div className="stat-label">Next Delivery</div><div className="stat-value" style={{fontSize:16}}>{panelData.nextPost}</div></div>
-                  <div className="stat-card"><div className="stat-label">Stage</div><div className="stat-value" style={{fontSize:16}}>{panelData.stage}</div></div>
-                </div>
-                {/* Brand Kit */}
-                {panelData.brandKit && (
-                  <div className="card">
-                    <div className="card-title">Brand Kit</div>
-                    <div className="row-item" style={{paddingTop:0}}>
-                      <div className="row-main"><div className="row-title">Colors</div></div>
-                      <div style={{display:'flex',gap:4}}>
-                        {panelData.brandKit.colors.map((c,i)=><div key={i} style={{width:22,height:22,borderRadius:6,background:c,border:'1px solid var(--border2)'}}/>)}
-                      </div>
-                    </div>
-                    <div className="row-item"><div className="row-main"><div className="row-title">Tone</div><div className="row-sub">{panelData.brandKit.tone}</div></div></div>
-                    <div className="row-item"><div className="row-main"><div className="row-title">Instagram</div><div className="row-sub">{panelData.brandKit.ig}</div></div></div>
-                    <div className="row-item"><div className="row-main"><div className="row-title">Audience</div><div className="row-sub">{panelData.brandKit.audience}</div></div></div>
-                    {panelData.brandKit.hashtags?.length > 0 && (
-                      <div className="row-item" style={{borderBottom:'none'}}>
-                        <div className="row-main">
-                          <div className="row-title">Hashtags</div>
-                          <div style={{display:'flex',gap:4,flexWrap:'wrap',marginTop:4}}>
-                            {panelData.brandKit.hashtags.map((h,i)=><span key={i} style={{font:'400 10px var(--fb)',color:'var(--accent)',background:'var(--accent-dim)',padding:'2px 8px',borderRadius:12}}>{h}</span>)}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-                {/* Performance Metrics */}
-                {panelData.metrics && panelData.metrics.followers > 0 && (
-                  <div className="card">
-                    <div className="card-title">Performance This Month</div>
-                    <div className="stats-grid" style={{marginBottom:0}}>
-                      <div className="stat-card"><div className="stat-label">Followers</div><div className="stat-value" style={{fontSize:20}}>{panelData.metrics.followers.toLocaleString()}</div><div className="stat-sub" style={{color:'var(--green)'}}>+{panelData.metrics.gained} gained</div></div>
-                      <div className="stat-card"><div className="stat-label">Avg Views</div><div className="stat-value" style={{fontSize:20}}>{panelData.metrics.avgViews.toLocaleString()}</div></div>
-                      <div className="stat-card"><div className="stat-label">Eng. Rate</div><div className="stat-value" style={{fontSize:20}}>{panelData.metrics.engRate}%</div></div>
-                      <div className="stat-card"><div className="stat-label">Top Post</div><div className="stat-value" style={{fontSize:12}}>{panelData.metrics.topPost}</div></div>
-                    </div>
-                  </div>
-                )}
-                <div className="card">
-                  <div className="card-title">Content Pipeline</div>
-                  {[{title:"Day in the Life",status:"Scripting",progress:20,icon:"✍️"},{title:"Listing Showcase",status:"Editing",progress:60,icon:"🎬"},{title:"Testimonial Reel",status:"Review",progress:85,icon:"👁️"}].map((p,i)=>(
-                    <div className="deliverable-item" key={i}>
-                      <div className="deliverable-icon">{p.icon}</div>
-                      <div className="deliverable-info">
-                        <div className="deliverable-title">{p.title}</div>
-                        <div className="deliverable-sub">{p.status}</div>
-                        <div className="progress-bar-wrap"><div className="progress-bar" style={{width:`${p.progress}%`,background:"var(--accent)"}}/></div>
-                      </div>
-                      <Badge type={p.status==="Scripting"?"gray":p.status==="Editing"?"blue":"amber"}>{p.status}</Badge>
-                    </div>
-                  ))}
-                </div>
-                <div style={{display:"flex",gap:8}}>
-                  <button className="btn primary" style={{flex:1}} onClick={()=>{openPanel("ideas",panelData);}}>💡 AI Ideas</button>
-                  <button className="btn" style={{flex:1}} onClick={()=>showToast("💬","Message sent","Notification sent to team")}>Message</button>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* client-detail panel now redirects to full Clients page */}
         </div>
 
         {/* ROLE SHEET */}
