@@ -4245,7 +4245,7 @@ function ScriptTemplates({ showToast }) {
 }
 
 // ─── SHOOT CALENDAR ──────────────────────────────────────────────────────────
-function ShootCalendar({ shoots, showToast }) {
+function ShootCalendar({ shoots, showToast, onOpenMessages }) {
   const [selectedShoot, setSelectedShoot] = useState(null);
   const [showNewShoot, setShowNewShoot] = useState(false);
 
@@ -4309,7 +4309,7 @@ function ShootCalendar({ shoots, showToast }) {
                 <div style={{display:'flex',gap:8,marginTop:10}}>
                   {s.status==="Pending" && <button className="btn success" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("✓","Confirmed",s.client+" shoot confirmed");}}>Confirm</button>}
                   <button className="btn" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("◉","Reschedule","Reschedule request sent");}}>Reschedule</button>
-                  <button className="btn" onClick={(e)=>{e.stopPropagation();showToast("◉","Message","Notification sent to crew");}}>Message Crew</button>
+                  <button className="btn" onClick={(e)=>{e.stopPropagation();if(onOpenMessages)onOpenMessages();else showToast("◉","Messages","Opening...");}}>Message Crew</button>
                 </div>
                 <CommentThread itemId={`shoot-${s.id}`} showToast={showToast}/>
               </div>
@@ -5225,7 +5225,7 @@ export default function App() {
       if(view==="pipeline")  return <ContentPipeline scripts={scripts} videos={videos} onAdvanceVideo={advanceVideo} onUpdateScript={updateScript} showToast={showToast}/>;
       if(view==="library")   return <ContentLibrary showToast={showToast}/>;
       if(view==="scheduler") return <PlatformScheduler showToast={showToast}/>;
-      if(view==="shoots")    return <ShootCalendar shoots={INIT_SHOOTS} showToast={showToast}/>;
+      if(view==="shoots")    return <ShootCalendar shoots={INIT_SHOOTS} showToast={showToast} onOpenMessages={()=>openPanel("messages")}/>;
       if(view==="coaching")  return <CoachingTracker sessions={INIT_COACHING} showToast={showToast}/>;
       if(view==="team")      return <TeamWorkload scripts={scripts} videos={videos}/>;
       if(view==="clients")   return <AdminClients clients={clients} showToast={showToast} onOpenIdeas={(c)=>openPanel("ideas",c)} autoSelect={autoSelectClient} onClearAutoSelect={()=>setAutoSelectClient(null)} onUpdateClient={(id,updates)=>setClients(p=>p.map(c=>c.id===id?{...c,...updates}:c))} onOpenMessages={()=>openPanel("messages")}/>;
