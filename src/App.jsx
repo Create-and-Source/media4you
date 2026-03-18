@@ -1697,59 +1697,192 @@ function AdminClients({ clients, showToast, onOpenIdeas }) {
 
   if (selectedClient) {
     const c = selectedClient;
-    const teamMembers = [{name:"Maya R.",role:"Script Writer",color:"#A855F7"},{name:"Jordan T.",role:"Video Editor",color:"#22C55E"},{name:"Carlos V.",role:"Account Manager",color:"#3B82F6"}];
-    const pipeline = [{title:"Day in the Life",status:"Scripting",progress:20},{title:"Listing Showcase",status:"Editing",progress:60},{title:"Testimonial Reel",status:"Review",progress:85}];
+    const [clientTab, setClientTab] = useState("overview");
+    const [expandedPipeline, setExpandedPipeline] = useState(null);
+    const teamMembers = [{name:"Maya R.",role:"Script Writer",color:"#A855F7",tasks:3,status:"Active"},{name:"Jordan T.",role:"Video Editor",color:"#22C55E",tasks:2,status:"Active"},{name:"Carlos V.",role:"Account Manager",color:"#3B82F6",tasks:1,status:"Available"}];
+    const pipeline = [
+      {id:1,title:"Day in the Life",status:"Scripting",progress:20,icon:"✍️",assigned:"Maya R.",due:"Mar 22",script:"HOOK (0–3 sec)\nEver wonder what a day at "+c.name+" looks like?\n\nSETUP (3–10 sec)\nWe spent a full morning with the team and captured everything...",notes:"Client wants to highlight the morning rush. Keep it authentic."},
+      {id:2,title:"Listing Showcase",status:"Editing",progress:60,icon:"🎬",assigned:"Jordan T.",due:"Mar 20",script:"Shot list complete. B-roll captured on site. Editing 4K footage with color grade.",notes:"Drone shots approved. Need to add text overlays for property specs."},
+      {id:3,title:"Testimonial Reel",status:"Review",progress:85,icon:"👁️",assigned:"Jordan T.",due:"Mar 19",script:"Final cut ready. Awaiting client review for brand tone and CTA.",notes:"Client mentioned they want a stronger call-to-action at the end."},
+    ];
+    const activity = [
+      {action:"Script submitted",item:"Testimonial Reel",by:"Maya R.",time:"2 hours ago",dot:"var(--blue)"},
+      {action:"Video uploaded",item:"Listing Showcase — raw footage",by:"Jordan T.",time:"Yesterday",dot:"var(--green)"},
+      {action:"Revision requested",item:"Day in the Life script",by:c.name,time:"2 days ago",dot:"var(--amber)"},
+      {action:"Content approved",item:"Agent Intro — Meet Sarah",by:c.name,time:"3 days ago",dot:"var(--green)"},
+      {action:"New content idea generated",item:"5 AI ideas created",by:"Alex M.",time:"4 days ago",dot:"var(--accent)"},
+    ];
+    const tabs = [{key:"overview",label:"Overview"},{key:"content",label:"Content"},{key:"analytics",label:"Analytics"},{key:"brand",label:"Brand Kit"}];
+
     return (
       <div>
         <button className="btn back" onClick={()=>setSelectedClient(null)}>← All Clients</button>
         <div className="client-hero">
           <div style={{display:"flex",alignItems:"center",gap:12}}>
-            <div className="row-avatar" style={{background:`${c.color}20`,color:c.color,width:44,height:44,fontSize:18}}>{c.name[0]}</div>
-            <div>
-              <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:800}}>{c.name}</div>
-              <div style={{fontSize:12,color:"var(--text2)",marginTop:2}}>{c.industry}</div>
+            <div className="row-avatar" style={{background:`${c.color}20`,color:c.color,width:48,height:48,fontSize:20}}>{c.name[0]}</div>
+            <div style={{flex:1}}>
+              <div style={{fontFamily:"var(--fd)",fontSize:20,fontWeight:800}}>{c.name}</div>
+              <div style={{fontSize:12,color:"var(--text2)",marginTop:2}}>{c.industry} · {c.brandKit?.ig||"No IG"}</div>
             </div>
           </div>
           <div style={{display:"flex",gap:8,marginTop:14,flexWrap:"wrap"}}>
-            <Badge type={c.plan==="Pro"?"purple":c.plan==="Growth"?"blue":"gray"}>{c.plan} Plan</Badge>
+            <Badge type={c.plan==="Pro"?"purple":c.plan==="Growth"?"blue":"gray"}>{c.plan} Plan — ${c.mrr}/mo</Badge>
             <Badge type={c.status==="active"?"green":c.status==="onboarding"?"amber":"red"}>{c.status}</Badge>
           </div>
         </div>
-        <div className="stats-grid">
-          <div className="stat-card"><div className="stat-label">MRR</div><div className="stat-value">${c.mrr.toLocaleString()}</div></div>
-          <div className="stat-card"><div className="stat-label">Videos</div><div className="stat-value">{c.videos}</div><div className="stat-sub">produced</div></div>
-          <div className="stat-card"><div className="stat-label">Next Delivery</div><div className="stat-value" style={{fontSize:16}}>{c.nextPost}</div></div>
-          <div className="stat-card"><div className="stat-label">Stage</div><div className="stat-value" style={{fontSize:16}}>{c.stage}</div></div>
+
+        {/* Tabs */}
+        <div style={{display:'flex',gap:4,marginBottom:16,borderBottom:'1px solid var(--border)',paddingBottom:0}}>
+          {tabs.map(t=>(
+            <button key={t.key} onClick={()=>setClientTab(t.key)} style={{
+              padding:'10px 16px',border:'none',background:'none',cursor:'pointer',
+              font:`${clientTab===t.key?600:400} 12px var(--fd)`,
+              color:clientTab===t.key?'var(--accent)':'var(--text3)',
+              borderBottom:clientTab===t.key?'2px solid var(--accent)':'2px solid transparent',
+              transition:'all 0.15s',
+            }}>{t.label}</button>
+          ))}
         </div>
-        <div className="card">
-          <div className="card-title">Content Pipeline</div>
-          {pipeline.map((p,i)=>(
-            <div className="deliverable-item" key={i}>
-              <div className="deliverable-icon">{["✍️","🎬","👁️"][i]}</div>
-              <div className="deliverable-info">
-                <div className="deliverable-title">{p.title}</div>
-                <div className="deliverable-sub">{p.status}</div>
-                <div className="progress-bar-wrap"><div className="progress-bar" style={{width:`${p.progress}%`,background:"var(--accent)"}}/></div>
+
+        {clientTab==="overview" && (<>
+          <div className="stats-grid">
+            <div className="stat-card"><div className="stat-label">MRR</div><div className="stat-value">${c.mrr.toLocaleString()}</div></div>
+            <div className="stat-card"><div className="stat-label">Videos</div><div className="stat-value">{c.videos}</div><div className="stat-sub">produced</div></div>
+            <div className="stat-card"><div className="stat-label">Next Delivery</div><div className="stat-value" style={{fontSize:16}}>{c.nextPost}</div></div>
+            <div className="stat-card"><div className="stat-label">Stage</div><div className="stat-value" style={{fontSize:16}}>{c.stage}</div></div>
+          </div>
+          <div className="card">
+            <div className="card-title">Assigned Team</div>
+            {teamMembers.map(m=>(
+              <div className="row-item" key={m.name} style={{cursor:'pointer'}} onClick={()=>showToast(m.status==="Active"?"🟢":"🔵",m.name,m.tasks+" active tasks · "+m.status)}>
+                <div className="row-avatar" style={{background:`${m.color}20`,color:m.color}}>{m.name[0]}</div>
+                <div className="row-main"><div className="row-title">{m.name}</div><div className="row-sub">{m.role}</div></div>
+                <div style={{display:'flex',alignItems:'center',gap:6}}>
+                  <span style={{font:'500 11px var(--fd)',color:'var(--text3)'}}>{m.tasks} tasks</span>
+                  <div style={{width:7,height:7,borderRadius:'50%',background:m.status==="Active"?"var(--green)":"var(--blue)"}}/>
+                </div>
               </div>
-              <Badge type={p.status==="Scripting"?"gray":p.status==="Editing"?"blue":"amber"}>{p.status}</Badge>
+            ))}
+          </div>
+          <div className="card">
+            <div className="card-title">Recent Activity</div>
+            {activity.map((a,i)=>(
+              <div className="activity-item" key={i}>
+                <div className="activity-dot" style={{background:a.dot}}/>
+                <div style={{flex:1}}>
+                  <div className="activity-text"><strong>{a.action}</strong> — {a.item}</div>
+                  <div className="activity-time">{a.by} · {a.time}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{display:"flex",gap:8}}>
+            <button className="btn" style={{flex:1}} onClick={()=>showToast("✏️","Edit mode","Client details are now editable")}>Edit</button>
+            <button className="btn" style={{flex:1}} onClick={()=>showToast("⏸️","Paused","Client account paused")}>Pause</button>
+            <button className="btn" style={{flex:1}} onClick={()=>showToast("💬","Message sent","Notification sent to team")}>Message</button>
+          </div>
+        </>)}
+
+        {clientTab==="content" && (<>
+          {onOpenIdeas && <button className="btn primary full" style={{marginBottom:12}} onClick={()=>onOpenIdeas(c)}>💡 Generate AI Content Ideas</button>}
+          <div className="card">
+            <div className="card-title">Content Pipeline</div>
+            {pipeline.map(p=>(
+              <div key={p.id}>
+                <div className="deliverable-item" style={{cursor:'pointer'}} onClick={()=>setExpandedPipeline(expandedPipeline===p.id?null:p.id)}>
+                  <div className="deliverable-icon">{p.icon}</div>
+                  <div className="deliverable-info">
+                    <div className="deliverable-title">{p.title}</div>
+                    <div className="deliverable-sub">{p.status} · {p.assigned}</div>
+                    <div className="progress-bar-wrap"><div className="progress-bar" style={{width:`${p.progress}%`,background:p.status==="Review"?"var(--amber)":p.status==="Editing"?"var(--blue)":"var(--accent)"}}/></div>
+                  </div>
+                  <Badge type={p.status==="Scripting"?"gray":p.status==="Editing"?"blue":"amber"}>{p.status}</Badge>
+                </div>
+                {expandedPipeline===p.id && (
+                  <div style={{padding:'12px 0 16px 40px',borderBottom:'1px solid var(--border)'}}>
+                    <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Assigned To</div><div className="row-sub">{p.assigned}</div></div></div>
+                    <div className="row-item"><div className="row-main"><div className="row-title">Due Date</div><div className="row-sub" style={{color:p.due<"Mar 18"?"var(--red)":"var(--text3)"}}>{p.due<"Mar 18"?"⚠ OVERDUE — "+p.due:p.due}</div></div></div>
+                    <div className="row-item"><div className="row-main"><div className="row-title">Progress</div><div className="row-sub">{p.progress}%</div></div></div>
+                    {p.notes && <div className="row-item"><div className="row-main"><div className="row-title">Notes</div><div className="row-sub">{p.notes}</div></div></div>}
+                    {p.script && (
+                      <div style={{marginTop:8}}>
+                        <div style={{font:'600 10px var(--fd)',textTransform:'uppercase',letterSpacing:0.8,color:'var(--text3)',marginBottom:6}}>Script / Details</div>
+                        <div style={{background:'rgba(255,255,255,0.7)',border:'1px solid var(--border)',borderRadius:10,padding:'12px 14px',font:'400 11px var(--fb)',color:'var(--text2)',lineHeight:1.7,whiteSpace:'pre-wrap',maxHeight:150,overflowY:'auto'}}>{p.script}</div>
+                      </div>
+                    )}
+                    <div style={{display:'flex',gap:6,marginTop:10}}>
+                      <button className="btn primary" style={{flex:1,padding:'8px 12px',fontSize:11}} onClick={()=>showToast("✅","Approved","Content moved to next stage")}>Approve</button>
+                      <button className="btn" style={{padding:'8px 12px',fontSize:11}} onClick={()=>showToast("📝","Revision","Request sent to team")}>Request Changes</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </>)}
+
+        {clientTab==="analytics" && (<>
+          {c.metrics && c.metrics.followers > 0 ? (
+            <div>
+              <div className="stats-grid">
+                <div className="stat-card"><div className="stat-label">Followers</div><div className="stat-value">{c.metrics.followers.toLocaleString()}</div><div className="stat-sub" style={{color:'var(--green)'}}>+{c.metrics.gained} this month</div></div>
+                <div className="stat-card"><div className="stat-label">Avg Views</div><div className="stat-value">{c.metrics.avgViews.toLocaleString()}</div></div>
+                <div className="stat-card"><div className="stat-label">Avg Likes</div><div className="stat-value">{c.metrics.avgLikes}</div></div>
+                <div className="stat-card"><div className="stat-label">Engagement Rate</div><div className="stat-value">{c.metrics.engRate}%</div></div>
+              </div>
+              <div className="card">
+                <div className="card-title">Top Performing Content</div>
+                <div className="row-item" style={{paddingTop:0}}>
+                  <div style={{fontSize:20}}>🏆</div>
+                  <div className="row-main"><div className="row-title">{c.metrics.topPost}</div><div className="row-sub">Highest engagement this month</div></div>
+                </div>
+              </div>
+              <div className="card">
+                <div className="card-title">Growth Summary</div>
+                <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Followers Gained</div></div><div style={{font:'600 14px var(--fd)',color:'var(--green)'}}>+{c.metrics.gained}</div></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Total Views (est.)</div></div><div style={{font:'600 14px var(--fd)',color:'var(--text)'}}>{(c.metrics.avgViews * c.videos).toLocaleString()}</div></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Videos Produced</div></div><div style={{font:'600 14px var(--fd)',color:'var(--text)'}}>{c.videos}</div></div>
+                <div className="row-item" style={{borderBottom:'none'}}><div className="row-main"><div className="row-title">ROI Score</div></div><Badge type="green">Strong</Badge></div>
+              </div>
             </div>
-          ))}
-        </div>
-        <div className="card">
-          <div className="card-title">Assigned Team</div>
-          {teamMembers.map(m=>(
-            <div className="row-item" key={m.name}>
-              <div className="row-avatar" style={{background:`${m.color}20`,color:m.color}}>{m.name[0]}</div>
-              <div className="row-main"><div className="row-title">{m.name}</div><div className="row-sub">{m.role}</div></div>
+          ) : (
+            <div className="empty"><div className="empty-icon">📊</div><div className="empty-title">No analytics yet</div><div style={{fontSize:12,color:'var(--text3)'}}>Metrics will appear once content is published</div></div>
+          )}
+        </>)}
+
+        {clientTab==="brand" && (<>
+          {c.brandKit ? (
+            <div>
+              <div className="card">
+                <div className="card-title">Brand Colors</div>
+                <div style={{display:'flex',gap:10,marginBottom:12}}>
+                  {c.brandKit.colors.map((clr,i)=>(
+                    <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
+                      <div style={{width:48,height:48,borderRadius:12,background:clr,border:'1px solid var(--border2)',boxShadow:'var(--shadow-sm)'}}/>
+                      <span style={{font:'400 9px var(--fd)',color:'var(--text3)',textTransform:'uppercase'}}>{clr}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="card">
+                <div className="card-title">Brand Voice</div>
+                <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Tone</div><div className="row-sub">{c.brandKit.tone}</div></div></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Target Audience</div><div className="row-sub">{c.brandKit.audience}</div></div></div>
+                <div className="row-item"><div className="row-main"><div className="row-title">Instagram</div><div className="row-sub">{c.brandKit.ig}</div></div></div>
+              </div>
+              <div className="card">
+                <div className="card-title">Hashtags</div>
+                <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
+                  {c.brandKit.hashtags.map((h,i)=>(
+                    <span key={i} style={{font:'500 12px var(--fb)',color:'var(--accent)',background:'var(--accent-dim)',padding:'6px 14px',borderRadius:20,border:'1px solid rgba(252,198,18,0.2)'}}>{h}</span>
+                  ))}
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
-        {onOpenIdeas && <button className="btn primary full" style={{marginBottom:8}} onClick={()=>onOpenIdeas(c)}>💡 Generate AI Content Ideas</button>}
-        <div style={{display:"flex",gap:8}}>
-          <button className="btn" style={{flex:1}} onClick={()=>showToast("✏️","Edit mode","Client details are now editable")}>Edit</button>
-          <button className="btn" style={{flex:1}} onClick={()=>showToast("⏸️","Paused","Client account paused")}>Pause</button>
-          <button className="btn" style={{flex:1}} onClick={()=>showToast("💬","Message sent","Notification sent to team")}>Message</button>
-        </div>
+          ) : (
+            <div className="empty"><div className="empty-icon">🎨</div><div className="empty-title">No brand kit yet</div><div style={{fontSize:12,color:'var(--text3)'}}>Add brand info during onboarding</div></div>
+          )}
+        </>)}
       </div>
     );
   }
