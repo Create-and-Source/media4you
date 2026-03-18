@@ -169,7 +169,7 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
     <a href="#client-section">Client</a>
     <a href="#faq-section">FAQ</a>
   </div>
-  <a href="/" class="nav-cta">Open Platform →</a>
+  <a href="/" class="nav-cta" target="_blank">Open Platform →</a>
 </nav>
 
 <!-- HERO -->
@@ -183,14 +183,7 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
       <div class="stat-item"><div class="stat-num" data-count="50">0</div><div class="stat-label">Features</div></div>
       <div class="stat-item"><div class="stat-num" data-count="6">0</div><div class="stat-label">AI Tools</div></div>
     </div>
-    <div class="role-filter reveal reveal-delay-3" id="roleFilter">
-      <button class="role-btn active" data-role="all">All Features</button>
-      <button class="role-btn" data-role="admin">Admin</button>
-      <button class="role-btn" data-role="sales">Sales</button>
-      <button class="role-btn" data-role="writer">Script Writer</button>
-      <button class="role-btn" data-role="editor">Video Editor</button>
-      <button class="role-btn" data-role="client">Client</button>
-    </div>
+    <!-- Role filter removed - features shown in dedicated sections below -->
   </div>
 </section>
 
@@ -198,168 +191,9 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
 <section class="section" id="features">
   <div class="section-label reveal">Platform Features</div>
   <div class="section-title reveal">Everything You Can Do</div>
-  <div class="section-sub reveal">Click any feature to see how it works. Filter by role above.</div>
+  <div class="section-sub reveal">Scroll down to see every feature organized by role. Click any card to learn more.</div>
 
-  <div class="feature-grid" id="featureGrid">
-    <div class="feature-card reveal" data-roles="admin" onclick="this.classList.toggle('expanded')">
-      <div class="feature-expand">+</div>
-      <div class="feature-icon" style="background:rgba(252,198,18,0.1);color:#B8960C;">◆</div>
-      <div class="feature-name">Dashboard</div>
-      <div class="feature-desc">Real-time KPIs, welcome hero with MRR, content performance by client, and quick actions.</div>
-      <div class="feature-tag" style="background:rgba(252,198,18,0.1);color:#B8960C;">Admin</div>
-      <div class="feature-detail">
-        <strong>What you see:</strong> Welcome greeting with total MRR, 4 KPI cards (clients, revenue, videos, scheduled posts), client list with revenue, MRR trend chart, and content performance.<br><br>
-        <strong>What you can do:</strong> Click any KPI to navigate deeper. Click a client row to see their full detail. Quick actions link to commonly used pages.<br><br>
-        <strong>Pro tip:</strong> The dashboard updates automatically when you add clients, change plans, or advance content in the pipeline.
-        <a href="/#admin/dashboard" class="try-btn">Try it →</a>
-      </div>
-    </div>
-
-    <div class="feature-card reveal reveal-delay-1" data-roles="admin" onclick="this.classList.toggle('expanded')">
-      <div class="feature-expand">+</div>
-      <div class="feature-icon" style="background:rgba(59,125,216,0.1);color:#3B7DD8;">◎</div>
-      <div class="feature-name">Content Pipeline</div>
-      <div class="feature-desc">Drag-and-drop Kanban board tracking every piece of content from scripting to published.</div>
-      <div class="feature-tag" style="background:rgba(59,125,216,0.1);color:#3B7DD8;">Admin</div>
-      <div class="feature-detail">
-        <strong>6 columns:</strong> Scripting → Editing → Review → Approved → Scheduled → Published<br><br>
-        <strong>Drag cards</strong> between columns to advance content. Click any card to open a detail modal with script preview, status dropdown, assigned person, and comments.<br><br>
-        <strong>Filter</strong> by client at the top. Overdue items show in red. High-priority items have a red bar.
-        <a href="/#admin/pipeline" class="try-btn">Try it →</a>
-      </div>
-    </div>
-
-    <div class="feature-card reveal reveal-delay-2" data-roles="admin" onclick="this.classList.toggle('expanded')">
-      <div class="feature-expand">+</div>
-      <div class="feature-icon" style="background:rgba(34,197,94,0.1);color:#16A34A;">▶</div>
-      <div class="feature-name">Shoot Calendar</div>
-      <div class="feature-desc">Schedule filming sessions with crew, location, and notes. Confirm, reschedule, or message crew.</div>
-      <div class="feature-tag" style="background:rgba(34,197,94,0.1);color:#16A34A;">Admin</div>
-      <div class="feature-detail">
-        <strong>Each shoot shows:</strong> Date tile, client, time, duration, location, crew, and notes.<br><br>
-        <strong>Actions:</strong> Confirm pending shoots, reschedule, or message the crew directly (opens Messages). Add new shoots with the Schedule Shoot button.<br><br>
-        <strong>Comments:</strong> Leave notes and tag team members with @ on any shoot.
-        <a href="/#admin/shoots" class="try-btn">Try it →</a>
-      </div>
-    </div>
-
-    <div class="feature-card reveal" data-roles="admin" onclick="this.classList.toggle('expanded')">
-      <div class="feature-expand">+</div>
-      <div class="feature-icon" style="background:rgba(252,198,18,0.1);color:#B8960C;">▦</div>
-      <div class="feature-name">Content Library</div>
-      <div class="feature-desc">Browse all finished videos, raw footage, and photos. Download, share, or reuse content.</div>
-      <div class="feature-tag" style="background:rgba(252,198,18,0.1);color:#B8960C;">Admin</div>
-      <div class="feature-detail">
-        <strong>Filter</strong> by Videos, Raw Footage, or Photos. Each asset shows format, file size, duration, and publish status.<br><br>
-        <strong>Click to expand:</strong> Full specs, download button, share link, and reuse in content calendar.
-        <a href="/#admin/library" class="try-btn">Try it →</a>
-      </div>
-    </div>
-
-    <div class="feature-card reveal reveal-delay-1" data-roles="admin" onclick="this.classList.toggle('expanded')">
-      <div class="feature-expand">+</div>
-      <div class="feature-icon" style="background:rgba(168,85,247,0.1);color:#A855F7;">◫</div>
-      <div class="feature-name">Post Scheduler</div>
-      <div class="feature-desc">Schedule content across Instagram, TikTok, and Facebook with peak time optimization.</div>
-      <div class="feature-tag" style="background:rgba(168,85,247,0.1);color:#A855F7;">Admin</div>
-      <div class="feature-detail">
-        <strong>Platform pills</strong> show which platforms each post goes to (color-coded). Peak time posts are highlighted.<br><br>
-        <strong>Actions:</strong> Publish now, reschedule, or preview. Stats show scheduled count, drafts, and this week's posts.
-        <a href="/#admin/scheduler" class="try-btn">Try it →</a>
-      </div>
-    </div>
-
-    <div class="feature-card reveal reveal-delay-2" data-roles="admin" onclick="this.classList.toggle('expanded')">
-      <div class="feature-expand">+</div>
-      <div class="feature-icon" style="background:rgba(255,92,0,0.1);color:#FF5C00;">▤</div>
-      <div class="feature-name">Client Reports</div>
-      <div class="feature-desc">One-click monthly performance reports with KPIs, ROI, and content delivered.</div>
-      <div class="feature-tag" style="background:rgba(255,92,0,0.1);color:#FF5C00;">Admin</div>
-      <div class="feature-detail">
-        <strong>Select a client</strong> and click Generate. Full report shows: videos delivered, followers gained, engagement rate, ad spend, conversions, content checklist, top content, platform breakdown, and ROI summary.<br><br>
-        <strong>Share:</strong> Download PDF, copy share link, or email directly to client.
-        <a href="/#admin/reports" class="try-btn">Try it →</a>
-      </div>
-    </div>
-
-    <div class="feature-card reveal" data-roles="sales" onclick="this.classList.toggle('expanded')">
-      <div class="feature-expand">+</div>
-      <div class="feature-icon" style="background:rgba(168,85,247,0.1);color:#A855F7;">◉</div>
-      <div class="feature-name">Communication Hub</div>
-      <div class="feature-desc">Calls, texts, and emails in one place. Full conversations, AI writer, open tracking.</div>
-      <div class="feature-tag" style="background:rgba(168,85,247,0.1);color:#A855F7;">Sales</div>
-      <div class="feature-detail">
-        <strong>3 tabs:</strong> Calls (upcoming + history with outcomes), Texts (threaded SMS with send inline), Emails (compose with AI writer, sent log with open tracking).<br><br>
-        <strong>Call Now</strong> triggers join animation. Each call expands to show agenda, prep notes, with quick actions to text or email.
-        <a href="/#sales/calls" class="try-btn">Try it →</a>
-      </div>
-    </div>
-
-    <div class="feature-card reveal reveal-delay-1" data-roles="sales" onclick="this.classList.toggle('expanded')">
-      <div class="feature-expand">+</div>
-      <div class="feature-icon" style="background:rgba(255,92,0,0.1);color:#FF5C00;">◇</div>
-      <div class="feature-name">Lead Finder</div>
-      <div class="feature-desc">Scan Arizona businesses to find those with weak social media. Score-based prospects.</div>
-      <div class="feature-tag" style="background:rgba(255,92,0,0.1);color:#FF5C00;">Sales</div>
-      <div class="feature-detail">
-        <strong>Score system:</strong> Hot (85+), Warm (65+), Cool. Based on social media weakness — no IG, dead posting, no video content.<br><br>
-        <strong>Each prospect shows</strong> why they need your services. One-click "Add to Pipeline" with confetti. "Draft Outreach" opens the AI writer.
-        <a href="/#sales/finder" class="try-btn">Try it →</a>
-      </div>
-    </div>
-
-    <div class="feature-card reveal" data-roles="writer" onclick="this.classList.toggle('expanded')">
-      <div class="feature-expand">+</div>
-      <div class="feature-icon" style="background:rgba(252,198,18,0.1);color:#B8960C;">▤</div>
-      <div class="feature-name">Script Editor + AI</div>
-      <div class="feature-desc">Full-page script editor with AI draft generation. HOOK/SETUP/BODY/CTA format with shoot notes.</div>
-      <div class="feature-tag" style="background:rgba(252,198,18,0.1);color:#B8960C;">Script Writer</div>
-      <div class="feature-detail">
-        <strong>AI Draft</strong> generates detailed scripts with multi-paragraph body sections, specific process descriptions, and production shoot notes.<br><br>
-        <strong>Templates</strong> page has 6 reusable industry templates. Copy and customize. The editor fills the full page so you can see the entire script.
-        <a href="/#scriptwriter/dashboard" class="try-btn">Try it →</a>
-      </div>
-    </div>
-
-    <div class="feature-card reveal reveal-delay-1" data-roles="editor" onclick="this.classList.toggle('expanded')">
-      <div class="feature-expand">+</div>
-      <div class="feature-icon" style="background:rgba(59,125,216,0.1);color:#3B7DD8;">▶</div>
-      <div class="feature-name">Video Editor Suite</div>
-      <div class="feature-desc">File specs, edit checklist, session timer, and notes. Professional editing workflow.</div>
-      <div class="feature-tag" style="background:rgba(59,125,216,0.1);color:#3B7DD8;">Video Editor</div>
-      <div class="feature-detail">
-        <strong>Each video shows:</strong> Resolution, FPS, codec, duration, file size, color profile.<br><br>
-        <strong>Edit checklist:</strong> Color grade, audio sync, text overlays, transitions, thumbnail, export settings.<br><br>
-        <strong>Session timer</strong> tracks editing time. Start Editing → Send to Review → Mark Approved.
-        <a href="/#editor/dashboard" class="try-btn">Try it →</a>
-      </div>
-    </div>
-
-    <div class="feature-card reveal" data-roles="client" onclick="this.classList.toggle('expanded')">
-      <div class="feature-expand">+</div>
-      <div class="feature-icon" style="background:rgba(34,197,94,0.1);color:#16A34A;">✓</div>
-      <div class="feature-name">Content Approval</div>
-      <div class="feature-desc">Review scripts, approve or request changes, browse your finished video gallery.</div>
-      <div class="feature-tag" style="background:rgba(34,197,94,0.1);color:#16A34A;">Client</div>
-      <div class="feature-detail">
-        <strong>Items awaiting review</strong> are highlighted at the top. Read the full script, then Approve (with confetti!) or Request Changes with notes.<br><br>
-        <strong>Video gallery</strong> shows your published and approved content as preview cards with play buttons.
-        <a href="/#client/dashboard" class="try-btn">Try it →</a>
-      </div>
-    </div>
-
-    <div class="feature-card reveal reveal-delay-1" data-roles="admin,sales,writer,editor,client" onclick="this.classList.toggle('expanded')">
-      <div class="feature-expand">+</div>
-      <div class="feature-icon" style="background:rgba(0,0,0,0.05);color:var(--text);">@</div>
-      <div class="feature-name">@ Tagging + Comments</div>
-      <div class="feature-desc">Tag people, projects, shoots in messages and comments. Rich previews show inline.</div>
-      <div class="feature-tag" style="background:rgba(0,0,0,0.05);color:var(--text2);">Everyone</div>
-      <div class="feature-detail">
-        <strong>Type @</strong> in any message or comment to open the tag picker. Tag team members, clients, projects, shoots, or campaigns.<br><br>
-        <strong>Messages</strong> show rich preview cards for tagged items (script content, client info, shoot details). Comments are on pipeline items, videos, shoots, and calendar posts.
-      </div>
-    </div>
-  </div>
+  
 </section>
 
 <div class="divider"></div>
@@ -411,7 +245,7 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
     <div>
       <div style="font:700 22px var(--fd);color:var(--text);margin-bottom:12px">Pipeline — Drag & Drop</div>
       <div style="font:400 14px var(--fb);color:var(--text2);line-height:1.7;margin-bottom:16px">Every piece of content across all clients in one Kanban board. Drag cards between columns to change status. Click any card for details, comments, and status changes.</div>
-      <a href="/#admin/pipeline" class="try-btn">Open Pipeline →</a>
+      <a href="/#admin/pipeline" class="try-btn" target="_blank">Open Pipeline →</a>
     </div>
     <div class="mockup" style="margin:0">
       <div class="mockup-kanban">
@@ -419,6 +253,41 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
         <div class="mockup-col"><div class="mockup-col-head">Editing <span style="background:rgba(59,125,216,0.1);padding:1px 6px;border-radius:8px;font-size:9px">2</span></div><div class="mockup-col-body"><div class="mockup-card"><div class="mockup-card-title">Listing Tour</div><div class="mockup-card-sub">Desert Sun Realty</div></div></div></div>
         <div class="mockup-col"><div class="mockup-col-head">Review <span style="background:rgba(212,150,11,0.1);padding:1px 6px;border-radius:8px;font-size:9px">2</span></div><div class="mockup-col-body"><div class="mockup-card"><div class="mockup-card-title">Testimonial Reel</div><div class="mockup-card-sub">Sky Harbor Dental</div></div></div></div>
         <div class="mockup-col"><div class="mockup-col-head">Published <span style="background:rgba(34,197,94,0.1);padding:1px 6px;border-radius:8px;font-size:9px">4</span></div><div class="mockup-col-body"><div class="mockup-card" style="border-left:3px solid #16A34A"><div class="mockup-card-title">Spring Lineup</div><div class="mockup-card-sub">Frost Barbershop</div></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Feature Cards -->
+  <div style="margin-top:40px">
+    <div style="font:600 11px var(--fd);text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:16px" class="reveal">More Admin Features</div>
+    <div class="feature-grid">
+      <div class="feature-card reveal" onclick="this.classList.toggle('expanded')">
+        <div class="feature-expand">+</div>
+        <div class="feature-icon" style="background:rgba(252,198,18,0.1);color:#B8960C;">▦</div>
+        <div class="feature-name">Content Library</div>
+        <div class="feature-desc">Central hub for all finished videos, raw footage, and photos. Browse, download, share, or reuse any asset.</div>
+        <div class="feature-detail">Filter by Videos, Raw Footage, or Photos. Each asset shows format (MP4/MOV), resolution (4K/1080p), file size, and duration. Click to expand and see full specs. Download files, copy shareable links, or add directly to the content calendar for reuse. Storage tracking shows total space used across all clients.<a href="/#admin/library" class="try-btn" target="_blank">Open Library →</a></div>
+      </div>
+      <div class="feature-card reveal reveal-delay-1" onclick="this.classList.toggle('expanded')">
+        <div class="feature-expand">+</div>
+        <div class="feature-icon" style="background:rgba(168,85,247,0.1);color:#A855F7;">◫</div>
+        <div class="feature-name">Post Scheduler</div>
+        <div class="feature-desc">Schedule posts across Instagram, TikTok, and Facebook with peak-time optimization and platform-specific previews.</div>
+        <div class="feature-detail">Color-coded platform pills show which platforms each post targets. Peak time posts are highlighted in gold. Stats show scheduled count, drafts, and this week's posts. Click any post to publish immediately, reschedule to a different time, or preview how it'll look. Supports Instagram Reels, TikTok videos, and Facebook posts.<a href="/#admin/scheduler" class="try-btn" target="_blank">Open Scheduler →</a></div>
+      </div>
+      <div class="feature-card reveal reveal-delay-2" onclick="this.classList.toggle('expanded')">
+        <div class="feature-expand">+</div>
+        <div class="feature-icon" style="background:rgba(255,92,0,0.1);color:#FF5C00;">$</div>
+        <div class="feature-name">Revenue & Expenses</div>
+        <div class="feature-desc">Full agency financials. MRR by client, profit/loss, plan distribution, QuickBooks sync, and editable expense tracking.</div>
+        <div class="feature-detail">Revenue page shows total revenue, MRR per client (expandable with plan details), profit margin, and ARR. Plan distribution breaks down Copper/Gold/Platinum client counts with revenue per tier. Expenses page has QuickBooks sync, add/edit/delete expenses with recurring vs one-time breakdown. Click any dollar amount to edit inline.<a href="/#admin/revenue" class="try-btn" target="_blank">Open Revenue →</a></div>
+      </div>
+      <div class="feature-card reveal reveal-delay-3" onclick="this.classList.toggle('expanded')">
+        <div class="feature-expand">+</div>
+        <div class="feature-icon" style="background:rgba(34,197,94,0.1);color:#16A34A;">▤</div>
+        <div class="feature-name">Client Reports</div>
+        <div class="feature-desc">One-click monthly performance reports. Videos delivered, follower growth, engagement rate, ad ROI. Download or email.</div>
+        <div class="feature-detail">Select any active client and click Generate Report. Full report includes: videos delivered vs plan quota, followers gained, average views per video, engagement rate, ad spend and conversions, content delivered checklist, top performing content, platform breakdown (IG/TikTok/FB), and ROI summary with cost per follower. Download as PDF, copy shareable link, or email directly to the client.<a href="/#admin/reports" class="try-btn" target="_blank">Open Reports →</a></div>
       </div>
     </div>
   </div>
@@ -436,7 +305,7 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
     <div>
       <div style="font:700 22px var(--fd);color:var(--text);margin-bottom:12px">Lead Finder</div>
       <div style="font:400 14px var(--fb);color:var(--text2);line-height:1.7;margin-bottom:16px">Scan Arizona businesses to discover those with weak or no social media. Each prospect gets a score showing how badly they need your services. One-click add to pipeline.</div>
-      <a href="/#sales/finder" class="try-btn">Open Lead Finder →</a>
+      <a href="/#sales/finder" class="try-btn" target="_blank">Open Lead Finder →</a>
     </div>
     <div class="mockup" style="margin:0">
       <div class="mockup-header">Lead Finder Results</div>
@@ -457,7 +326,7 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
     <div>
       <div style="font:700 22px var(--fd);color:var(--text);margin-bottom:12px">Communication Hub</div>
       <div style="font:400 14px var(--fb);color:var(--text2);line-height:1.7;margin-bottom:16px">Calls, texts, and emails all in one place. No more switching between apps. Full conversation history, AI email writer, and call outcomes tracked.</div>
-      <a href="/#sales/calls" class="try-btn">Open Comms →</a>
+      <a href="/#sales/calls" class="try-btn" target="_blank">Open Comms →</a>
     </div>
     <div class="mockup" style="margin:0">
       <div style="display:flex;gap:4;border-bottom:1px solid rgba(0,0,0,0.06);margin-bottom:12px;padding-bottom:8px">
@@ -477,6 +346,40 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
       </div>
     </div>
   </div>
+
+  <div style="margin-top:40px">
+    <div style="font:600 11px var(--fd);text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:16px" class="reveal">More Sales Features</div>
+    <div class="feature-grid">
+      <div class="feature-card reveal" onclick="this.classList.toggle('expanded')">
+        <div class="feature-expand">+</div>
+        <div class="feature-icon" style="background:rgba(59,125,216,0.1);color:#3B82F6;">◎</div>
+        <div class="feature-name">Sales Pipeline</div>
+        <div class="feature-desc">Kanban board tracking leads from New → Contacted → Demo → Proposal → Won with deal values and rep assignments.</div>
+        <div class="feature-detail">Click any lead card to see full details: deal value, source, industry, assigned rep, and next step. Action buttons open the Comms hub for calling, texting, or emailing. Advance leads to the next stage with one click — when a deal is won, confetti celebrates the close.<a href="/#sales/dashboard" class="try-btn" target="_blank">Open Pipeline →</a></div>
+      </div>
+      <div class="feature-card reveal reveal-delay-1" onclick="this.classList.toggle('expanded')">
+        <div class="feature-expand">+</div>
+        <div class="feature-icon" style="background:rgba(168,85,247,0.1);color:#A855F7;">◫</div>
+        <div class="feature-name">Proposals</div>
+        <div class="feature-desc">Create proposals with plan selection (Copper/Gold/Platinum). Track sent, draft, and accepted status with open tracking.</div>
+        <div class="feature-detail">Generate proposals with the client name and recommended plan. Each plan shows pricing and what's included. Track whether prospects opened your proposal. Status badges show Draft, Sent, or Accepted. Great for following up — you know when they've looked at it.<a href="/#sales/proposals" class="try-btn" target="_blank">Open Proposals →</a></div>
+      </div>
+      <div class="feature-card reveal reveal-delay-2" onclick="this.classList.toggle('expanded')">
+        <div class="feature-expand">+</div>
+        <div class="feature-icon" style="background:rgba(252,198,18,0.1);color:#B8960C;">◆</div>
+        <div class="feature-name">AI Outreach Writer</div>
+        <div class="feature-desc">Generate personalized outreach emails and DMs for any lead. AI writes based on their industry and source.</div>
+        <div class="feature-detail">Select a lead, choose the channel (Instagram DM or Email), and the AI writes a personalized message referencing their specific industry, Arizona market, and a soft CTA. DMs are short and casual (3-4 sentences). Emails are professional with subject lines. Copy and send — no more staring at a blank screen.<a href="/#sales/finder" class="try-btn" target="_blank">Open Lead Finder →</a></div>
+      </div>
+      <div class="feature-card reveal reveal-delay-3" onclick="this.classList.toggle('expanded')">
+        <div class="feature-expand">+</div>
+        <div class="feature-icon" style="background:rgba(34,197,94,0.1);color:#16A34A;">▤</div>
+        <div class="feature-name">Activity Feed</div>
+        <div class="feature-desc">Timeline of all sales activity — calls made, emails sent, leads moved, deals closed. Never miss a follow-up.</div>
+        <div class="feature-detail">See every action across the sales team in chronological order. Color-coded dots indicate action types. Each entry shows who did what, to which lead, and when. Use this to stay on top of follow-ups and make sure no lead falls through the cracks.<a href="/#sales/activity" class="try-btn" target="_blank">Open Activity →</a></div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <div class="divider"></div>
@@ -491,7 +394,7 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
     <div>
       <div style="font:700 22px var(--fd);color:var(--text);margin-bottom:12px">Script Editor + AI</div>
       <div style="font:400 14px var(--fb);color:var(--text2);line-height:1.7;margin-bottom:16px">Full-page editor with AI draft generation. Scripts include HOOK, SETUP, BODY, CTA sections plus detailed shoot notes with camera specs, lighting, and music direction.</div>
-      <a href="/#scriptwriter/dashboard" class="try-btn">Open Scripts →</a>
+      <a href="/#scriptwriter/dashboard" class="try-btn" target="_blank">Open Scripts →</a>
     </div>
     <div class="mockup" style="margin:0">
       <div style="font:700 14px var(--fd);margin-bottom:4px">Mesa Auto Detailing</div>
@@ -517,7 +420,7 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
     <div>
       <div style="font:700 22px var(--fd);color:var(--text);margin-bottom:12px">Video Editor Suite</div>
       <div style="font:400 14px var(--fb);color:var(--text2);line-height:1.7;margin-bottom:16px">Production queue with file specs (4K, codec, FPS), edit checklist, session timer, and editor notes. Start editing to track your time automatically.</div>
-      <a href="/#editor/dashboard" class="try-btn">Open Editor →</a>
+      <a href="/#editor/dashboard" class="try-btn" target="_blank">Open Editor →</a>
     </div>
     <div class="mockup" style="margin:0">
       <div class="mockup-header">File Specifications</div>
@@ -549,7 +452,7 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
     <div>
       <div style="font:700 22px var(--fd);color:var(--text);margin-bottom:12px">Content Approval</div>
       <div style="font:400 14px var(--fb);color:var(--text2);line-height:1.7;margin-bottom:16px">Clients review full scripts, then Approve (with confetti!) or Request Changes with notes. Every decision is logged in the approval history.</div>
-      <a href="/#client/dashboard" class="try-btn">Open Client Portal →</a>
+      <a href="/#client/dashboard" class="try-btn" target="_blank">Open Client Portal →</a>
     </div>
     <div class="mockup" style="margin:0">
       <div style="background:rgba(212,150,11,0.06);border:1px solid rgba(212,150,11,0.2);border-radius:12px;padding:14px;margin-bottom:12px">
@@ -605,7 +508,7 @@ body { background:var(--bg); color:var(--text); font-family:var(--fb); }
 <!-- FOOTER -->
 <div class="footer">
   <div class="reveal" style="font:700 28px var(--fd);color:var(--text);margin-bottom:16px">Ready to explore?</div>
-  <a href="/" class="footer-cta reveal reveal-delay-1">Open Media4You →</a>
+  <a href="/" class="footer-cta" target="_blank" reveal reveal-delay-1">Open Media4You →</a>
   <div class="reveal reveal-delay-2" style="margin-top:24px;font:400 13px var(--fb);color:var(--text3)">Built by Get Stoa LLC</div>
 </div>
 
