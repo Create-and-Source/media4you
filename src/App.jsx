@@ -3810,7 +3810,7 @@ function ScriptQueue({ scripts, onSelect, onOpenIdeas, onOpenCalendar, clients, 
               <button key={c.id} className="action-btn accent" onClick={()=>onOpenIdeas(c)} style={{fontSize:11}}>💡 {c.name}</button>
             ))}
           </div>
-          {onOpenCalendar && <div className="ai-btn" style={{marginTop:10}} onClick={onOpenCalendar}><div className="ai-btn-icon">📅</div><div><div className="ai-btn-text">Content Calendar</div><div className="ai-btn-sub">Generate posting schedule</div></div></div>}
+          {/* Calendar removed — scriptwriter focuses on scripts only */}
         </div>
       )}
       <div className="form-group" style={{marginBottom:10}}>
@@ -5634,7 +5634,7 @@ export default function App() {
       if(view==="activity")  return <SalesActivity/>;
     }
     if(role==="scriptwriter"){
-      if(view==="dashboard") return <ScriptQueue scripts={scripts} onSelect={setSelScript} onOpenIdeas={(c)=>openPanel("ideas",c)} onOpenCalendar={()=>openPanel("calendar")} clients={clients} showToast={showToast}/>;
+      if(view==="dashboard") return <ScriptQueue scripts={scripts} onSelect={setSelScript} onOpenIdeas={(c)=>openPanel("ideas",c)} clients={clients} showToast={showToast}/>;
       if(view==="templates") return <ScriptTemplates showToast={showToast}/>;
       if(view==="completed") return <ScriptCompleted scripts={scripts}/>;
     }
