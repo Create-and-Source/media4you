@@ -2687,31 +2687,40 @@ function LeadDetailSheet({ lead, stage, onClose, showToast }) {
   const curIdx = stages.indexOf(stage);
   const nextStage = curIdx < stages.length-1 ? stages[curIdx+1] : null;
   return (
-    <div className="overlay" onClick={onClose}>
-      <div className="sheet" onClick={e=>e.stopPropagation()}>
-        <div className="sheet-handle"/>
-        <div className="sheet-title">{lead.name}</div>
-        <div className="sheet-sub">{lead.industry} \u00b7 {stage}</div>
-        <div className="stats-grid" style={{marginBottom:12}}>
-          <div className="stat-card"><div className="stat-label">Value</div><div className="stat-value" style={{fontSize:20}}>{lead.value}</div></div>
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.5)',backdropFilter:'blur(4px)',zIndex:200,display:'flex',alignItems:'center',justifyContent:'center',padding:20}} onClick={onClose}>
+      <div style={{background:'rgba(255,255,255,0.97)',backdropFilter:'blur(30px)',borderRadius:18,border:'1px solid var(--border2)',width:'100%',maxWidth:480,padding:'28px 24px',boxShadow:'0 20px 60px rgba(0,0,0,0.15)',animation:'slideUp 0.2s ease'}} onClick={e=>e.stopPropagation()}>
+        <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:20}}>
+          <div className="row-avatar" style={{background:'var(--accent-dim)',color:'var(--accent)',width:44,height:44,fontSize:18}}>{lead.name[0]}</div>
+          <div style={{flex:1}}>
+            <div style={{font:'700 18px var(--fd)',color:'var(--text)'}}>{lead.name}</div>
+            <div style={{font:'400 12px var(--fb)',color:'var(--text2)',marginTop:2}}>{lead.industry} · {stage}</div>
+          </div>
+          <button style={{background:'none',border:'none',fontSize:18,color:'var(--text3)',cursor:'pointer'}} onClick={onClose}>✕</button>
+        </div>
+        <div className="stats-grid" style={{marginBottom:16}}>
+          <div className="stat-card"><div className="stat-label">Deal Value</div><div className="stat-value" style={{fontSize:22}}>{lead.value}</div></div>
           <div className="stat-card"><div className="stat-label">Source</div><div className="stat-value" style={{fontSize:16}}>{lead.source}</div></div>
         </div>
-        <div className="card" style={{marginBottom:12}}>
+        <div className="card" style={{marginBottom:16}}>
           <div className="row-item" style={{paddingTop:0}}>
             <div className="row-main"><div className="row-title">Assigned Rep</div><div className="row-sub">{lead.rep}</div></div>
           </div>
           <div className="row-item">
             <div className="row-main"><div className="row-title">Industry</div><div className="row-sub">{lead.industry}</div></div>
           </div>
-          <div className="row-item" style={{borderBottom:"none",paddingBottom:0}}>
+          <div className="row-item">
             <div className="row-main"><div className="row-title">Pipeline Stage</div><div className="row-sub">{stage}</div></div>
             <Badge type={stage==="Won \u2713"?"green":stage==="Proposal"?"purple":"blue"}>{stage}</Badge>
           </div>
+          <div className="row-item" style={{borderBottom:'none',paddingBottom:0}}>
+            <div className="row-main"><div className="row-title">Next Step</div><div className="row-sub">{nextStage||"Won — no further action"}</div></div>
+          </div>
         </div>
         <div style={{display:"flex",gap:8}}>
-          <button className="btn" style={{flex:1}} onClick={()=>{showToast("📞","Calling...",lead.name);onClose();}}>📞 Call</button>
-          <button className="btn" style={{flex:1}} onClick={()=>{showToast("📧","Email draft opened",lead.name);onClose();}}>📧 Email</button>
-          {nextStage && <button className="btn primary" style={{flex:1}} onClick={()=>{showToast("📊","Moved",lead.name+" → "+nextStage);onClose();}}>→ {nextStage}</button>}
+          <button className="btn" style={{flex:1}} onClick={()=>{showToast("◉","Calling...",lead.name);onClose();}}>Call</button>
+          <button className="btn" style={{flex:1}} onClick={()=>{showToast("◉","Email draft",lead.name);onClose();}}>Email</button>
+          <button className="btn" style={{flex:1}} onClick={()=>{showToast("◉","Text sent",lead.name);onClose();}}>Text</button>
+          {nextStage && <button className="btn primary" style={{flex:1}} onClick={()=>{showToast("✓","Moved",lead.name+" → "+nextStage);onClose();fireConfetti();}}>→ {nextStage}</button>}
         </div>
       </div>
     </div>
@@ -2804,10 +2813,10 @@ function SalesCalls({ showToast }) {
     ]},
   ];
   const emailLog = [
-    {id:1,to:"Chandler Law Group",subject:"Media4You Demo — Agenda + Link",time:"Today 1:30 PM",status:"Sent",preview:"Hi! Here's the Zoom link for our 2pm demo today..."},
-    {id:2,to:"Mesa Flooring Co",subject:"Gold Plan Proposal — Mesa Flooring Co",time:"Yesterday",status:"Opened",preview:"Thanks for the great call! As discussed, here's the Gold plan breakdown..."},
-    {id:3,to:"Sun Devil Gym",subject:"Content Strategy Ideas for Sun Devil Gym",time:"Mar 16",status:"Sent",preview:"Hey! I put together some content ideas based on what we discussed..."},
-    {id:4,to:"Scottsdale Med Spa",subject:"Intro — Media4You Content Services",time:"Mar 15",status:"Opened",preview:"Hi there! I came across your business and was really impressed..."},
+    {id:1,to:"Chandler Law Group",subject:"Media4You Demo — Agenda + Link",time:"Today 1:30 PM",status:"Sent",preview:"Hi!\n\nHere's the Zoom link for our 2pm demo today: zoom.us/j/media4you-demo\n\nAgenda:\n1. Overview of Media4You services\n2. Content strategy walkthrough for law firms\n3. Pricing and packages (Copper/Gold/Platinum)\n4. Q&A\n\nLooking forward to connecting. If you have any questions beforehand, feel free to reply to this email or text me directly.\n\nBest,\nCarlos V.\nMedia4You"},
+    {id:2,to:"Mesa Flooring Co",subject:"Gold Plan Proposal — Mesa Flooring Co",time:"Yesterday",status:"Opened",preview:"Hi there,\n\nThanks for the great call yesterday! As discussed, here's the Gold plan breakdown for Mesa Flooring Co:\n\nGold Plan — $3,000/mo\n- 8 High-Definition Short-Form Videos per month\n- 4 x 2hr Video Shoot Sessions per month\n- Scriptwriting included\n- Camera Coaching sessions\n- Facebook Ad Management included\n- Scheduled Post Management (auto-posting, captions, hashtags, peak times)\n\nBased on our conversation, I think the Gold plan is the perfect fit. You'll get enough content to post 2x/week with professional production quality.\n\nWant to hop on a quick call to finalize?\n\nBest,\nCarlos V.\nMedia4You"},
+    {id:3,to:"Sun Devil Gym",subject:"Content Strategy Ideas for Sun Devil Gym",time:"Mar 16",status:"Sent",preview:"Hey!\n\nI put together some content ideas based on what we discussed:\n\n1. Member Transformation Stories — before/after with their journey\n2. Workout of the Day Reels — quick, high-energy clips\n3. Coach Spotlight Series — introduce each trainer\n4. Community Events — capture the energy of group workouts\n5. Behind the Scenes — early morning gym setup, culture moments\n\nThese would all be shot as Instagram Reels and TikToks, optimized for maximum reach. We'd handle everything from scripting to posting.\n\nLet me know your thoughts!\n\nJade\nMedia4You"},
+    {id:4,to:"Scottsdale Med Spa",subject:"Intro — Media4You Content Services",time:"Mar 15",status:"Opened",preview:"Hi there,\n\nI came across Scottsdale Med Spa and was really impressed with what you're building. I run the sales team at Media4You, a done-for-you content agency here in Arizona.\n\nWe specialize in short-form video for local businesses — scripting, filming, editing, and posting, all handled by our team. We currently work with dental offices, barbershops, real estate agents, and fitness studios across the Valley.\n\nI'd love to chat for 15 minutes about how we could help grow your social media presence. No pressure at all.\n\nWould any time this week work for a quick call?\n\nBest,\nCarlos V.\nMedia4You"},
   ];
 
   const tabs = [{key:"calls",label:"Calls",icon:"📞"},{key:"texts",label:"Texts",icon:"💬"},{key:"emails",label:"Emails",icon:"📧"}];
@@ -2949,7 +2958,7 @@ function SalesCalls({ showToast }) {
                 <div className="row-title">{e.subject}</div>
                 <div className="row-sub">To: {e.to} · {e.time}</div>
                 {expandedItem===`email-${e.id}` && (
-                  <div style={{font:'400 12px var(--fb)',color:'var(--text2)',marginTop:8,lineHeight:1.6,padding:'10px 12px',background:'var(--surface2)',borderRadius:8,border:'1px solid var(--border)'}}>{e.preview}</div>
+                  <div style={{font:'400 12px var(--fb)',color:'var(--text2)',marginTop:8,lineHeight:1.7,padding:'14px 16px',background:'var(--surface2)',borderRadius:10,border:'1px solid var(--border)',whiteSpace:'pre-wrap'}}>{e.preview}</div>
                 )}
               </div>
               <Badge type={e.status==="Opened"?"green":"gray"}>{e.status}</Badge>
@@ -3716,7 +3725,7 @@ function ClientContent({ showToast }) {
         <div style={{fontFamily:"var(--fd)",fontSize:18,fontWeight:800}}>Desert Sun Realty</div>
         <div style={{fontSize:12,color:"var(--text2)",marginTop:3}}>Your content dashboard</div>
         <div style={{display:"flex",alignItems:"center",gap:8,marginTop:10,flexWrap:"wrap"}}>
-          <span style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700,color:"var(--accent)"}}>Pro Plan</span>
+          <span style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700,color:"var(--accent)"}}>Platinum Plan</span>
           <Badge type="green">● Active</Badge>
           <span style={{fontSize:10,color:"var(--text3)",marginLeft:"auto"}}>Renews Apr 1</span>
         </div>
@@ -3819,34 +3828,73 @@ function ClientContent({ showToast }) {
 
 function ClientIG({ igPosts }) {
   const [selectedPost, setSelectedPost] = useState(null);
+  const [platformTab, setPlatformTab] = useState("all");
   const myPosts = igPosts.filter(p=>p.client==="Desert Sun Realty");
+
+  const allPosts = [
+    ...myPosts.map(p=>({...p,platform:"Instagram"})),
+    {id:101,client:"Desert Sun Realty",caption:"This Scottsdale listing sold in 48 hours. Here's why...",date:"Mar 16",thumb:"▶",status:"Published",platform:"TikTok",views:"12.4K",likes:840},
+    {id:102,client:"Desert Sun Realty",caption:"POV: Your dream home has mountain views and a pool",date:"Mar 12",thumb:"▶",status:"Published",platform:"TikTok",views:"8.2K",likes:520},
+    {id:103,client:"Desert Sun Realty",caption:"3 things to look for at every open house",date:"Mar 8",thumb:"▶",status:"Published",platform:"TikTok",views:"15.1K",likes:1100},
+  ];
+
+  const filtered = platformTab==="all" ? allPosts : allPosts.filter(p=>p.platform===platformTab);
+  const platforms = [{key:"all",label:"All"},{key:"Instagram",label:"Instagram"},{key:"TikTok",label:"TikTok"}];
+
   return (
     <div>
-      <div className="ig-panel">
-        <div className="ig-header"><span style={{fontSize:20}}>📸</span><div><div className="ig-title">Instagram</div><div className="ig-sub">@desertsunrealtyaz</div></div></div>
-        {myPosts.map(p=>(
-          <div key={p.id}>
-            <div className="ig-post" style={{cursor:"pointer"}} onClick={()=>setSelectedPost(selectedPost===p.id?null:p.id)}>
-              <div className="ig-post-thumb">{p.thumb}</div>
-              <div style={{flex:1}}><div className="ig-post-title" style={{fontSize:11}}>{p.caption.substring(0,30)}...</div><div className="ig-post-date">{p.date}</div></div>
-              <Badge type={p.status==="Scheduled"?"green":"amber"}>{p.status}</Badge>
+      {/* Platform tabs */}
+      <div style={{display:'flex',gap:4,marginBottom:16,borderBottom:'1px solid var(--border)'}}>
+        {platforms.map(p=>(
+          <button key={p.key} onClick={()=>setPlatformTab(p.key)} style={{
+            padding:'10px 16px',border:'none',background:'none',cursor:'pointer',
+            font:`${platformTab===p.key?600:400} 12px var(--fd)`,
+            color:platformTab===p.key?'var(--accent)':'var(--text3)',
+            borderBottom:platformTab===p.key?'2px solid var(--accent)':'2px solid transparent',
+          }}>{p.label}</button>
+        ))}
+      </div>
+
+      {/* Video gallery */}
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))',gap:12,marginBottom:16}}>
+        {filtered.map(p=>(
+          <div key={p.id} className="dash-card-hover" style={{
+            background:'var(--surface)',border:'1px solid var(--border)',borderRadius:14,overflow:'hidden',cursor:'pointer',
+            backdropFilter:'blur(12px)',boxShadow:'var(--shadow-sm)',
+          }} onClick={()=>setSelectedPost(selectedPost===p.id?null:p.id)}>
+            {/* Video preview area */}
+            <div style={{height:140,background:'linear-gradient(135deg, #1a1a1a, #2a2a2a)',display:'flex',alignItems:'center',justifyContent:'center',position:'relative'}}>
+              <div style={{width:48,height:48,borderRadius:'50%',background:'rgba(255,255,255,0.15)',backdropFilter:'blur(8px)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,color:'white',cursor:'pointer'}}>▶</div>
+              <div style={{position:'absolute',top:8,left:8}}><Badge type={p.platform==="TikTok"?"blue":"purple"}>{p.platform}</Badge></div>
+              <div style={{position:'absolute',top:8,right:8}}><Badge type={p.status==="Published"?"green":"amber"}>{p.status}</Badge></div>
+              {p.views && <div style={{position:'absolute',bottom:8,right:8,font:'500 10px var(--fd)',color:'rgba(255,255,255,0.8)',background:'rgba(0,0,0,0.5)',padding:'2px 8px',borderRadius:4}}>{p.views} views</div>}
+            </div>
+            <div style={{padding:'12px 14px'}}>
+              <div style={{font:'500 12px var(--fb)',color:'var(--text)',lineHeight:1.4,marginBottom:4,overflow:'hidden',textOverflow:'ellipsis',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical'}}>{p.caption}</div>
+              <div style={{font:'400 10px var(--fb)',color:'var(--text3)'}}>{p.date}{p.likes?` · ${p.likes} likes`:""}</div>
             </div>
             {selectedPost===p.id && (
-              <div style={{background:"rgba(255,255,255,0.5)",borderRadius:"0 0 8px 8px",padding:"10px 12px",marginBottom:7,marginTop:-7,border:"1px solid var(--border)",borderTop:"none"}}>
-                <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:6}}>Post Details</div>
-                <div style={{fontSize:12,color:"var(--text)",lineHeight:1.6,marginBottom:8}}>{p.caption}</div>
-                <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Scheduled</div><div className="row-sub">{p.date}</div></div></div>
-                <div className="row-item" style={{borderBottom:"none",paddingBottom:0}}><div className="row-main"><div className="row-title">Status</div></div><Badge type={p.status==="Scheduled"?"green":"amber"}>{p.status}</Badge></div>
+              <div style={{padding:'0 14px 14px',borderTop:'1px solid var(--border)',paddingTop:10}}>
+                <div style={{font:'400 12px var(--fb)',color:'var(--text2)',lineHeight:1.6,marginBottom:8}}>{p.caption}</div>
+                <div style={{display:'flex',gap:6}}>
+                  <button className="btn" style={{flex:1,fontSize:11,padding:'6px 10px'}} onClick={(e)=>{e.stopPropagation();navigator.clipboard?.writeText(p.caption);}}>Copy Caption</button>
+                  <button className="btn" style={{flex:1,fontSize:11,padding:'6px 10px'}} onClick={(e)=>{e.stopPropagation();}}>View Insights</button>
+                </div>
               </div>
             )}
           </div>
         ))}
       </div>
+
+      {/* Performance */}
       <div className="card">
-        <div className="card-title">Performance</div>
-        {[{label:"Avg Reach per Reel",value:"4,200"},{label:"Avg Engagement Rate",value:"6.8%"},{label:"Followers This Month",value:"+842"},{label:"Profile Visits",value:"1,140"}].map(s=>(
-          <div className="row-item" key={s.label}><div className="row-main"><div className="row-title">{s.label}</div></div><div style={{fontFamily:"var(--fd)",fontSize:15,fontWeight:800,color:"var(--accent)"}}>{s.value}</div></div>
-        ))}
+        <div className="card-title">Performance Across Platforms</div>
+        <div className="stats-grid" style={{marginBottom:0}}>
+          <div className="stat-card"><div className="stat-label">Instagram Reach</div><div className="stat-value" style={{fontSize:20}}>4,200</div><div className="stat-sub">avg per reel</div></div>
+          <div className="stat-card"><div className="stat-label">TikTok Views</div><div className="stat-value" style={{fontSize:20}}>11.9K</div><div className="stat-sub">avg per video</div></div>
+          <div className="stat-card"><div className="stat-label">Engagement Rate</div><div className="stat-value" style={{fontSize:20}}>6.8%</div><div className="stat-sub">across platforms</div></div>
+          <div className="stat-card"><div className="stat-label">Followers Gained</div><div className="stat-value" style={{fontSize:20}}>+842</div><div className="stat-sub">this month</div></div>
+        </div>
       </div>
     </div>
   );
@@ -3889,7 +3937,7 @@ function ClientInvoices({ showToast }) {
             <div style={{padding:"8px 0 12px 47px",borderBottom:"1px solid var(--border)"}}>
               <div style={{fontSize:11,color:"var(--text3)",textTransform:"uppercase",letterSpacing:"0.8px",fontWeight:600,marginBottom:6}}>Invoice Details</div>
               <div className="row-item" style={{paddingTop:0}}><div className="row-main"><div className="row-title">Period</div><div className="row-sub">{inv.month}</div></div></div>
-              <div className="row-item"><div className="row-main"><div className="row-title">Pro Plan — 8 videos/mo</div><div className="row-sub">Monthly retainer</div></div><div style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700}}>{inv.amount}</div></div>
+              <div className="row-item"><div className="row-main"><div className="row-title">Platinum Plan — 8 videos/mo</div><div className="row-sub">Monthly retainer</div></div><div style={{fontFamily:"var(--fd)",fontSize:12,fontWeight:700}}>{inv.amount}</div></div>
               <div className="row-item"><div className="row-main"><div className="row-title">Payment Status</div></div><Badge type={inv.paid?"green":"amber"}>{inv.paid?"Paid":"Unpaid"}</Badge></div>
               <div className="row-item" style={{borderBottom:"none",paddingBottom:0}}><div className="row-main"><div className="row-title">Due Date</div><div className="row-sub">{inv.status}</div></div></div>
               {!inv.paid && !inv.processing && <button className="btn primary full" style={{marginTop:10}} onClick={()=>handlePay(inv.id)}>Pay Now — {inv.amount}</button>}
@@ -4048,7 +4096,7 @@ const ROLES = [
 ];
 const NAV_CONFIG = {
   admin:        [{label:"Dashboard",icon:"◆",view:"dashboard"},{label:"Pipeline",icon:"◎",view:"pipeline"},{label:"Shoots",icon:"▶",view:"shoots"},{label:"Calls",icon:"◉",view:"coaching"},{label:"Team",icon:"◈",view:"team"},{label:"Clients",icon:"▣",view:"clients"},{label:"Revenue",icon:"$",view:"revenue"},{label:"Ads",icon:"◐",view:"ads"},{label:"Settings",icon:"⟐",view:"settings"}],
-  sales:        [{label:"Pipeline",icon:"◎",view:"dashboard",badge:3},{label:"Calls",icon:"◉",view:"calls"},{label:"Leads",icon:"◆",view:"leads"},{label:"Activity",icon:"▤",view:"activity"}],
+  sales:        [{label:"Pipeline",icon:"◎",view:"dashboard",badge:3},{label:"Comms",icon:"◉",view:"calls"},{label:"Leads",icon:"◆",view:"leads"},{label:"Activity",icon:"▤",view:"activity"}],
   scriptwriter: [{label:"Queue",icon:"▤",view:"dashboard",badge:2},{label:"Done",icon:"✓",view:"completed"}],
   editor:       [{label:"Production",icon:"▶",view:"dashboard",badge:2},{label:"Upload",icon:"△",view:"upload"},{label:"Done",icon:"✓",view:"completed"}],
   client:       [{label:"Content",icon:"▶",view:"dashboard"},{label:"Instagram",icon:"◎",view:"instagram"},{label:"Ads",icon:"◐",view:"ads"},{label:"Invoices",icon:"▤",view:"invoices"},{label:"Team",icon:"◈",view:"team"}],
