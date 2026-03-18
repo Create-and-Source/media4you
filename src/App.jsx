@@ -2592,13 +2592,12 @@ function TeamWorkload({ scripts, videos }) {
 // ─── UNIFIED CONTENT PIPELINE (KANBAN) ────────────────────────────────────────
 function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, showToast }) {
   const [clientFilter, setClientFilter] = useState("all");
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [dragging, setDragging] = useState(null);
+  const [dragOver, setDragOver] = useState(null);
 
   const PIPELINE_STAGES = ["Scripting","Editing","Review","Approved","Scheduled","Published"];
-  const STAGE_COLORS = {Scripting:"gray",Editing:"blue",Review:"amber",Approved:"green",Scheduled:"purple",Published:"green"};
   const STAGE_ICONS = {Scripting:"✍️",Editing:"🎬",Review:"👁️",Approved:"✅",Scheduled:"📸",Published:"🎉"};
 
-  // Merge scripts + videos into unified items
   const allItems = [
     ...scripts.map(s => {
       const stageMap = {"Assigned":"Scripting","In Progress":"Scripting","Needs Revision":"Scripting","Submitted":"Review",
@@ -2625,23 +2624,46 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
     boxShadow:'0 4px 24px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)',
   };
 
-  const advanceItem = (item) => {
-    const stageIdx = PIPELINE_STAGES.indexOf(item.status);
-    if (stageIdx < PIPELINE_STAGES.length - 1) {
-      const nextStage = PIPELINE_STAGES[stageIdx + 1];
-      if (item.type === "video") {
-        // Directly set the video status to the pipeline stage name
-        onAdvanceVideo(item.sourceId, nextStage);
-      } else {
-        // Set pipeline stage directly as the script status
-        onUpdateScript(item.sourceId, nextStage, item.source.draft);
-      }
-      showToast(STAGE_ICONS[nextStage], "Moved to " + nextStage, item.title);
+  const moveItem = (item, targetStage) => {
+    if (item.status === targetStage) return;
+    if (item.type === "video") {
+      onAdvanceVideo(item.sourceId, targetStage);
+    } else {
+      onUpdateScript(item.sourceId, targetStage, item.source.draft);
     }
-    setSelectedItem(null);
+    showToast(STAGE_ICONS[targetStage], "Moved to " + targetStage, item.title);
   };
 
-  // Stats
+  // Drag handlers
+  const handleDragStart = (e, item) => {
+    setDragging(item.id);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", item.id);
+    // Make drag image slightly transparent
+    if (e.target) e.target.style.opacity = "0.5";
+  };
+  const handleDragEnd = (e) => {
+    setDragging(null);
+    setDragOver(null);
+    if (e.target) e.target.style.opacity = "1";
+  };
+  const handleColumnDragOver = (e, stage) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOver(stage);
+  };
+  const handleColumnDragLeave = () => {
+    setDragOver(null);
+  };
+  const handleColumnDrop = (e, stage) => {
+    e.preventDefault();
+    setDragOver(null);
+    const itemId = e.dataTransfer.getData("text/plain") || dragging;
+    const item = allItems.find(i => i.id === itemId);
+    if (item) moveItem(item, stage);
+    setDragging(null);
+  };
+
   const inScripting = filtered.filter(i=>i.status==="Scripting").length;
   const inEditing = filtered.filter(i=>i.status==="Editing").length;
   const inReview = filtered.filter(i=>i.status==="Review").length;
@@ -2649,7 +2671,6 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
 
   return (
     <div>
-      {/* Stats */}
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))',gap:12,marginBottom:20}}>
         {[{label:"Scripting",val:inScripting,color:"var(--text3)"},{label:"Editing",val:inEditing,color:"var(--blue)"},{label:"In Review",val:inReview,color:"var(--amber)"},{label:"Completed",val:completed,color:"var(--green)"}].map((s,i)=>(
           <div key={s.label} className="dash-card-hover" style={{...glass,padding:'18px 16px',animation:`dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) ${i*60}ms backwards`}}>
@@ -2659,7 +2680,6 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
         ))}
       </div>
 
-      {/* Filter */}
       <div style={{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap",alignItems:"center"}}>
         <span style={{font:'600 13px var(--fd)',color:'var(--text)'}}>Filter:</span>
         <button className={`action-btn ${clientFilter==="all"?"accent":""}`} onClick={()=>setClientFilter("all")}>All Clients</button>
@@ -2668,13 +2688,20 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
         ))}
       </div>
 
-      {/* Kanban Board */}
+      <div style={{font:'400 11px var(--fb)',color:'var(--text3)',marginBottom:10,display:'flex',alignItems:'center',gap:6}}>
+        <span>↔</span> Drag cards between columns to move them
+      </div>
+
       <div className="kanban-scroll">
         <div className="kanban" style={{gap:14}}>
           {PIPELINE_STAGES.map(stage => {
             const stageItems = filtered.filter(i=>i.status===stage);
+            const isOver = dragOver === stage;
             return (
-              <div key={stage} style={{width:220}}>
+              <div key={stage} style={{width:220}}
+                onDragOver={e=>handleColumnDragOver(e,stage)}
+                onDragLeave={handleColumnDragLeave}
+                onDrop={e=>handleColumnDrop(e,stage)}>
                 <div style={{...glass,borderRadius:'14px 14px 0 0',padding:'12px 14px',borderBottom:'none',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
                   <div style={{display:'flex',alignItems:'center',gap:6}}>
                     <span style={{fontSize:14}}>{STAGE_ICONS[stage]}</span>
@@ -2682,14 +2709,29 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
                   </div>
                   <span style={{font:'600 11px var(--fd)',color:'var(--text3)',background:'var(--accent-dim)',padding:'2px 8px',borderRadius:20}}>{stageItems.length}</span>
                 </div>
-                <div style={{background:'rgba(255,255,255,0.35)',border:'1px solid rgba(255,255,255,0.5)',borderRadius:'0 0 14px 14px',padding:8,minHeight:200,display:'flex',flexDirection:'column',gap:8,backdropFilter:'blur(10px)'}}>
+                <div style={{
+                  background: isOver ? 'rgba(252,198,18,0.12)' : 'rgba(255,255,255,0.35)',
+                  border: isOver ? '2px dashed var(--accent)' : '1px solid rgba(255,255,255,0.5)',
+                  borderRadius:'0 0 14px 14px',padding:8,minHeight:200,
+                  display:'flex',flexDirection:'column',gap:8,backdropFilter:'blur(10px)',
+                  transition:'all 0.2s ease',
+                }}>
                   {stageItems.map(item => (
-                    <div key={item.id} className="dash-card-hover" style={{
-                      background:'rgba(255,255,255,0.85)',border:'1px solid rgba(0,0,0,0.06)',borderRadius:12,
-                      padding:'12px 14px',cursor:'pointer',backdropFilter:'blur(8px)',boxShadow:'var(--shadow-sm)',
-                    }} onClick={()=>setSelectedItem(selectedItem===item.id?null:item.id)}>
+                    <div key={item.id}
+                      draggable
+                      onDragStart={e=>handleDragStart(e,item)}
+                      onDragEnd={handleDragEnd}
+                      className="dash-card-hover" style={{
+                      background: dragging===item.id ? 'rgba(252,198,18,0.15)' : 'rgba(255,255,255,0.85)',
+                      border: dragging===item.id ? '1px solid var(--accent)' : '1px solid rgba(0,0,0,0.06)',
+                      borderRadius:12,padding:'12px 14px',
+                      cursor:'grab',backdropFilter:'blur(8px)',boxShadow:'var(--shadow-sm)',
+                      transition:'all 0.15s ease',
+                      userSelect:'none',
+                    }}>
                       <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
-                        <span style={{fontSize:16}}>{item.thumb}</span>
+                        <span style={{fontSize:16,cursor:'grab'}}>⠿</span>
+                        <span style={{fontSize:14}}>{item.thumb}</span>
                         <div style={{flex:1,minWidth:0}}>
                           <div style={{font:'500 12px var(--fd)',color:'var(--text)',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{item.title}</div>
                           <div style={{font:'400 10px var(--fb)',color:'var(--text3)',marginTop:1}}>{item.client}</div>
@@ -2700,22 +2742,12 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
                         <Badge type={item.type==="script"?"blue":"purple"}>{item.type==="script"?"Script":"Video"}</Badge>
                       </div>
                       {item.priority==="high" && <div style={{width:'100%',height:2,background:'var(--red)',borderRadius:2,marginTop:6,opacity:0.6}}/>}
-                      {selectedItem===item.id && (
-                        <div style={{marginTop:10,paddingTop:10,borderTop:'1px solid var(--border)'}}>
-                          <div style={{display:'flex',gap:6}}>
-                            {PIPELINE_STAGES.indexOf(stage) < PIPELINE_STAGES.length - 1 && (
-                              <button className="btn primary" style={{flex:1,padding:'8px 12px',fontSize:11}} onClick={(e)=>{e.stopPropagation();advanceItem(item);}}>
-                                → {PIPELINE_STAGES[PIPELINE_STAGES.indexOf(stage)+1]}
-                              </button>
-                            )}
-                            <button className="btn" style={{padding:'8px 12px',fontSize:11}} onClick={(e)=>{e.stopPropagation();showToast("📝","Notes","Add notes coming soon");}}>Notes</button>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   ))}
                   {stageItems.length===0 && (
-                    <div style={{padding:'24px 8px',textAlign:'center',font:'400 11px var(--fb)',color:'var(--text3)',opacity:0.6}}>No items</div>
+                    <div style={{padding:'24px 8px',textAlign:'center',font:'400 11px var(--fb)',color: isOver ? 'var(--accent)' : 'var(--text3)',opacity:0.6,transition:'color 0.2s'}}>
+                      {isOver ? "Drop here" : "No items"}
+                    </div>
                   )}
                 </div>
               </div>
