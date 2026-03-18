@@ -192,14 +192,14 @@ const styles = `
   }
 
   /* OVERLAY / SHEETS */
-  .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:200; display:flex; align-items:flex-end; }
+  .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; }
   .sheet {
     background: rgba(255,255,255,0.97);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-    border-radius:22px 22px 0 0; border:1px solid var(--border2); border-bottom:none;
-    width:100%; padding:0 16px 32px; max-height:90dvh; overflow-y:auto;
-    box-shadow: 0 -8px 40px rgba(0,0,0,0.1);
+    border-radius:18px; border:1px solid var(--border2);
+    width:100%; max-width:480px; padding:0 20px 28px; max-height:85dvh; overflow-y:auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
   }
   .sheet-handle { width:36px; height:4px; background:var(--text3); border-radius:2px; margin:14px auto 18px; opacity:0.4; }
   .sheet-title { font-family:var(--fd); font-size:20px; font-weight:600; color:var(--text); margin-bottom:4px; }
