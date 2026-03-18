@@ -2454,7 +2454,8 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
   // Merge scripts + videos into unified items
   const allItems = [
     ...scripts.map(s => {
-      const stageMap = {"Assigned":"Scripting","In Progress":"Scripting","Needs Revision":"Scripting","Submitted":"Review","Approved":"Approved","Scheduled":"Scheduled","Published":"Published"};
+      const stageMap = {"Assigned":"Scripting","In Progress":"Scripting","Needs Revision":"Scripting","Submitted":"Review",
+        "Scripting":"Scripting","Editing":"Editing","Review":"Review","Approved":"Approved","Scheduled":"Scheduled","Published":"Published"};
       return {
         id:`s-${s.id}`, sourceId:s.id, type:"script", client:s.client, title:s.type,
         status: stageMap[s.status] || "Scripting",
@@ -2485,9 +2486,8 @@ function ContentPipeline({ scripts, videos, onAdvanceVideo, onUpdateScript, show
         // Directly set the video status to the pipeline stage name
         onAdvanceVideo(item.sourceId, nextStage);
       } else {
-        // Map pipeline stages to script statuses
-        const scriptStatus = nextStage === "Scripting" ? "Assigned" : nextStage === "Editing" ? "In Progress" : nextStage === "Review" ? "Submitted" : nextStage;
-        onUpdateScript(item.sourceId, scriptStatus, item.source.draft);
+        // Set pipeline stage directly as the script status
+        onUpdateScript(item.sourceId, nextStage, item.source.draft);
       }
       showToast(STAGE_ICONS[nextStage], "Moved to " + nextStage, item.title);
     }
