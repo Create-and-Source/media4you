@@ -382,7 +382,7 @@ const styles = `
   .editor-toolbar { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
   .editor-tool-btn { padding:5px 10px; border-radius:5px; border:1px solid var(--border); background:var(--surface); color:var(--text2); font-size:11px; font-family:var(--fb); cursor:pointer; }
   .editor-tool-btn.ai { background:var(--accent-dim); border-color:var(--accent); color:var(--accent); font-weight:600; }
-  .editor-textarea { width:100%; background:transparent; border:none; outline:none; font-size:12px; color:var(--text2); line-height:1.7; font-family:var(--fb); resize:none; min-height:180px; }
+  .editor-textarea { width:100%; background:transparent; border:none; outline:none; font-size:13px; color:var(--text); line-height:1.7; font-family:var(--fb); resize:vertical; min-height:calc(100vh - 320px); }
   .video-item { display:flex; align-items:center; gap:11px; padding:11px 0; border-bottom:1px solid var(--border); }
   .video-item:last-child { border-bottom:none; }
   .video-thumb { width:44px; height:32px; background:var(--surface3); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
@@ -446,7 +446,7 @@ const styles = `
   .editor-toolbar { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
   .editor-tool-btn { padding:6px 12px; border-radius:20px; border:1px solid var(--border2); background:rgba(255,255,255,0.7); color:var(--text2); font-size:11px; font-family:var(--fb); cursor:pointer; }
   .editor-tool-btn.ai { background:linear-gradient(135deg,rgba(252,198,18,0.1),rgba(253,128,64,0.08)); border-color:rgba(252,198,18,0.3); color:var(--accent); font-weight:600; }
-  .editor-textarea { width:100%; background:transparent; border:none; outline:none; font-size:13px; color:var(--text); line-height:1.7; font-family:var(--fb); resize:none; min-height:180px; }
+  .editor-textarea { width:100%; background:transparent; border:none; outline:none; font-size:13px; color:var(--text); line-height:1.7; font-family:var(--fb); resize:vertical; min-height:calc(100vh - 320px); }
 
   .video-item { display:flex; align-items:center; gap:11px; padding:11px 0; border-bottom:1px solid var(--border); }
   .video-item:last-child { border-bottom:none; }
