@@ -120,7 +120,7 @@ body { background:#0F0F0F; color:#fff; font-family:var(--fb); height:100vh; over
 
   <!-- RIGHT: Live App -->
   <div class="app-frame">
-    <iframe id="appFrame" src="/#admin/dashboard"></iframe>
+    <iframe id="appFrame" src="/?embed#admin/dashboard"></iframe>
   </div>
 
 </div>
@@ -150,7 +150,7 @@ function renderStep() {
   document.getElementById('stepDesc').textContent = s.desc;
   document.getElementById('stepDetail').textContent = s.detail;
   document.getElementById('stepTip').textContent = s.tip;
-  document.getElementById('appFrame').src = '/#' + s.hash;
+  document.getElementById('appFrame').src = '/?embed#' + s.hash;
   document.getElementById('prevBtn').style.display = currentStep === 0 ? 'none' : '';
   document.getElementById('nextBtn').textContent = currentStep === steps.length - 1 ? 'Finish ✓' : 'Next →';
 

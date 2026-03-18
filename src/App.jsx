@@ -5526,6 +5526,8 @@ function HelpChatbot({ currentView, currentRole }) {
 
 // ─── APP ──────────────────────────────────────────────────────────────────────
 export default function App() {
+  const isEmbed = new URLSearchParams(window.location.search).has('embed');
+
   // Hash-based routing: #role/view (e.g. #admin/pipeline)
   const parseHash = () => {
     const h = window.location.hash.replace("#","").split("/");
@@ -5707,14 +5709,14 @@ export default function App() {
       <div className="app">
 
         {/* ═══ DESKTOP SIDEBAR ═══ */}
-        <SidebarContent />
+        {!isEmbed && <SidebarContent />}
 
         {/* ═══ MOBILE SIDEBAR ═══ */}
-        {sidebarMobileOpen && <div className="mobile-sidebar-overlay" onClick={()=>setSidebarMobileOpen(false)}/>}
-        {sidebarMobileOpen && <SidebarContent mobile />}
+        {!isEmbed && sidebarMobileOpen && <div className="mobile-sidebar-overlay" onClick={()=>setSidebarMobileOpen(false)}/>}
+        {!isEmbed && sidebarMobileOpen && <SidebarContent mobile />}
 
         {/* ═══ MAIN AREA ═══ */}
-        <div className="main-area">
+        <div className="main-area" style={isEmbed ? {marginLeft:0} : undefined}>
 
           {/* TOPBAR */}
           <div className="topbar">
