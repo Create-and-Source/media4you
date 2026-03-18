@@ -499,6 +499,30 @@ const styles = `
   ::-webkit-scrollbar { width:3px; height:3px; }
   ::-webkit-scrollbar-track { background:transparent; }
   ::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.15); border-radius:2px; }
+
+  /* SEARCH MODAL */
+  .search-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(8px); z-index:500; display:flex; align-items:flex-start; justify-content:center; padding-top:12vh; }
+  .search-modal { width:90%; max-width:560px; background:rgba(255,255,255,0.97); border:1px solid var(--border2); border-radius:18px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.2); backdrop-filter:blur(30px); animation:slideUp 0.15s ease; }
+  .search-input-wrap { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+  .search-input-wrap input { flex:1; border:none; outline:none; font:400 15px var(--fb); color:var(--text); background:none; }
+  .search-results { max-height:50vh; overflow-y:auto; padding:8px; }
+  .search-result { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:10px; cursor:pointer; transition:background 0.1s; }
+  .search-result:hover { background:var(--accent-dim); }
+  .search-result-icon { font-size:18px; width:24px; text-align:center; flex-shrink:0; }
+  .search-hint { padding:12px 20px; border-top:1px solid var(--border); font:400 11px var(--fb); color:var(--text3); display:flex; justify-content:space-between; }
+
+  /* CONFETTI */
+  @keyframes confettiFall { 0% { transform:translateY(-100vh) rotate(0deg); opacity:1; } 100% { transform:translateY(100vh) rotate(720deg); opacity:0; } }
+  .confetti-piece { position:fixed; width:10px; height:10px; z-index:600; pointer-events:none; animation:confettiFall 2.5s ease-in forwards; }
+
+  /* STATUS DROPDOWN */
+  .status-dropdown { position:absolute; top:100%; right:0; background:rgba(255,255,255,0.97); border:1px solid var(--border2); border-radius:10px; padding:4px; z-index:300; box-shadow:0 8px 30px rgba(0,0,0,0.15); backdrop-filter:blur(20px); min-width:120px; }
+  .status-option { padding:8px 12px; border-radius:6px; cursor:pointer; font:400 12px var(--fb); color:var(--text); transition:background 0.1s; }
+  .status-option:hover { background:var(--accent-dim); }
+
+  /* INLINE EDIT */
+  .inline-edit { border:none; outline:none; background:none; font:inherit; color:inherit; width:100%; border-bottom:1px dashed var(--accent); padding:2px 0; }
+  .inline-edit:focus { border-bottom:2px solid var(--accent); }
 `;
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
@@ -760,7 +784,77 @@ async function callClaude(prompt) {
 }
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
-function Badge({ type, children }) { return <span className={`badge badge-${type}`}>{children}</span>; }
+function Badge({ type, children, onClick }) { return <span className={`badge badge-${type}`} style={onClick?{cursor:'pointer'}:{}} onClick={onClick}>{children}</span>; }
+
+// ─── CONFETTI ────────────────────────────────────────────────────────────────
+function fireConfetti() {
+  const colors = ['#fcc612','#fd8040','#22C55E','#3B82F6','#A855F7','#EF4444'];
+  for (let i = 0; i < 50; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random()*100+'vw';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    el.style.borderRadius = Math.random()>0.5?'50%':'2px';
+    el.style.width = (6+Math.random()*8)+'px';
+    el.style.height = (6+Math.random()*8)+'px';
+    el.style.animationDelay = Math.random()*0.8+'s';
+    el.style.animationDuration = (2+Math.random()*1.5)+'s';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),4000);
+  }
+}
+
+// ─── GLOBAL SEARCH ───────────────────────────────────────────────────────────
+function GlobalSearch({ clients, scripts, videos, leads, onClose, onNavigate, showToast }) {
+  const [query, setQuery] = useState("");
+  const inputRef = useRef(null);
+  useEffect(()=>{inputRef.current?.focus();},[]);
+
+  const q = query.toLowerCase();
+  const results = [];
+  if (q) {
+    clients.forEach(c => { if(c.name.toLowerCase().includes(q)||c.industry.toLowerCase().includes(q)) results.push({type:"client",icon:"👥",title:c.name,sub:c.industry+" · "+c.plan,action:()=>{onNavigate("clients");onClose();}}); });
+    scripts.forEach(s => { if(s.client.toLowerCase().includes(q)||s.type.toLowerCase().includes(q)) results.push({type:"script",icon:"✍️",title:s.type,sub:s.client+" · "+s.status,action:()=>{onNavigate("pipeline");onClose();}}); });
+    videos.forEach(v => { if(v.client.toLowerCase().includes(q)||v.title.toLowerCase().includes(q)) results.push({type:"video",icon:"🎬",title:v.title,sub:v.client+" · "+v.status,action:()=>{onNavigate("pipeline");onClose();}}); });
+    Object.entries(leads).forEach(([stage,items])=>items.forEach(l=>{ if(l.name.toLowerCase().includes(q)) results.push({type:"lead",icon:"🎯",title:l.name,sub:stage+" · "+l.source,action:()=>{onClose();showToast("🎯","Lead",l.name+" — "+stage);}}); }));
+    if(results.length===0) results.push({type:"none",icon:"🔍",title:"No results",sub:"Try a different search",action:()=>{}});
+  }
+
+  return (
+    <div className="search-overlay" onClick={onClose}>
+      <div className="search-modal" onClick={e=>e.stopPropagation()}>
+        <div className="search-input-wrap">
+          <span style={{fontSize:16,color:'var(--text3)'}}>🔍</span>
+          <input ref={inputRef} placeholder="Search clients, scripts, videos, leads..." value={query} onChange={e=>setQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")onClose();}}/>
+          <span style={{font:'400 10px var(--fd)',color:'var(--text3)',background:'var(--surface2)',padding:'2px 8px',borderRadius:4}}>ESC</span>
+        </div>
+        {q && (
+          <div className="search-results">
+            {results.slice(0,8).map((r,i)=>(
+              <div key={i} className="search-result" onClick={r.action}>
+                <div className="search-result-icon">{r.icon}</div>
+                <div>
+                  <div style={{font:'500 13px var(--fb)',color:'var(--text)'}}>{r.title}</div>
+                  <div style={{font:'400 11px var(--fb)',color:'var(--text3)'}}>{r.sub}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {!q && (
+          <div className="search-results" style={{padding:20,textAlign:'center'}}>
+            <div style={{font:'400 13px var(--fb)',color:'var(--text3)'}}>Start typing to search across everything</div>
+          </div>
+        )}
+        <div className="search-hint">
+          <span>↑↓ Navigate</span>
+          <span>⏎ Open</span>
+          <span>ESC Close</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 function Toast({ toast }) {
   if (!toast) return null;
   return <div className="toast"><div className="toast-icon">{toast.icon}</div><div><div className="toast-text">{toast.text}</div>{toast.sub&&<div className="toast-sub">{toast.sub}</div>}</div></div>;
@@ -934,10 +1028,10 @@ Requirements:
 Return just the caption and hashtags, nothing else.`
       );
       updatePost(post.id, {caption:result});
-      showToast("✨","Caption generated","Review and edit below");
+      showToast("●","Caption generated","Review and edit below");
     } catch(e) {
       updatePost(post.id, {caption:`Ready to transform your feed? ${post.client} is bringing the heat this spring 🔥 Check out what's new and book your spot before it's gone!\n\n#Arizona #Phoenix #${post.client.replace(/\s/g,'')} #SmallBusiness #ContentCreation #Reels #SocialMediaMarketing #AZBusiness #Media4You`});
-      showToast("✨","Caption generated","Review and edit below");
+      showToast("●","Caption generated","Review and edit below");
     }
     setCaptionLoading(false);
   };
@@ -967,10 +1061,10 @@ CTA (40-50 sec)
 Punchy, Arizona flavor where relevant. No hashtags. Just the script.`
       );
       updatePost(post.id, {script:result});
-      showToast("✨","Script generated","Review and edit below");
+      showToast("●","Script generated","Review and edit below");
     } catch(e) {
       updatePost(post.id, {script:`HOOK (0-3 sec)\nYou need to see this.\n\nSETUP (3-10 sec)\n${post.client} just leveled up and we caught it all on camera...\n\nBODY (10-40 sec)\nWatch as we take you through the full process from start to finish. Every detail matters and this is why ${post.client} is the best in Arizona.\n\nCTA (40-50 sec)\nFollow for more and tap the link in bio to book yours today.`});
-      showToast("✨","Script generated","Review and edit below");
+      showToast("●","Script generated","Review and edit below");
     }
     setScriptLoading(false);
   };
@@ -1010,7 +1104,7 @@ Punchy, Arizona flavor where relevant. No hashtags. Just the script.`
             <div style={{marginTop:12,display:"flex",gap:8}}>
               <div className="form-group" style={{flex:1,margin:0}}>
                 <label className="form-label">Status</label>
-                <select className="form-select" value={post.status} onChange={e=>{updatePost(post.id,{status:e.target.value});showToast("✅","Status updated",post.title+" → "+e.target.value);}}>
+                <select className="form-select" value={post.status} onChange={e=>{updatePost(post.id,{status:e.target.value});showToast("✓","Status updated",post.title+" → "+e.target.value);}}>
                   {["Planned","Scripted","Caption Ready","Approved","Scheduled","Published"].map(s=><option key={s}>{s}</option>)}
                 </select>
               </div>
@@ -1074,7 +1168,7 @@ Punchy, Arizona flavor where relevant. No hashtags. Just the script.`
 
           {/* Actions */}
           <div style={{display:"flex",gap:8,marginTop:4}}>
-            <button className="btn primary" style={{flex:1}} onClick={()=>{updatePost(post.id,{status:"Approved"});showToast("✅","Approved",post.title+" is ready for production");}}>Approve Post</button>
+            <button className="btn primary" style={{flex:1}} onClick={()=>{updatePost(post.id,{status:"Approved"});showToast("✓","Approved",post.title+" is ready for production");}}>Approve Post</button>
             <button className="btn success" style={{flex:1}} onClick={()=>{updatePost(post.id,{status:"Scheduled"});showToast("📅","Scheduled",post.title+" added to queue");}}>Schedule →</button>
           </div>
           <button className="btn danger full" style={{marginTop:8}} onClick={()=>{setCalendar(prev=>prev.filter(p=>p.id!==post.id));setSelectedPost(null);showToast("🗑","Removed",post.title+" removed from calendar");}}>Remove from Calendar</button>
@@ -1337,7 +1431,7 @@ Keep it punchy, specific to Arizona when relevant, under 50 seconds total. No ha
             </div>
             <div style={{display:"flex",gap:8,marginTop:12}}>
               <button className="btn" onClick={() => { navigator.clipboard?.writeText(script); showToast("📋","Copied","Script copied to clipboard"); }}>Copy</button>
-              <button className="btn primary" onClick={() => { onSaveToQueue(client.name, idea.title, script); showToast("✅","Added to queue","Script saved to Script Writer queue"); onBack(); }}>Save to Queue →</button>
+              <button className="btn primary" onClick={() => { onSaveToQueue(client.name, idea.title, script); showToast("✓","Added to queue","Script saved to Script Writer queue"); onBack(); }}>Save to Queue →</button>
             </div>
           </>
         )}
@@ -1567,7 +1661,7 @@ function AdminDashboard({ clients, onNav, onOpenIdeas, onOpenCalendar, onOpenCli
           <div style={{...glass,padding:'20px 22px',animation:'dashFadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) 640ms backwards'}}>
             <div style={{font:'600 15px var(--fd)',color:'var(--text)',marginBottom:14}}>Quick Actions</div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
-              {[{label:'Add Client',icon:'👥',action:()=>showToast("✅","Add client","Use + Client button")},
+              {[{label:'Add Client',icon:'👥',action:()=>showToast("✓","Add client","Use + Client button")},
                 {label:'Content Calendar',icon:'📅',action:onOpenCalendar},
                 {label:'View Revenue',icon:'💰',action:()=>onNav("revenue")},
                 {label:'Manage Ads',icon:'📢',action:()=>onNav("ads")}
@@ -2017,7 +2111,7 @@ function AdminClients({ clients, showToast, onOpenIdeas, autoSelect, onClearAuto
                       </div>
                     )}
                     <div style={{display:'flex',gap:6,marginTop:10}}>
-                      <button className="btn primary" style={{flex:1,padding:'8px 12px',fontSize:11}} onClick={()=>showToast("✅","Approved","Content moved to next stage")}>Approve</button>
+                      <button className="btn primary" style={{flex:1,padding:'8px 12px',fontSize:11}} onClick={()=>{showToast("✓","Approved","Content moved to next stage");fireConfetti();}}>Approve</button>
                       <button className="btn" style={{padding:'8px 12px',fontSize:11}} onClick={()=>showToast("📝","Revision","Request sent to team")}>Request Changes</button>
                     </div>
                   </div>
@@ -2422,7 +2516,7 @@ function EditorUpload({ showToast }) {
         if(p>=100){ clearInterval(interval); setUploading(false);
           setUploads(prev=>[{id:Date.now(),title:form.title,client:form.client,type:form.type,status:"Processing",time:"Just now"},...prev]);
           setForm(f=>({...f,title:"",notes:""}));
-          showToast("✅","Upload complete",form.title+" added to queue");
+          showToast("✓","Upload complete",form.title+" added to queue");
           setTimeout(()=>setUploads(prev=>prev.map((u,i)=>i===0?{...u,status:"Ready"}:u)),3000);
           return 0;
         }
@@ -2842,7 +2936,7 @@ function SalesCalls({ showToast }) {
             <div className="form-group"><label className="form-label">Body</label><textarea className="form-textarea" style={{minHeight:120}} placeholder="Write your email..." value={emailForm.body} onChange={e=>setEmailForm(p=>({...p,body:e.target.value}))}/></div>
             <div style={{display:'flex',gap:8}}>
               <button className="btn primary" style={{flex:1}} onClick={()=>{setComposeEmail(false);showToast("📧","Email sent",emailForm.to);setEmailForm({to:"",subject:"",body:""});}}>Send Email</button>
-              <button className="btn" onClick={()=>{showToast("✨","AI Draft","Generating personalized email...");}}>✨ AI Write</button>
+              <button className="btn" onClick={()=>{showToast("●","AI Draft","Generating personalized email...");}}>✨ AI Write</button>
             </div>
           </div>
         )}
@@ -2967,7 +3061,7 @@ Punchy, local Arizona flavor where relevant. No hashtags. Just the script.`
       );
       setText(result);
       onUpdate(script.id,"In Progress",result);
-      showToast("✨","Script generated","Review and edit as needed");
+      showToast("●","Script generated","Review and edit as needed");
     } catch(e) { showToast("❌","Failed","Check connection"); }
     setLoading(false);
   };
@@ -2988,7 +3082,7 @@ Punchy, local Arizona flavor where relevant. No hashtags. Just the script.`
         <textarea className="editor-textarea" value={text} placeholder="Start writing or tap ✨ AI Draft..." onChange={e=>setText(e.target.value)}/>
         <div style={{display:"flex",gap:8,marginTop:10}}>
           <button className="btn" onClick={()=>{onUpdate(script.id,"In Progress",text);showToast("💾","Saved","");}}>Save</button>
-          <button className="btn primary" onClick={()=>{onUpdate(script.id,"Submitted",text);showToast("✅","Submitted","Script sent to production");onBack();}}>Submit →</button>
+          <button className="btn primary" onClick={()=>{onUpdate(script.id,"Submitted",text);showToast("✓","Submitted","Script sent to production");onBack();}}>Submit →</button>
         </div>
       </div>
     </div>
@@ -3158,7 +3252,7 @@ function ShootCalendar({ shoots, showToast }) {
                 <div className="row-item"><div className="row-main"><div className="row-title">Location</div><div className="row-sub">{s.location}</div></div></div>
                 <div className="row-item"><div className="row-main"><div className="row-title">Notes</div><div className="row-sub">{s.notes}</div></div></div>
                 <div style={{display:'flex',gap:8,marginTop:10}}>
-                  {s.status==="Pending" && <button className="btn success" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("✅","Confirmed",s.client+" shoot confirmed");}}>Confirm</button>}
+                  {s.status==="Pending" && <button className="btn success" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("✓","Confirmed",s.client+" shoot confirmed");}}>Confirm</button>}
                   <button className="btn" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("📝","Reschedule","Reschedule request sent");}}>Reschedule</button>
                   <button className="btn" onClick={(e)=>{e.stopPropagation();showToast("💬","Message","Notification sent to crew");}}>Message Crew</button>
                 </div>
@@ -3237,7 +3331,7 @@ function CoachingTracker({ sessions, showToast }) {
                 <div style={{marginTop:12,paddingTop:12,borderTop:'1px solid var(--border)'}}>
                   <div style={{font:'400 12px var(--fb)',color:'var(--text2)',lineHeight:1.6,marginBottom:10}}>{s.notes}</div>
                   <div style={{display:'flex',gap:8}}>
-                    <button className="btn success" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("✅","Confirmed","Session confirmed with "+s.client);}}>Confirm</button>
+                    <button className="btn success" style={{flex:1}} onClick={(e)=>{e.stopPropagation();showToast("✓","Confirmed","Session confirmed with "+s.client);}}>Confirm</button>
                     <button className="btn" onClick={(e)=>{e.stopPropagation();showToast("📅","Reschedule","Request sent");}}>Reschedule</button>
                   </div>
                 </div>
@@ -3548,7 +3642,7 @@ function ClientContent({ showToast }) {
 
   const approveItem = (id) => {
     setItems(p=>p.map(i=>i.id===id?{...i,status:"Approved",progress:100,approvalHistory:[...i.approvalHistory,{action:"approved",date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'}),note:""}]}:i));
-    showToast("✅","Approved!","Content approved and moving to production");
+    showToast("✓","Approved!","Content approved and moving to production");fireConfetti();
     setSelectedItem(null);
   };
 
@@ -3716,7 +3810,7 @@ function ClientInvoices({ showToast }) {
     setInvoices(p=>p.map(inv=>inv.id===id?{...inv,processing:true}:inv));
     setTimeout(()=>{
       setInvoices(p=>p.map(inv=>inv.id===id?{...inv,processing:false,paid:true,status:"Paid Mar 17"}:inv));
-      showToast("✅","Payment Complete","Invoice has been paid");
+      showToast("✓","Payment Complete","Invoice has been paid");
     },2000);
   };
   return (
@@ -3900,11 +3994,11 @@ const ROLES = [
   {key:"client",      label:"Client",       name:"Desert Sun Realty",color:"#FFB800",initial:"C"},
 ];
 const NAV_CONFIG = {
-  admin:        [{label:"Dashboard",icon:"⬛",view:"dashboard"},{label:"Pipeline",icon:"🔄",view:"pipeline"},{label:"Shoots",icon:"🎥",view:"shoots"},{label:"Calls",icon:"📞",view:"coaching"},{label:"Team",icon:"👤",view:"team"},{label:"Clients",icon:"👥",view:"clients"},{label:"Revenue",icon:"💰",view:"revenue"},{label:"Ads",icon:"📢",view:"ads"},{label:"Settings",icon:"⚙️",view:"settings"}],
-  sales:        [{label:"Pipeline",icon:"📊",view:"dashboard",badge:3},{label:"Calls",icon:"🎥",view:"calls"},{label:"Leads",icon:"🎯",view:"leads"},{label:"Activity",icon:"📋",view:"activity"}],
-  scriptwriter: [{label:"Queue",icon:"✍️",view:"dashboard",badge:2},{label:"Done",icon:"✅",view:"completed"}],
-  editor:       [{label:"Production",icon:"🎬",view:"dashboard",badge:2},{label:"Upload",icon:"📤",view:"upload"},{label:"Done",icon:"✅",view:"completed"}],
-  client:       [{label:"Content",icon:"📹",view:"dashboard"},{label:"Instagram",icon:"📸",view:"instagram"},{label:"Ads",icon:"📢",view:"ads"},{label:"Invoices",icon:"🧾",view:"invoices"},{label:"Team",icon:"👥",view:"team"}],
+  admin:        [{label:"Dashboard",icon:"◆",view:"dashboard"},{label:"Pipeline",icon:"◎",view:"pipeline"},{label:"Shoots",icon:"▶",view:"shoots"},{label:"Calls",icon:"◉",view:"coaching"},{label:"Team",icon:"◈",view:"team"},{label:"Clients",icon:"▣",view:"clients"},{label:"Revenue",icon:"$",view:"revenue"},{label:"Ads",icon:"◐",view:"ads"},{label:"Settings",icon:"⟐",view:"settings"}],
+  sales:        [{label:"Pipeline",icon:"◎",view:"dashboard",badge:3},{label:"Calls",icon:"◉",view:"calls"},{label:"Leads",icon:"◆",view:"leads"},{label:"Activity",icon:"▤",view:"activity"}],
+  scriptwriter: [{label:"Queue",icon:"▤",view:"dashboard",badge:2},{label:"Done",icon:"✓",view:"completed"}],
+  editor:       [{label:"Production",icon:"▶",view:"dashboard",badge:2},{label:"Upload",icon:"△",view:"upload"},{label:"Done",icon:"✓",view:"completed"}],
+  client:       [{label:"Content",icon:"▶",view:"dashboard"},{label:"Instagram",icon:"◎",view:"instagram"},{label:"Ads",icon:"◐",view:"ads"},{label:"Invoices",icon:"▤",view:"invoices"},{label:"Team",icon:"◈",view:"team"}],
 };
 const TITLES = {admin:"Admin",sales:"Sales",scriptwriter:"Scripts",editor:"Production",client:"My Content"};
 
@@ -3951,15 +4045,15 @@ export default function App() {
   const addScriptFromIdea = (clientName, ideaTitle, draft) => {
     setScripts(p=>[...p,{id:Date.now(),client:clientName,type:ideaTitle,due:"TBD",priority:"med",status:"In Progress",draft}]);
   };
-  const addClient = (c) => { setClients(p=>[...p,c]); showToast("✅","Client added",c.name+" is now onboarding"); };
-  const addLead = (l) => { setLeads(p=>({...p,"New":[...p["New"],l]})); showToast("✅","Lead added",l.name+" added to pipeline"); };
+  const addClient = (c) => { setClients(p=>[...p,c]); showToast("✓","Client added",c.name+" is now onboarding"); };
+  const addLead = (l) => { setLeads(p=>({...p,"New":[...p["New"],l]})); showToast("✓","Lead added",l.name+" added to pipeline"); };
   const sendMessage = (idx,text) => setThreads(p=>p.map((t,i)=>i===idx?{...t,unread:0,last:text,messages:[...t.messages,{id:Date.now(),from:"Me",mine:true,text,time:"Just now"}]}:t));
 
   const topbarActionLabel = {admin:"+ Client",sales:"+ Lead",scriptwriter:"✨ AI",editor:"+ Upload",client:"Contact"}[role];
   const topbarAction = () => {
     if(role==="admin") setModal("add-client");
     else if(role==="sales") setModal("add-lead");
-    else if(role==="scriptwriter") showToast("✨","AI Draft","Select a script first");
+    else if(role==="scriptwriter") showToast("●","AI Draft","Select a script first");
     else if(role==="editor") navTo("upload");
     else if(role==="client") openPanel("messages");
   };
@@ -4007,6 +4101,14 @@ export default function App() {
   };
 
   const [sidebarMobileOpen, setSidebarMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  // Cmd+K shortcut
+  useEffect(()=>{
+    const handler = (e)=>{ if((e.metaKey||e.ctrlKey)&&e.key==="k"){e.preventDefault();setSearchOpen(p=>!p);} };
+    window.addEventListener("keydown",handler);
+    return ()=>window.removeEventListener("keydown",handler);
+  },[]);
 
   const SidebarContent = ({ mobile }) => (
     <div className={mobile ? "mobile-sidebar" : "sidebar"}>
@@ -4030,7 +4132,7 @@ export default function App() {
           ))}
           <button className={`sidebar-link ${panel==="messages"?"active":""}`}
             onClick={()=>{openPanel("messages");if(mobile)setSidebarMobileOpen(false);}}>
-            <span className="sidebar-link-icon">💬</span>
+            <span className="sidebar-link-icon">◯</span>
             <span>Messages</span>
             {unreadMsgs>0 && <span className="sidebar-link-badge">{unreadMsgs}</span>}
           </button>
@@ -4071,6 +4173,10 @@ export default function App() {
                 <button className="btn back" style={{margin:0,padding:"5px 14px",fontSize:12}} onClick={closePanel}>✕ Close</button>
               ) : (
                 <>
+                  <button onClick={()=>setSearchOpen(true)} style={{display:'flex',alignItems:'center',gap:8,padding:'6px 12px',borderRadius:100,border:'1px solid var(--border)',background:'rgba(255,255,255,0.5)',font:'400 12px var(--fb)',color:'var(--text3)',cursor:'pointer',backdropFilter:'blur(8px)'}}>
+                    🔍 <span style={{font:'400 11px monospace',color:'var(--text3)'}}>⌘K</span>
+                  </button>
+                  <div className="topbar-divider"/>
                   <span className="topbar-date">
                     {new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}
                   </span>
@@ -4136,6 +4242,7 @@ export default function App() {
           </div>
         )}
 
+        {searchOpen && <GlobalSearch clients={clients} scripts={scripts} videos={videos} leads={leads} onClose={()=>setSearchOpen(false)} onNavigate={navTo} showToast={showToast}/>}
         {modal==="add-client"&&<AddClientModal onClose={()=>setModal(null)} onAdd={addClient}/>}
         {modal==="add-lead"  &&<AddLeadModal   onClose={()=>setModal(null)} onAdd={addLead}/>}
         <Toast toast={toast}/>
