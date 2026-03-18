@@ -1020,6 +1020,123 @@ function AILoading({ text = "Claude is thinking..." }) {
   return <div className="ai-loading"><div className="ai-spinner"/><div><div className="ai-loading-text">{text}</div><div className="ai-loading-sub">Powered by Claude AI</div></div></div>;
 }
 
+// ─── PAGE TOUR ("Teach me this page") ────────────────────────────────────────
+function PageTour({ steps = [] }) {
+  const [active, setActive] = useState(false);
+  const [stepIdx, setStepIdx] = useState(0);
+  const [rect, setRect] = useState(null);
+
+  const current = steps[stepIdx];
+
+  const measureTarget = useCallback(() => {
+    if (!current?.target) { setRect(null); return; }
+    const el = document.querySelector(current.target);
+    if (!el) { setRect(null); return; }
+    const r = el.getBoundingClientRect();
+    setRect({ top: r.top + window.scrollY, left: r.left, width: r.width, height: r.height });
+    if (r.top < 80 || r.top > window.innerHeight - 250) {
+      window.scrollTo({ top: Math.max(0, r.top + window.scrollY - 100), behavior: 'smooth' });
+      setTimeout(() => { const r2 = el.getBoundingClientRect(); setRect({ top: r2.top + window.scrollY, left: r2.left, width: r2.width, height: r2.height }); }, 400);
+    }
+  }, [current]);
+
+  useEffect(() => {
+    if (active && current) { measureTarget(); window.addEventListener('resize', measureTarget); return () => window.removeEventListener('resize', measureTarget); }
+  }, [active, stepIdx, measureTarget]);
+
+  const start = () => { setStepIdx(0); setActive(true); };
+  const next = () => { if (stepIdx < steps.length - 1) setStepIdx(stepIdx + 1); else setActive(false); };
+  const prev = () => { if (stepIdx > 0) setStepIdx(stepIdx - 1); };
+
+  if (!steps.length) return null;
+
+  if (!active) {
+    return (
+      <button onClick={start} style={{
+        display:'inline-flex',alignItems:'center',gap:6,padding:'6px 14px',borderRadius:100,
+        background:'var(--accent-dim)',border:'1px solid rgba(252,198,18,0.2)',
+        color:'var(--accent)',font:'500 12px var(--fd)',cursor:'pointer',transition:'all 0.2s',
+        marginBottom:16,
+      }}
+        onMouseEnter={e=>e.currentTarget.style.background='rgba(252,198,18,0.15)'}
+        onMouseLeave={e=>e.currentTarget.style.background='var(--accent-dim)'}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Teach me this page
+      </button>
+    );
+  }
+
+  const bubbleW = 360;
+  let bubbleStyle = { position:'fixed',zIndex:10002,width:bubbleW,maxWidth:'calc(100vw - 32px)' };
+  if (rect) {
+    const vTop = rect.top - window.scrollY;
+    const below = vTop + rect.height + 16;
+    if (below + 240 < window.innerHeight) bubbleStyle.top = below;
+    else if (vTop > 260) { bubbleStyle.top = Math.max(16, vTop - 16); bubbleStyle.transform = 'translateY(-100%)'; }
+    else { bubbleStyle.top = '50%'; bubbleStyle.transform = 'translateY(-50%)'; }
+    bubbleStyle.left = Math.max(16, Math.min(rect.left, window.innerWidth - 16 - bubbleW));
+  } else {
+    bubbleStyle.top = '50%'; bubbleStyle.left = '50%'; bubbleStyle.transform = 'translate(-50%,-50%)';
+  }
+
+  return (<>
+    <div style={{position:'fixed',inset:0,zIndex:10000,pointerEvents:'none'}}>
+      <svg width="100%" height="100%" style={{position:'absolute',inset:0}}>
+        <defs><mask id="tour-mask"><rect width="100%" height="100%" fill="white"/>
+          {rect && <rect x={rect.left-6} y={rect.top-window.scrollY-6} width={rect.width+12} height={rect.height+12} rx="8" fill="black"/>}
+        </mask></defs>
+        <rect width="100%" height="100%" fill="rgba(0,0,0,0.55)" mask="url(#tour-mask)"/>
+      </svg>
+    </div>
+    {rect && <div style={{position:'fixed',top:rect.top-window.scrollY-6,left:rect.left-6,width:rect.width+12,height:rect.height+12,border:'2px solid var(--accent)',borderRadius:8,zIndex:10001,pointerEvents:'none',boxShadow:'0 0 0 4px rgba(252,198,18,0.2)',transition:'all 0.3s'}}/>}
+    <div onClick={()=>setActive(false)} style={{position:'fixed',inset:0,zIndex:10001,cursor:'default'}}/>
+    <div style={{...bubbleStyle,background:'rgba(255,255,255,0.97)',backdropFilter:'blur(20px)',borderRadius:14,boxShadow:'0 12px 40px rgba(0,0,0,0.18)',padding:'24px',pointerEvents:'auto',border:'1px solid var(--border2)'}} onClick={e=>e.stopPropagation()}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
+        <span style={{font:'600 10px var(--fd)',letterSpacing:1,textTransform:'uppercase',color:'var(--accent)'}}>Step {stepIdx+1} of {steps.length}</span>
+        <button onClick={()=>setActive(false)} style={{background:'none',border:'none',color:'var(--text3)',cursor:'pointer',fontSize:16}}>✕</button>
+      </div>
+      <div style={{display:'flex',gap:4,marginBottom:16}}>{steps.map((_,i)=><div key={i} style={{width:i===stepIdx?20:6,height:6,borderRadius:3,background:i<=stepIdx?'var(--accent)':'var(--border2)',transition:'all 0.3s'}}/>)}</div>
+      <h3 style={{font:'600 17px var(--fd)',color:'var(--text)',margin:'0 0 8px'}}>{current?.title||''}</h3>
+      <p style={{font:'400 14px/1.6 var(--fb)',color:'var(--text2)',margin:'0 0 20px'}}>{current?.text||''}</p>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+        <button onClick={prev} disabled={stepIdx===0} style={{font:'500 13px var(--fd)',color:stepIdx===0?'var(--text3)':'var(--text2)',background:'none',border:'none',cursor:stepIdx===0?'default':'pointer',padding:'8px 0'}}>Back</button>
+        <button onClick={next} style={{font:'600 13px var(--fd)',color:'white',background:'var(--accent)',border:'none',borderRadius:6,padding:'10px 24px',cursor:'pointer'}}>{stepIdx===steps.length-1?'Got it!':'Next'}</button>
+      </div>
+    </div>
+  </>);
+}
+
+// Tour steps for each page
+const TOUR_STEPS = {
+  dashboard: [
+    {target:'.dash-hero',title:'Welcome Hero',text:'Your daily greeting with the total MRR at a glance. This updates in real-time as clients are added or plans change.'},
+    {target:'.dash-card-hover',title:'KPI Cards',text:'Key metrics for your agency. Click any card to dive deeper. Hover for a lift effect.'},
+    {target:'.dash-main-grid',title:'Main Content',text:'Left side shows your clients with MRR. Right side shows the revenue trend, content performance, and quick actions.'},
+  ],
+  pipeline: [
+    {target:'.kanban-scroll',title:'Kanban Board',text:'Drag cards between columns to change their status. Or click a card to see details and change status with the dropdown.'},
+  ],
+  library: [
+    {target:'.dash-card-hover',title:'Asset Cards',text:'Every video, photo, and raw footage file. Click to see specs, download, share, or reuse in new content.'},
+  ],
+  scheduler: [
+    {target:'.top-action-btn',title:'Schedule a Post',text:'Create a new scheduled post across Instagram, TikTok, or Facebook.'},
+  ],
+  shoots: [
+    {target:'.top-action-btn',title:'Schedule a Shoot',text:'Book a new filming session. Set the client, date, time, location, and crew.'},
+  ],
+  clients: [
+    {target:'.form-input',title:'Search Clients',text:'Type to filter clients by name. Click any client to see their full 6-tab detail page.'},
+  ],
+  revenue: [
+    {target:'.dash-card-hover',title:'Financial Overview',text:'Your agency financials at a glance. Revenue, expenses, profit margin, and ARR.'},
+  ],
+  reports: [
+    {target:'.top-action-btn',title:'Generate Report',text:'Select a client and generate their monthly performance report with one click. Download as PDF or email directly.'},
+  ],
+};
+
 // ─── AI: VIDEO IDEA GENERATOR ─────────────────────────────────────────────────
 function VideoIdeaGenerator({ client, onIdeaToScript, onClose }) {
   const [ideas, setIdeas] = useState([]);
@@ -1869,8 +1986,9 @@ function AdminDashboard({ clients, onNav, onOpenIdeas, onOpenCalendar, onOpenCli
 
   return (
     <div>
+      <PageTour steps={TOUR_STEPS.dashboard}/>
       {/* ═══ WELCOME HERO ═══ */}
-      <div style={{
+      <div className="dash-hero" style={{
         ...glass, padding:'28px 32px', marginBottom:28,
         background:'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(252,198,18,0.08) 100%)',
         borderLeft:'3px solid var(--accent)',
